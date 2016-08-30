@@ -1,3 +1,5 @@
-Spree::Core::Engine.routes.draw do
-  # Add your extension routes here
+Rails.application.routes.draw do
+  namespace :solidus_paypal_braintree do
+    resource :checkout, only: [:update, :edit]
+  end
 end
