@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.test_files = Dir['test/**/*']
 
   s.add_dependency "solidus", ['>= 1.0', '< 3']
+  s.add_dependency "braintree",  '~> 2.65'
 
   s.add_development_dependency 'capybara'
   s.add_development_dependency 'poltergeist'
