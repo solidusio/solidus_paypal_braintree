@@ -33,6 +33,13 @@ require 'spree/testing_support/url_helpers'
 # Requires factories defined in lib/solidus_paypal_braintree/factories.rb
 require 'solidus_paypal_braintree/factories'
 
+require 'braintree'
+
+Braintree::Configuration.public_key  = ENV.fetch('BRAINTREE_PUBLIC_KEY')
+Braintree::Configuration.private_key = ENV.fetch('BRAINTREE_PRIVATE_KEY')
+Braintree::Configuration.merchant_id = ENV.fetch('BRAINTREE_MERCHANT_ID')
+Braintree::Configuration.environment = ENV.fetch('BRAINTREE_ENVIRONMENT', :sandbox).to_sym
+
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 
