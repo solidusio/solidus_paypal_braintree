@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'webmock'
+require 'support/order_ready_for_payment'
 
 RSpec.describe SolidusPaypalBraintree::Gateway do
   let(:source) do
@@ -25,45 +26,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
   end
 
   describe 'making a payment on an order' do
-    let!(:country) { create :country }
-
-    let(:user) { create :user }
-    let(:line_item) { create :line_item, price: 50 }
-    let(:address) { create :address, country: country }
-
-    before do
-      create :shipping_method, cost: 5
-    end
-
-    let(:order) do
-      order = Spree::Order.create!(
-        line_items: [line_item],
-        email: 'test@example.com',
-        bill_address: address,
-        ship_address: address,
-        user: user
-      )
-
-      order.update_totals
-      expect(order.state).to eq "cart"
-
-      # push through cart, address and delivery
-      # its sadly unsafe to use any reasonable factory here accross
-      # supported solidus versions
-      order.next!
-      order.next!
-      order.next!
-
-      expect(order.state).to eq "payment"
-      order
-    end
-
-    let(:gateway) do
-      described_class.create!(
-        name: 'Braintree',
-        auto_capture: true
-      )
-    end
+    include_context 'order ready for payment'
 
     it 'can complete an order' do
       expect(order.total).to eq 55
