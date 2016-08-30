@@ -6,4 +6,10 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
       expect(described_class.new.build_payment_method).to be_a Spree::PaymentMethod
     end
   end
+
+  describe '#imported' do
+    it 'is always false' do
+      expect(described_class.new.imported).to_not be
+    end
+  end
 end
