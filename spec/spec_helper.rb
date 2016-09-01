@@ -35,10 +35,10 @@ require 'solidus_paypal_braintree/factories'
 
 require 'braintree'
 
-Braintree::Configuration.public_key  = ENV.fetch('BRAINTREE_PUBLIC_KEY')
-Braintree::Configuration.private_key = ENV.fetch('BRAINTREE_PRIVATE_KEY')
-Braintree::Configuration.merchant_id = ENV.fetch('BRAINTREE_MERCHANT_ID')
-Braintree::Configuration.environment = ENV.fetch('BRAINTREE_ENVIRONMENT', :sandbox).to_sym
+Braintree::Configuration.environment = :sandbox
+Braintree::Configuration.public_key  = 'mwjkkxwcp32ckhnf'
+Braintree::Configuration.private_key = 'a9298f43b30c699db3072cc4a00f7f49'
+Braintree::Configuration.merchant_id = '7rdg92j7bm7fk5h3'
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
