@@ -2,7 +2,12 @@ require 'spec_helper'
 require 'webmock'
 require 'support/order_ready_for_payment'
 
-RSpec.describe SolidusPaypalBraintree::Gateway do
+vcr_options = {
+  cassette_name: "solidus_paypal_braintree_gateway",
+  record: :new_episodes
+}
+
+RSpec.describe SolidusPaypalBraintree::Gateway, vcr: vcr_options do
   let(:source) do
     SolidusPaypalBraintree::Source.new(
       nonce: 'fake-paypal-future-nonce'
