@@ -6,3 +6,11 @@ script:
   - bundle exec rake
 rvm:
   - 2.1.5
+env:
+  matrix:
+    - SOLIDUS_BRANCH=v1.1
+    - SOLIDUS_BRANCH=v1.2
+    - SOLIDUS_BRANCH=v1.3
+    - SOLIDUS_BRANCH=v1.4
+    - SOLIDUS_BRANCH=v2.0
+    - SOLIDUS_BRANCH=master
