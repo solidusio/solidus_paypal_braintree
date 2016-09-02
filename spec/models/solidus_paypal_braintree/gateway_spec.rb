@@ -2,11 +2,7 @@ require 'spec_helper'
 require 'webmock'
 require 'support/order_ready_for_payment'
 
-vcr_options = {
-  cassette_name: "solidus_paypal_braintree_gateway",
-}
-
-RSpec.describe SolidusPaypalBraintree::Gateway, vcr: vcr_options do
+RSpec.describe SolidusPaypalBraintree::Gateway do
   let(:source) do
     SolidusPaypalBraintree::Source.new(
       nonce: 'fake-paypal-future-nonce'
@@ -17,7 +13,8 @@ RSpec.describe SolidusPaypalBraintree::Gateway, vcr: vcr_options do
     described_class.new
   end
 
-  describe '#purchase' do
+  cassette_options = { cassette_name: "braintree/purchase" }
+  describe '#purchase', vcr: cassette_options do
     subject(:purchase) { gateway.purchase(10.00, source, {}) }
 
     it 'returns a successful billing response', aggregate_failures: true do
@@ -29,7 +26,8 @@ RSpec.describe SolidusPaypalBraintree::Gateway, vcr: vcr_options do
     end
   end
 
-  describe 'making a payment on an order' do
+  cassette_options = { cassette_name: "braintree/payment" }
+  describe 'making a payment on an order', vcr: cassette_options do
     include_context 'order ready for payment'
 
     it 'can complete an order' do
@@ -55,7 +53,8 @@ RSpec.describe SolidusPaypalBraintree::Gateway, vcr: vcr_options do
     end
   end
 
-  describe "#authorize" do
+  cassette_options = { cassette_name: "braintree/authorize" }
+  describe "#authorize", vcr: cassette_options do
     subject(:authorize) do
       gateway.authorize(10.00, source, {})
     end
@@ -68,7 +67,8 @@ RSpec.describe SolidusPaypalBraintree::Gateway, vcr: vcr_options do
     end
   end
 
-  describe "#void" do
+  cassette_options = { cassette_name: "braintree/void" }
+  describe "#void", vcr: cassette_options do
     subject(:void) { gateway.void(response_code, source, {}) }
 
     let(:response_code) do
@@ -87,7 +87,8 @@ RSpec.describe SolidusPaypalBraintree::Gateway, vcr: vcr_options do
     end
   end
 
-  describe '.generate_token', :braintree_integration do
+  cassette_options = { cassette_name: "braintree/token" }
+  describe '.generate_token', :braintree_integration, vcr: cassette_options do
     subject { gateway.generate_token }
 
     it { is_expected.to be_a(String).and be_present }
