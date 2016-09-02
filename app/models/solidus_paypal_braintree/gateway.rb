@@ -11,6 +11,10 @@ module SolidusPaypalBraintree
       submit_for_settlement: true
     }.freeze
 
+    PAYPAL_AUTHORIZE_OPTIONS = {
+      store_in_vault_on_success: true
+    }.freeze
+
     # This is useful in feature tests to avoid rate limited requests from
     # Braintree
     preference(:client_sdk_enabled, :boolean, default: true)
@@ -35,8 +39,14 @@ module SolidusPaypalBraintree
     end
 
     # @return [Response]
-    def authorize(_money, _source, _gateway_options)
-      raise NotImplementedError
+    def authorize(money, source, _gateway_options)
+      result = ::Braintree::Transaction.sale(
+        amount: money,
+        payment_method_nonce: source.nonce,
+        options: PAYPAL_AUTHORIZE_OPTIONS
+      )
+
+      Response.build(result)
     end
 
     # @return [Response]
