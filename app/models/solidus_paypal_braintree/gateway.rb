@@ -49,9 +49,14 @@ module SolidusPaypalBraintree
       raise NotImplementedError
     end
 
+    # Used to cancel a transaction before it is settled.
+    #
+    # @api public
+    # @param response_code [String] the transaction id of the payment to void
     # @return [Response]
-    def void(_response_code, _source, _gateway_options)
-      raise NotImplementedError
+    def void(response_code, _source, _gateway_options)
+      result = Braintree::Transaction.void(response_code)
+      Response.build(result)
     end
 
     def create_profile(_payment)

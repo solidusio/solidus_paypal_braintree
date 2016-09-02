@@ -57,6 +57,25 @@ RSpec.describe SolidusPaypalBraintree::Gateway, vcr: vcr_options do
     end
   end
 
+  describe "#void" do
+    subject(:void) { gateway.void(response_code, source, {}) }
+
+    let(:response_code) do
+      result = Braintree::Transaction.sale(
+        amount: 1,
+        payment_method_nonce: source.nonce
+      )
+      result.transaction.id
+    end
+
+    it 'returns a successful billing response', aggregate_failures: true do
+      expect(void).to be_a ActiveMerchant::Billing::Response
+      expect(void).to be_success
+      expect(void).to be_test
+      expect(void.message).to eq 'voided'
+    end
+  end
+
   describe '.generate_token', :braintree_integration do
     subject { gateway.generate_token }
 
