@@ -57,6 +57,19 @@ RSpec.describe SolidusPaypalBraintree::Gateway, vcr: vcr_options do
     end
   end
 
+  describe "#authorize" do
+    subject(:authorize) do
+      gateway.authorize(10.00, source, {})
+    end
+
+    it "returns a successful billing response", aggregate_failures: true do
+      expect(authorize).to be_a ActiveMerchant::Billing::Response
+      expect(authorize).to be_success
+      expect(authorize).to be_test
+      expect(authorize.message).to eq "authorized"
+    end
+  end
+
   describe "#void" do
     subject(:void) { gateway.void(response_code, source, {}) }
 
