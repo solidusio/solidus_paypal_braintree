@@ -6,7 +6,7 @@ class CreateSolidusPaypalBraintreeSources < ActiveRecord::Migration
       t.integer :user_id, index: true
       t.references :payment_method, foreign_key: { to_table: :spree_payment_method }, index: { name: 'index_braintree_source_payment_method' }
 
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end
