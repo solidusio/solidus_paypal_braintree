@@ -3,27 +3,14 @@ require 'webmock'
 require 'support/order_ready_for_payment'
 
 RSpec.describe SolidusPaypalBraintree::Gateway do
-  let(:source) do
-    SolidusPaypalBraintree::Source.new(
-      nonce: 'fake-paypal-future-nonce'
-    )
-  end
-
   let(:gateway) do
     described_class.new
   end
 
-  cassette_options = { cassette_name: "braintree/purchase" }
-  describe '#purchase', vcr: cassette_options do
-    subject(:purchase) { gateway.purchase(10.00, source, {}) }
-
-    it 'returns a successful billing response', aggregate_failures: true do
-      expect(purchase).to be_a ActiveMerchant::Billing::Response
-      expect(purchase).to be_success
-      expect(purchase).to be_test
-      expect(purchase.message).to eq 'settling'
-      expect(purchase.authorization).to be_present
-    end
+  let(:source) do
+    SolidusPaypalBraintree::Source.new(
+      nonce: 'fake-paypal-future-nonce'
+    )
   end
 
   cassette_options = { cassette_name: "braintree/payment" }
@@ -53,37 +40,76 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     end
   end
 
-  cassette_options = { cassette_name: "braintree/authorize" }
-  describe "#authorize", vcr: cassette_options do
-    subject(:authorize) do
-      gateway.authorize(10.00, source, {})
-    end
-
-    it "returns a successful billing response", aggregate_failures: true do
-      expect(authorize).to be_a ActiveMerchant::Billing::Response
-      expect(authorize).to be_success
-      expect(authorize).to be_test
-      expect(authorize.message).to eq "authorized"
-    end
-  end
-
-  cassette_options = { cassette_name: "braintree/void" }
-  describe "#void", vcr: cassette_options do
-    subject(:void) { gateway.void(response_code, source, {}) }
-
-    let(:response_code) do
-      result = Braintree::Transaction.sale(
-        amount: 1,
+  describe "instance methods" do
+    let(:authorized_id) do
+      Braintree::Transaction.sale(
+        amount: 40,
         payment_method_nonce: source.nonce
-      )
-      result.transaction.id
+      ).transaction.id
     end
 
-    it 'returns a successful billing response', aggregate_failures: true do
-      expect(void).to be_a ActiveMerchant::Billing::Response
-      expect(void).to be_success
-      expect(void).to be_test
-      expect(void.message).to eq 'voided'
+    let(:sale_id) do
+      Braintree::Transaction.sale(
+        amount: 40,
+        payment_method_nonce: source.nonce,
+        options: {
+          submit_for_settlement: true
+        }
+      ).transaction.id
+    end
+
+    let(:settled_id) do
+      Braintree::TestTransaction.settle(sale_id).transaction.id
+    end
+
+    cassette_options = { cassette_name: "braintree/purchase" }
+    describe '#purchase', vcr: cassette_options do
+      subject(:purchase) { gateway.purchase(10.00, source, {}) }
+
+      it 'returns a successful billing response', aggregate_failures: true do
+        expect(purchase).to be_a ActiveMerchant::Billing::Response
+        expect(purchase).to be_success
+        expect(purchase).to be_test
+        expect(purchase.message).to eq 'settling'
+        expect(purchase.authorization).to be_present
+      end
+    end
+
+    cassette_options = { cassette_name: "braintree/authorize" }
+    describe "#authorize", vcr: cassette_options do
+      subject(:authorize) { gateway.authorize(10.00, source, {}) }
+
+      it 'returns a successful billing response', aggregate_failures: true do
+        expect(authorize).to be_a ActiveMerchant::Billing::Response
+        expect(authorize).to be_success
+        expect(authorize).to be_test
+        expect(authorize.message).to eq 'authorized'
+        expect(authorize.authorization).to be_present
+      end
+    end
+
+    cassette_options = { cassette_name: "braintree/credit" }
+    describe "#credit", vcr: cassette_options do
+      subject(:credit) { gateway.credit(20, source, settled_id, {}) }
+
+      it 'returns a successful billing response', aggregate_failures: true do
+        expect(credit).to be_a ActiveMerchant::Billing::Response
+        expect(credit).to be_success
+        expect(credit).to be_test
+        expect(credit.message).to eq 'settling'
+      end
+    end
+
+    cassette_options = { cassette_name: "braintree/void" }
+    describe "#void", vcr: cassette_options do
+      subject(:void) { gateway.void(authorized_id, source, {}) }
+
+      it 'returns a successful billing response', aggregate_failures: true do
+        expect(void).to be_a ActiveMerchant::Billing::Response
+        expect(void).to be_success
+        expect(void).to be_test
+        expect(void.message).to eq 'voided'
+      end
     end
   end
 

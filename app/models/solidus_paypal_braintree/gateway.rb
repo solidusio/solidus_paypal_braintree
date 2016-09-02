@@ -54,9 +54,15 @@ module SolidusPaypalBraintree
       raise NotImplementedError
     end
 
+    # Used to refeund a customer for an already settled transaction.
+    #
+    # @api public
+    # @param money [#to_s] amount to refund
+    # @param response_code [String] the transaction is of the payment to refund
     # @return [Response]
-    def credit(_money, _source, _response_code, _gateway_options)
-      raise NotImplementedError
+    def credit(money, _source, response_code, _gateway_options)
+      result = Braintree::Transaction.refund(response_code, money)
+      Response.build(result)
     end
 
     # Used to cancel a transaction before it is settled.
