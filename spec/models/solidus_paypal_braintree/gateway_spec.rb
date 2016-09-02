@@ -4,6 +4,7 @@ require 'support/order_ready_for_payment'
 
 vcr_options = {
   cassette_name: "solidus_paypal_braintree_gateway",
+  match_requests_on: [:method, :uri, :body],
   record: :new_episodes
 }
 
@@ -23,10 +24,10 @@ RSpec.describe SolidusPaypalBraintree::Gateway, vcr: vcr_options do
 
     it 'returns a successful billing response', aggregate_failures: true do
       expect(purchase).to be_a ActiveMerchant::Billing::Response
-      expect(purchase.success?).to be true
+      expect(purchase).to be_success
+      expect(purchase).to be_test
       expect(purchase.message).to eq 'settling'
       expect(purchase.authorization).to be_present
-      expect(purchase.test).to be true
     end
   end
 
@@ -53,6 +54,25 @@ RSpec.describe SolidusPaypalBraintree::Gateway, vcr: vcr_options do
       expect(order.outstanding_balance).to eq 0.0
 
       expect(payment.capture_events.count).to eq 1
+    end
+  end
+
+  describe "#void" do
+    subject(:void) { gateway.void(response_code, source, {}) }
+
+    let(:response_code) do
+      result = Braintree::Transaction.sale(
+        amount: 1,
+        payment_method_nonce: source.nonce
+      )
+      result.transaction.id
+    end
+
+    it 'returns a successful billing response', aggregate_failures: true do
+      expect(void).to be_a ActiveMerchant::Billing::Response
+      expect(void).to be_success
+      expect(void).to be_test
+      expect(void.message).to eq 'voided'
     end
   end
 
