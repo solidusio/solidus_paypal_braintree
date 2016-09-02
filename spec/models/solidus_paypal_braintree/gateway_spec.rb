@@ -88,6 +88,18 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       end
     end
 
+    cassette_options = { cassette_name: "braintree/capture" }
+    describe "#capture", vcr: cassette_options do
+      subject(:capture) { gateway.capture(10.00, authorized_id, {}) }
+
+      it "returns a successful billing response", aggregate_failures: true do
+        expect(capture).to be_a ActiveMerchant::Billing::Response
+        expect(capture).to be_success
+        expect(capture).to be_test
+        expect(capture.message).to eq "settling"
+      end
+    end
+
     cassette_options = { cassette_name: "braintree/credit" }
     describe "#credit", vcr: cassette_options do
       subject(:credit) { gateway.credit(20, source, settled_id, {}) }
