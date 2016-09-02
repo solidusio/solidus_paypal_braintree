@@ -4,8 +4,6 @@ require 'support/order_ready_for_payment'
 
 vcr_options = {
   cassette_name: "solidus_paypal_braintree_gateway",
-  match_requests_on: [:method, :uri, :body],
-  record: :new_episodes
 }
 
 RSpec.describe SolidusPaypalBraintree::Gateway, vcr: vcr_options do
