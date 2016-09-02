@@ -41,6 +41,7 @@ Braintree::Configuration.environment = :sandbox
 Braintree::Configuration.public_key  = 'mwjkkxwcp32ckhnf'
 Braintree::Configuration.private_key = 'a9298f43b30c699db3072cc4a00f7f49'
 Braintree::Configuration.merchant_id = '7rdg92j7bm7fk5h3'
+Braintree::Configuration.logger = Rails.logger
 
 VCR.configure do |c|
   c.cassette_library_dir = "spec/fixtures/cassettes"
