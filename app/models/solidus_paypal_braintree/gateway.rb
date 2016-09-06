@@ -131,7 +131,21 @@ module SolidusPaypalBraintree
       end
     end
 
-    def create_profile(_payment)
+    # Creates a new customer profile in Braintree
+    #
+    # @api public
+    # @param payment [Spree::Payment]
+    # @return [SolidusPaypalBraintree::Customer]
+    def create_profile(payment)
+      source = payment.source
+
+      result = Braintree::Customer.create
+      customer_id = result.customer.id
+
+      customer = source.create_customer(braintree_customer_id: customer_id)
+      source.save!
+
+      customer
     end
 
     # @return [String]
