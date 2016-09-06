@@ -49,16 +49,26 @@ module SolidusPaypalBraintree
       Response.build(result)
     end
 
+    # Collect funds from an authorized payment.
+    #
+    # @api public
+    # @param money [#to_s]
+    #   amount to capture (partial settlements are supported by the gateway)
+    # @param response_code [String] the transaction id of the payment to capture
     # @return [Response]
-    def capture(_money, _source, _gateway_options)
-      raise NotImplementedError
+    def capture(money, response_code, _gateway_options)
+      result = Braintree::Transaction.submit_for_settlement(
+        response_code,
+        money
+      )
+      Response.build(result)
     end
 
     # Used to refeund a customer for an already settled transaction.
     #
     # @api public
     # @param money [#to_s] amount to refund
-    # @param response_code [String] the transaction is of the payment to refund
+    # @param response_code [String] the transaction id of the payment to refund
     # @return [Response]
     def credit(money, _source, response_code, _gateway_options)
       result = Braintree::Transaction.refund(response_code, money)
