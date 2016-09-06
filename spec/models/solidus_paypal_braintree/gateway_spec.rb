@@ -64,7 +64,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
 
     cassette_options = { cassette_name: "braintree/purchase" }
     describe '#purchase', vcr: cassette_options do
-      subject(:purchase) { gateway.purchase(10.00, source, {}) }
+      subject(:purchase) { gateway.purchase(1000, source, {}) }
 
       it 'returns a successful billing response', aggregate_failures: true do
         expect(purchase).to be_a ActiveMerchant::Billing::Response
@@ -77,7 +77,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
 
     cassette_options = { cassette_name: "braintree/authorize" }
     describe "#authorize", vcr: cassette_options do
-      subject(:authorize) { gateway.authorize(10.00, source, {}) }
+      subject(:authorize) { gateway.authorize(1000, source, {}) }
 
       it 'returns a successful billing response', aggregate_failures: true do
         expect(authorize).to be_a ActiveMerchant::Billing::Response
@@ -90,7 +90,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
 
     cassette_options = { cassette_name: "braintree/capture" }
     describe "#capture", vcr: cassette_options do
-      subject(:capture) { gateway.capture(10.00, authorized_id, {}) }
+      subject(:capture) { gateway.capture(1000, authorized_id, {}) }
 
       it "returns a successful billing response", aggregate_failures: true do
         expect(capture).to be_a ActiveMerchant::Billing::Response
@@ -102,7 +102,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
 
     cassette_options = { cassette_name: "braintree/credit" }
     describe "#credit", vcr: cassette_options do
-      subject(:credit) { gateway.credit(20, source, settled_id, {}) }
+      subject(:credit) { gateway.credit(2000, source, settled_id, {}) }
 
       it 'returns a successful billing response', aggregate_failures: true do
         expect(credit).to be_a ActiveMerchant::Billing::Response
