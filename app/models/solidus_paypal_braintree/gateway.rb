@@ -22,6 +22,11 @@ module SolidusPaypalBraintree
       :order_id
     ]
 
+    VOIDABLE_STATUSES = [
+      Braintree::Transaction::Status::SubmittedForSettlement,
+      Braintree::Transaction::Status::Authorized
+    ].freeze
+
     # This is useful in feature tests to avoid rate limited requests from
     # Braintree
     preference(:client_sdk_enabled, :boolean, default: true)
@@ -109,6 +114,23 @@ module SolidusPaypalBraintree
       Response.build(result)
     end
 
+    # Will either refund or void the payment depending on its state.
+    #
+    # If the transaction has not yet been settled, we can void the transaction.
+    # Otherwise, we need to issue a refund.
+    #
+    # @api public
+    # @param response_code [String] the transaction id of the payment to void
+    # @return [Response]
+    def cancel(response_code)
+      transaction = Braintree::Transaction.find(response_code)
+      if VOIDABLE_STATUSES.include?(transaction.status)
+        void(response_code, nil, {})
+      else
+        credit(cents(transaction.amount), nil, response_code, {})
+      end
+    end
+
     def create_profile(_payment)
     end
 
@@ -144,6 +166,10 @@ module SolidusPaypalBraintree
 
     def dollars(cents)
       Money.new(cents).dollars
+    end
+
+    def cents(dollars)
+      dollars.to_money.cents
     end
 
     def transaction_options(source, options)

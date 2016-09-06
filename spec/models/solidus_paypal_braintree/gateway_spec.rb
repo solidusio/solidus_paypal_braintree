@@ -48,6 +48,14 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
   end
 
   describe "instance methods" do
+    shared_examples "successful response" do
+      it 'returns a successful billing response', aggregate_failures: true do
+        expect(subject).to be_a ActiveMerchant::Billing::Response
+        expect(subject).to be_success
+        expect(subject).to be_test
+      end
+    end
+
     let(:authorized_id) do
       Braintree::Transaction.sale(
         amount: 40,
@@ -73,10 +81,9 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     describe '#purchase', vcr: cassette_options do
       subject(:purchase) { gateway.purchase(1000, source, {}) }
 
-      it 'returns a successful billing response', aggregate_failures: true do
-        expect(purchase).to be_a ActiveMerchant::Billing::Response
-        expect(purchase).to be_success
-        expect(purchase).to be_test
+      include_examples "successful response"
+
+      it 'submits the transaction for settlement', aggregate_failures: true do
         expect(purchase.message).to eq 'settling'
         expect(purchase.authorization).to be_present
       end
@@ -86,10 +93,9 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     describe "#authorize", vcr: cassette_options do
       subject(:authorize) { gateway.authorize(1000, source, {}) }
 
-      it 'returns a successful billing response', aggregate_failures: true do
-        expect(authorize).to be_a ActiveMerchant::Billing::Response
-        expect(authorize).to be_success
-        expect(authorize).to be_test
+      include_examples "successful response"
+
+      it 'authorizes the transaction', aggregate_failures: true do
         expect(authorize.message).to eq 'authorized'
         expect(authorize.authorization).to be_present
       end
@@ -99,10 +105,9 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     describe "#capture", vcr: cassette_options do
       subject(:capture) { gateway.capture(1000, authorized_id, {}) }
 
-      it "returns a successful billing response", aggregate_failures: true do
-        expect(capture).to be_a ActiveMerchant::Billing::Response
-        expect(capture).to be_success
-        expect(capture).to be_test
+      include_examples "successful response"
+
+      it 'submits the transaction for settlement' do
         expect(capture.message).to eq "settling"
       end
     end
@@ -111,10 +116,9 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     describe "#credit", vcr: cassette_options do
       subject(:credit) { gateway.credit(2000, source, settled_id, {}) }
 
-      it 'returns a successful billing response', aggregate_failures: true do
-        expect(credit).to be_a ActiveMerchant::Billing::Response
-        expect(credit).to be_success
-        expect(credit).to be_test
+      include_examples "successful response"
+
+      it 'credits the transaction' do
         expect(credit.message).to eq 'settling'
       end
     end
@@ -123,11 +127,47 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     describe "#void", vcr: cassette_options do
       subject(:void) { gateway.void(authorized_id, source, {}) }
 
-      it 'returns a successful billing response', aggregate_failures: true do
-        expect(void).to be_a ActiveMerchant::Billing::Response
-        expect(void).to be_success
-        expect(void).to be_test
+      include_examples "successful response"
+
+      it 'voids the transaction' do
         expect(void.message).to eq 'voided'
+      end
+    end
+
+    describe "#cancel" do
+      let(:transaction_id) { "fake_transaction_id" }
+
+      subject(:cancel) { gateway.cancel(transaction_id) }
+
+      context "when the transaction is found" do
+        cassette_options = { cassette_name: "braintree/cancel/void" }
+        context "and it is voidable", vcr: cassette_options do
+          let(:transaction_id) { authorized_id }
+
+          include_examples "successful response"
+
+          it 'voids the transaction' do
+            expect(cancel.message).to eq 'voided'
+          end
+        end
+
+        cassette_options = { cassette_name: "braintree/cancel/refund" }
+        context "and it is not voidable", vcr: cassette_options do
+          let(:transaction_id) { settled_id }
+
+          include_examples "successful response"
+
+          it 'refunds the transaction' do
+            expect(cancel.message).to eq 'settling'
+          end
+        end
+      end
+
+      cassette_options = { cassette_name: "braintree/cancel/not_found" }
+      context "when the transaction is not found", vcr: cassette_options do
+        it 'raises an error', aggregate_failures: true do
+          expect{ cancel }.to raise_error Braintree::NotFoundError
+        end
       end
     end
   end
