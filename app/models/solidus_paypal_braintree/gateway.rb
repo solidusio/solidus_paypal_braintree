@@ -15,6 +15,13 @@ module SolidusPaypalBraintree
       store_in_vault_on_success: true
     }.freeze
 
+    ALLOWED_BRAINTREE_OPTIONS = [
+      :device_data,
+      :device_session_id,
+      :merchant_account_id,
+      :order_id
+    ]
+
     # This is useful in feature tests to avoid rate limited requests from
     # Braintree
     preference(:client_sdk_enabled, :boolean, default: true)
@@ -32,12 +39,14 @@ module SolidusPaypalBraintree
     # @api public
     # @param money_cents [Number, String] amount to authorize
     # @param source [Source] payment source
+    # @params gateway_options [Hash]
+    #   extra options to send along. e.g.: device data for fraud prevention
     # @return [Response]
-    def purchase(money_cents, source, _gateway_options)
+    def purchase(money_cents, source, gateway_options)
       result = ::Braintree::Transaction.sale(
         amount: dollars(money_cents),
-        payment_method_nonce: source.nonce,
-        options: PAYPAL_OPTIONS
+        options: PAYPAL_OPTIONS,
+        **transaction_options(source, gateway_options)
       )
 
       Response.build(result)
@@ -48,12 +57,14 @@ module SolidusPaypalBraintree
     # @api public
     # @param money_cents [Number, String] amount to authorize
     # @param source [Source] payment source
+    # @params gateway_options [Hash]
+    #   extra options to send along. e.g.: device data for fraud prevention
     # @return [Response]
-    def authorize(money_cents, source, _gateway_options)
+    def authorize(money_cents, source, gateway_options)
       result = ::Braintree::Transaction.sale(
         amount: dollars(money_cents),
-        payment_method_nonce: source.nonce,
-        options: PAYPAL_AUTHORIZE_OPTIONS
+        options: PAYPAL_AUTHORIZE_OPTIONS,
+        **transaction_options(source, gateway_options)
       )
 
       Response.build(result)
@@ -133,6 +144,16 @@ module SolidusPaypalBraintree
 
     def dollars(cents)
       Money.new(cents).dollars
+    end
+
+    def transaction_options(source, options)
+      params = options.select do |key, _|
+        ALLOWED_BRAINTREE_OPTIONS.include?(key)
+      end
+
+      params[:payment_method_nonce] = source.nonce
+
+      params
     end
   end
 end
