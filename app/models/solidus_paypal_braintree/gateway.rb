@@ -27,10 +27,15 @@ module SolidusPaypalBraintree
       Source
     end
 
+    # Create a payment and submit it for settlement all at once.
+    #
+    # @api public
+    # @param money_cents [Number, String] amount to authorize
+    # @param source [Source] payment source
     # @return [Response]
-    def purchase(money, source, _gateway_options)
+    def purchase(money_cents, source, _gateway_options)
       result = ::Braintree::Transaction.sale(
-        amount: money,
+        amount: dollars(money_cents),
         payment_method_nonce: source.nonce,
         options: PAYPAL_OPTIONS
       )
@@ -38,10 +43,15 @@ module SolidusPaypalBraintree
       Response.build(result)
     end
 
+    # Authorize a payment to be captured later.
+    #
+    # @api public
+    # @param money_cents [Number, String] amount to authorize
+    # @param source [Source] payment source
     # @return [Response]
-    def authorize(money, source, _gateway_options)
+    def authorize(money_cents, source, _gateway_options)
       result = ::Braintree::Transaction.sale(
-        amount: money,
+        amount: dollars(money_cents),
         payment_method_nonce: source.nonce,
         options: PAYPAL_AUTHORIZE_OPTIONS
       )
@@ -52,14 +62,14 @@ module SolidusPaypalBraintree
     # Collect funds from an authorized payment.
     #
     # @api public
-    # @param money [#to_s]
+    # @param money_cents [Number, String]
     #   amount to capture (partial settlements are supported by the gateway)
     # @param response_code [String] the transaction id of the payment to capture
     # @return [Response]
-    def capture(money, response_code, _gateway_options)
+    def capture(money_cents, response_code, _gateway_options)
       result = Braintree::Transaction.submit_for_settlement(
         response_code,
-        money
+        dollars(money_cents)
       )
       Response.build(result)
     end
@@ -67,11 +77,14 @@ module SolidusPaypalBraintree
     # Used to refeund a customer for an already settled transaction.
     #
     # @api public
-    # @param money [#to_s] amount to refund
+    # @param money_cents [Number, String] amount to refund
     # @param response_code [String] the transaction id of the payment to refund
     # @return [Response]
-    def credit(money, _source, response_code, _gateway_options)
-      result = Braintree::Transaction.refund(response_code, money)
+    def credit(money_cents, _source, response_code, _gateway_options)
+      result = Braintree::Transaction.refund(
+        response_code,
+        dollars(money_cents)
+      )
       Response.build(result)
     end
 
@@ -114,6 +127,12 @@ module SolidusPaypalBraintree
 
     def payment_profiles_supported?
       true
+    end
+
+    private
+
+    def dollars(cents)
+      Money.new(cents).dollars
     end
   end
 end
