@@ -17,14 +17,21 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
   describe 'making a payment on an order', vcr: cassette_options do
     include_context 'order ready for payment'
 
-    it 'can complete an order' do
-      expect(order.total).to eq 55
+    before do
+      order.update(number: "ORDER0")
+      payment.update(number: "PAYMENT0")
+    end
 
-      payment = order.payments.create!(
+    let(:payment) do
+      order.payments.create!(
         payment_method: gateway,
         source: source,
         amount: 55
       )
+    end
+
+    it 'can complete an order' do
+      expect(order.total).to eq 55
 
       expect(payment.capture_events.count).to eq 0
 
