@@ -142,10 +142,9 @@ module SolidusPaypalBraintree
       result = Braintree::Customer.create
       customer_id = result.customer.id
 
-      customer = source.create_customer(braintree_customer_id: customer_id)
-      source.save!
-
-      customer
+      source.create_customer!(braintree_customer_id: customer_id).tap do
+        source.save!
+      end
     end
 
     # @return [String]
