@@ -190,7 +190,11 @@ module SolidusPaypalBraintree
         ALLOWED_BRAINTREE_OPTIONS.include?(key)
       end
 
-      params[:payment_method_nonce] = source.nonce
+      if source.token
+        params[:payment_method_token] = source.token
+      else
+        params[:payment_method_nonce] = source.nonce
+      end
 
       if source.customer.present?
         params[:customer_id] = source.customer.braintree_customer_id
