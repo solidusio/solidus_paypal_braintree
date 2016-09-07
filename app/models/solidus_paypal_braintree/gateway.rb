@@ -192,6 +192,10 @@ module SolidusPaypalBraintree
 
       params[:payment_method_nonce] = source.nonce
 
+      if source.customer.present?
+        params[:customer_id] = source.customer.braintree_customer_id
+      end
+
       params
     end
   end
