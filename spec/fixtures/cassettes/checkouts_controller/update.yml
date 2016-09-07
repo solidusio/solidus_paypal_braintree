@@ -1,0 +1,72 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/customers
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <customer>
+        </customer>
+    headers:
+      Accept-Encoding:
+      - gzip
+      Accept:
+      - application/xml
+      User-Agent:
+      - Braintree Ruby Gem 2.66.0
+      X-Apiversion:
+      - '4'
+      Authorization:
+      - Basic bXdqa2t4d2NwMzJja2huZjphOTI5OGY0M2IzMGM2OTlkYjMwNzJjYzRhMDBmN2Y0OQ==
+      Content-Type:
+      - application/xml
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Tue, 06 Sep 2016 22:26:30 GMT
+      Content-Type:
+      - application/xml; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      X-Frame-Options:
+      - SAMEORIGIN
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Authentication:
+      - basic_auth
+      X-User:
+      - 3v249hqtptsg744y
+      Vary:
+      - Accept-Encoding
+      Content-Encoding:
+      - gzip
+      Etag:
+      - W/"431145f5e51c78e5b27309a6202f5af4"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - a04f1687-4ae7-4e9b-a086-f9cb44961da4
+      X-Runtime:
+      - '0.146319'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAJZCz1cAA5SRwW6DMBBE7/kKy3cXYhRoIkNu/YL00tuGXYJTbJBt2vD3
+        dWiUVKI9VD7NPM/uyFb7i+nYBzmve1vy9VPKGdm6R21PJX89vIhnvq9Wqh59
+        6A25asWY0ljJLJ4i26gkiqsXWd2CDSLqwuFpK8/F0RTN+6bNVPKTXm832vkg
+        LBhiVnclD24knsyog79I3ZsB7LTwyYDuFu7Q9nY5o4HLwvuko9fhl32OIBAK
+        CCxMA5UcowzaEK9kus5FuhVpfpByJ/Ndlr6p5BGY8+OA/8s/At/75zcXjaYO
+        /b0S6iBqcOhvQ8E5mG6NAdGR97Rgsdv9A78AAAD//wMABrZt9/MBAAA=
+    http_version: 
+  recorded_at: Tue, 06 Sep 2016 22:27:14 GMT
+recorded_with: VCR 3.0.3

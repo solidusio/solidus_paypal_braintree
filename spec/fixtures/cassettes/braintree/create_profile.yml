@@ -1,0 +1,141 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/customers
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <customer>
+        </customer>
+    headers:
+      Accept-Encoding:
+      - gzip
+      Accept:
+      - application/xml
+      User-Agent:
+      - Braintree Ruby Gem 2.66.0
+      X-Apiversion:
+      - '4'
+      Authorization:
+      - Basic bXdqa2t4d2NwMzJja2huZjphOTI5OGY0M2IzMGM2OTlkYjMwNzJjYzRhMDBmN2Y0OQ==
+      Content-Type:
+      - application/xml
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Tue, 06 Sep 2016 21:41:43 GMT
+      Content-Type:
+      - application/xml; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      X-Frame-Options:
+      - SAMEORIGIN
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Authentication:
+      - basic_auth
+      X-User:
+      - 3v249hqtptsg744y
+      Vary:
+      - Accept-Encoding
+      Content-Encoding:
+      - gzip
+      Etag:
+      - W/"7e7cc6ad3329ffec365cc2fdfb82b56a"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - 2bb50e11-9bd6-4011-a30d-27e90247ab3b
+      X-Runtime:
+      - '0.122484'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIABc4z1cAA5SRzW6DMBCE73kKy3eXnxQIlSG3PkF66W3DLsEtNsg2bXj7
+        OjRKKtEeKvky83l2R7bcn3XPPsg6NZiKJw8xZ2SaAZU5Vfzl8Cx2fF9vZDM5
+        P2iy9YYxqbDOs7zMdlksoyAuXmBNB8aLoAuLpzJ9K466aN+zbiujn/Ryu1XW
+        eWFAEzOqr7i3E/FoQT38RZpBj2DmlU8aVL9yx24w6xktnFfeJx2d8r/sswSe
+        UIBnfh6p4hikV5p4ncZJLuJSxPkhTZ4ew9m+yugeWPLTiP/L3wPf+5c3F62i
+        Ht2tEiovGrDorkPBWpivjQHRknO0YqHb7QO/AAAA//8DAHz1uH/zAQAA
+    http_version: 
+  recorded_at: Tue, 06 Sep 2016 21:42:27 GMT
+- request:
+    method: post
+    uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/customers
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <customer>
+        </customer>
+    headers:
+      Accept-Encoding:
+      - gzip
+      Accept:
+      - application/xml
+      User-Agent:
+      - Braintree Ruby Gem 2.66.0
+      X-Apiversion:
+      - '4'
+      Authorization:
+      - Basic bXdqa2t4d2NwMzJja2huZjphOTI5OGY0M2IzMGM2OTlkYjMwNzJjYzRhMDBmN2Y0OQ==
+      Content-Type:
+      - application/xml
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Tue, 06 Sep 2016 21:41:44 GMT
+      Content-Type:
+      - application/xml; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      X-Frame-Options:
+      - SAMEORIGIN
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Authentication:
+      - basic_auth
+      X-User:
+      - 3v249hqtptsg744y
+      Vary:
+      - Accept-Encoding
+      Content-Encoding:
+      - gzip
+      Etag:
+      - W/"a9b265882228cffd7ddca2afbbeaa10f"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - a3a2daaf-83d2-4c38-bb92-c2e4d2ecb310
+      X-Runtime:
+      - '0.222559'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIABg4z1cAA5RRy07DMBC89yss300eTRuKnPTGF5QLt2120xhsJ7IdaP4e
+        N1QtUuCA5MvM7OzOruX+bDT7IOdVbyuePaSckW16VPZU8ZfDs3jk+3olm9GH
+        3pCrV4xJhXW2Los8zTYyieDCRa3pwAYRcenwtMvfyqMp2/dNt5bJT/VS3Srn
+        g7BgiFmlKx7cSDyZJQ1/KU1vBrDTgicDSi/YoevtskcL5wX3SUevwi/zHEEg
+        FBBYmAaqOEYYlCFex9W3It2JdHvIs6civuJVJnfD7B8H/J//bvieP99ctIo0
+        +lskVEE04NBfm4JzMF0TA6Ij72mhxWy3D/wCAAD//wMAISGoAvMBAAA=
+    http_version: 
+  recorded_at: Tue, 06 Sep 2016 21:42:27 GMT
+recorded_with: VCR 3.0.3

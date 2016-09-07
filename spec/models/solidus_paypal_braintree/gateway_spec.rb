@@ -7,9 +7,12 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     described_class.new
   end
 
+  let(:user) { create :user }
+
   let(:source) do
     SolidusPaypalBraintree::Source.new(
-      nonce: 'fake-paypal-future-nonce'
+      nonce: 'fake-paypal-future-nonce',
+      user: user
     )
   end
 
@@ -168,6 +171,24 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
         it 'raises an error', aggregate_failures: true do
           expect{ cancel }.to raise_error Braintree::NotFoundError
         end
+      end
+    end
+
+    cassette_options = { cassette_name: "braintree/create_profile" }
+    describe "#create_profile", vcr: cassette_options do
+      let(:payment) do
+        create(:payment, {
+          payment_method: gateway,
+          source: source
+        })
+      end
+
+      subject(:profile) { gateway.create_profile(payment) }
+
+      it 'creates and returns a new customer profile', aggregate_failures: true do
+        expect(profile).to be_a SolidusPaypalBraintree::Customer
+        expect(profile.sources).to eq [source]
+        expect(profile.braintree_customer_id).to be_present
       end
     end
   end
