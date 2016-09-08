@@ -34,7 +34,7 @@ module SolidusPaypalBraintree
     preference(:token_generation_enabled, :boolean, default: true)
 
     # Preferences for configuration of Braintree credentials
-    preference(:environment, :string, default: nil)
+    preference(:environment, :string, default: 'sandbox')
     preference(:merchant_id, :string, default: nil)
     preference(:public_key,  :string, default: nil)
     preference(:private_key, :string, default: nil)
