@@ -49,7 +49,8 @@ describe SolidusPaypalBraintree::TransactionImport do
 
     let(:transaction) do
       SolidusPaypalBraintree::Transaction.new nonce: 'fake-apple-pay-visa-nonce',
-        payment_method: payment_method, address: transaction_address
+        payment_method: payment_method, address: transaction_address,
+        phone: '123-456-7890', email: 'user@example.com'
     end
 
     # create a shipping method so we can push through to the end

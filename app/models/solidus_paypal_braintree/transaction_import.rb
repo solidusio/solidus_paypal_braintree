@@ -20,6 +20,8 @@ module SolidusPaypalBraintree
     end
 
     def import!
+      order.email = user.try!(:email) || transaction.email
+
       if address
         order.shipping_address = order.billing_address = address
         # work around a bug in most solidus versions
@@ -48,7 +50,7 @@ module SolidusPaypalBraintree
           address1: ta.address_line_1,
           address2: ta.address_line_2,
           zipcode: ta.zip,
-          phone: '555-555-5555'
+          phone: transaction.phone
       end
     end
 

@@ -3,6 +3,8 @@ class SolidusPaypalBraintree::TransactionsController < Spree::StoreController
   PERMITTED_BRAINTREE_TRANSACTION_PARAMS = [
     :nonce,
     :payment_type,
+    :phone,
+    :email,
     address_attributes: [
       :country_code, :last_name, :first_name,
       :city, :zip, :state_code, :address_line_1, :address_line_2
