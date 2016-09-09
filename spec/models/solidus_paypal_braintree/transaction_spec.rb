@@ -6,7 +6,8 @@ describe SolidusPaypalBraintree::Transaction do
 
     let(:valid_attributes) { {
       nonce: 'abcde-fghjkl-lmnop',
-      payment_method: SolidusPaypalBraintree::Gateway.new
+      payment_method: SolidusPaypalBraintree::Gateway.new,
+      payment_type: 'ApplePayCard'
     } }
 
     subject { described_class.new(valid_attributes).valid? }
@@ -25,6 +26,11 @@ describe SolidusPaypalBraintree::Transaction do
 
     context 'bad gateway' do
       let(:valid_attributes) { super().merge(payment_method: Spree::Gateway.new) }
+      it { is_expected.to be false }
+    end
+
+    context 'no payment_type' do
+      let(:valid_attributes) { super().except(:payment_type) }
       it { is_expected.to be false }
     end
 
