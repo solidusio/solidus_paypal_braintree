@@ -4,8 +4,10 @@ require 'support/order_ready_for_payment'
 
 RSpec.describe SolidusPaypalBraintree::Gateway do
   let(:gateway) do
-    described_class.new
+    new_gateway
   end
+
+  let(:braintree) { gateway.braintree }
 
   let(:user) { create :user }
 
@@ -60,14 +62,14 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     end
 
     let(:authorized_id) do
-      Braintree::Transaction.sale(
+      braintree.transaction.sale(
         amount: 40,
         payment_method_nonce: source.nonce
       ).transaction.id
     end
 
     let(:sale_id) do
-      Braintree::Transaction.sale(
+      braintree.transaction.sale(
         amount: 40,
         payment_method_nonce: source.nonce,
         options: {
@@ -77,7 +79,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     end
 
     let(:settled_id) do
-      Braintree::TestTransaction.settle(sale_id).transaction.id
+      braintree.testing.settle(sale_id).transaction.id
     end
 
     cassette_options = { cassette_name: "braintree/purchase" }

@@ -31,7 +31,7 @@ RSpec.describe SolidusPaypalBraintree::CheckoutsController, type: :controller do
     end
 
     let!(:payment_method) do
-      SolidusPaypalBraintree::Gateway.create!(name: 'Braintree')
+      create_gateway
     end
 
     before do

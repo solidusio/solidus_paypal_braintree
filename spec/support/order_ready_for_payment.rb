@@ -5,15 +5,12 @@ shared_context 'order ready for payment' do
   let(:line_item) { create :line_item, price: 50 }
   let(:address) { create :address, country: country }
 
-  let(:gateway) do
-    described_class.create!(
-      name: 'Braintree',
-      auto_capture: true
-    )
-  end
-
   before do
     create :shipping_method, cost: 5
+  end
+
+  let(:gateway) do
+    new_gateway(auto_capture: true)
   end
 
   let(:order) do
