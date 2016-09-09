@@ -11,7 +11,6 @@ class SolidusPaypalBraintree::TransactionsController < Spree::StoreController
     ]
   ]
 
-
   def create
     transaction = SolidusPaypalBraintree::Transaction.new transaction_params
 

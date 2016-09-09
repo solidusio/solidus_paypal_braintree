@@ -19,6 +19,8 @@ module SolidusPaypalBraintree
       end
     end
 
+    config.assets.precompile += ['spree/frontend/solidus_paypal_braintree']
+
     config.to_prepare(&method(:activate).to_proc)
   end
 end
