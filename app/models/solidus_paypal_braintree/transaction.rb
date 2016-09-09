@@ -1,10 +1,11 @@
 require 'active_model'
+require 'solidus_paypal_braintree/transaction_address'
 
 module SolidusPaypalBraintree
   class Transaction
     include ActiveModel::Model
 
-    attr_accessor :nonce, :payment_method, :payment_type
+    attr_accessor :nonce, :payment_method, :payment_type, :address
 
     validates :nonce, presence: true
     validates :payment_method, presence: true
@@ -15,5 +16,10 @@ module SolidusPaypalBraintree
         errors.add(:payment_method, 'Must be braintree')
       end
     end
+
+    def address_attributes=(attributes)
+      self.address = TransactionAddress.new attributes
+    end
+
   end
 end

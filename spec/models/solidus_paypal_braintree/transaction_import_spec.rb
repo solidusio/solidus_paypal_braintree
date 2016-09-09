@@ -44,11 +44,12 @@ describe SolidusPaypalBraintree::TransactionImport do
     let(:address) { create :address, country: country }
     let(:order) { Spree::Order.create(store: store, line_items: [line_item], ship_address: address, currency: 'USD', total: 10, email: 'test@example.com') }
     let(:payment_method) { SolidusPaypalBraintree::Gateway.create! name: 'Braintree' }
-    let(:country) { create :country }
+    let(:country) { create :country, iso: 'US' }
+    let(:transaction_address) { nil }
 
     let(:transaction) do
       SolidusPaypalBraintree::Transaction.new nonce: 'fake-apple-pay-visa-nonce',
-        payment_method: payment_method
+        payment_method: payment_method, address: transaction_address
     end
 
     # create a shipping method so we can push through to the end
@@ -79,6 +80,37 @@ describe SolidusPaypalBraintree::TransactionImport do
       order.payments.first.capture!
       # need to reload, as capture will update the order
       expect(order.reload).to be_paid
+    end
+
+    context 'transaction has address' do
+      let!(:new_york) { create :state, country: country, abbr: 'NY' }
+
+      let(:transaction_address) do
+        SolidusPaypalBraintree::TransactionAddress.new country_code: 'US',
+          last_name: 'Venture', first_name: 'Thaddeus', city: 'New York',
+          state_code: 'NY', address_line_1: '350 5th Ave', zip: '10118'
+      end
+
+      it 'uses the new address', aggregate_failures: true do
+        subject
+        expect(order.shipping_address.address1).to eq '350 5th Ave'
+        expect(order.shipping_address.country).to eq country
+        expect(order.shipping_address.state).to eq new_york
+      end
+
+      context 'with a tax category' do
+        before do
+          zone = Spree::Zone.create name: 'nyc tax'
+          zone.members << Spree::ZoneMember.new(zoneable: new_york)
+          create :tax_rate, zone: zone
+        end
+
+        it 'includes the tax in the payment' do
+          subject
+          expect(order.payments.first.amount).to eq 16
+        end
+
+      end
     end
 
   end
