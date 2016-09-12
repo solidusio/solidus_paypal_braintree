@@ -3,6 +3,37 @@
 
 window.SolidusPaypalBraintree = {
 
+  initialize: function(authToken, clientReadyCallback) {
+    braintree.client.create({
+      authorization: authToken
+    }, function (clientErr, clientInstance) {
+      if (clientErr) {
+        console.error('Error creating client:', clientErr);
+        return;
+      }
+      clientReadyCallback(clientInstance);
+    });
+  },
+
+  setupApplePay: function(braintreeClient, merchantId, readyCallback) {
+    if(window.ApplePaySession) {
+      var promise = ApplePaySession.canMakePaymentsWithActiveCard(merchantId);
+      promise.then(function (canMakePayments) {
+        if (canMakePayments) {
+          braintree.applePay.create({
+            client: braintreeClient
+          }, function (applePayErr, applePayInstance) {
+            if (applePayErr) {
+              console.error("Error creating ApplePay:", applePayErr);
+              return;
+            }
+            readyCallback(applePayInstance);
+          });
+        }
+      });
+    };
+  },
+
   setBraintreeApplePayContact: function(appleContact) {
     var apple_map = {
       locality: 'city',
