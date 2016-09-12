@@ -2,6 +2,7 @@
 // the installer will append this file to the app vendored assets here: vendor/assets/javascripts/spree/frontend/all.js'
 
 window.SolidusPaypalBraintree = {
+  APPLE_PAY_API_VERSION: 1,
 
   initialize: function(authToken, clientReadyCallback) {
     braintree.client.create({
@@ -32,6 +33,46 @@ window.SolidusPaypalBraintree = {
         }
       });
     };
+  },
+
+  initializeApplePaySession: function(applePayInstance, storeName, paymentRequest, sessionCallback) {
+
+    paymentRequest['requiredShippingContactFields'] = ['postalAddress', 'phone', 'email']
+    var paymentRequest = applePayInstance.createPaymentRequest(paymentRequest);
+
+    var session = new ApplePaySession(SolidusPaypalBraintree.APPLE_PAY_API_VERSION, paymentRequest);
+    session.onvalidatemerchant = function (event) {
+      applePayInstance.performValidation({
+        validationURL: event.validationURL,
+        displayName: storeName,
+      }, function (validationErr, merchantSession) {
+        if (validationErr) {
+          console.error('Error validating Apple Pay:', validationErr);
+          session.abort();
+          return;
+        };
+        session.completeMerchantValidation(merchantSession);
+      });
+    };
+
+    session.onpaymentauthorized = function (event) {
+      applePayInstance.tokenize({
+        token: event.payment.token
+      }, function (tokenizeErr, payload) {
+        if (tokenizeErr) {
+          console.error('Error tokenizing Apple Pay:', tokenizeErr);
+          session.completePayment(ApplePaySession.STATUS_FAILURE);
+        }
+        session.completePayment(ApplePaySession.STATUS_SUCCESS);
+
+        SolidusPaypalBraintree.setBraintreeApplePayContact(event.payment.shippingContact);
+        SolidusPaypalBraintree.submitBraintreePayload(payload);
+      });
+    };
+
+    sessionCallback(session);
+
+    session.begin();
   },
 
   setBraintreeApplePayContact: function(appleContact) {
