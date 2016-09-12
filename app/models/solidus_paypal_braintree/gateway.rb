@@ -39,6 +39,10 @@ module SolidusPaypalBraintree
     preference(:public_key,  :string, default: nil)
     preference(:private_key, :string, default: nil)
 
+    def method_type
+      "paypal_braintree"
+    end
+
     def payment_source_class
       Source
     end
