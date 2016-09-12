@@ -22,6 +22,5 @@ module SolidusPaypalBraintree
     def address_attributes=(attributes)
       self.address = TransactionAddress.new attributes
     end
-
   end
 end

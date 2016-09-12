@@ -1,7 +1,6 @@
 require 'active_model'
 
 module SolidusPaypalBraintree
-
   class TransactionImport
     attr_reader :transaction, :order
 
@@ -55,10 +54,9 @@ module SolidusPaypalBraintree
     end
 
     protected
+
     def advance_order
-      until order.state == "confirm" do
-        order.next!
-      end
+      order.next! until order.state == "confirm"
     end
   end
 end

@@ -1,5 +1,4 @@
 class SolidusPaypalBraintree::TransactionsController < Spree::StoreController
-
   PERMITTED_BRAINTREE_TRANSACTION_PARAMS = [
     :nonce,
     :payment_type,
@@ -29,6 +28,7 @@ class SolidusPaypalBraintree::TransactionsController < Spree::StoreController
   end
 
   private
+
   def transaction_params
     params.require(:transaction)
       .permit(PERMITTED_BRAINTREE_TRANSACTION_PARAMS)

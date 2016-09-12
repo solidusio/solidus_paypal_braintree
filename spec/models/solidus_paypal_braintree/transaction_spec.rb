@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe SolidusPaypalBraintree::Transaction do
-
   describe "#valid?" do
-
-    let(:valid_attributes) { {
-      nonce: 'abcde-fghjkl-lmnop',
-      payment_method: SolidusPaypalBraintree::Gateway.new,
-      payment_type: 'ApplePayCard'
-    } }
+    let(:valid_attributes) do
+      {
+        nonce: 'abcde-fghjkl-lmnop',
+        payment_method: SolidusPaypalBraintree::Gateway.new,
+        payment_type: 'ApplePayCard'
+      }
+    end
 
     subject { described_class.new(valid_attributes).valid? }
 
@@ -33,6 +33,5 @@ describe SolidusPaypalBraintree::Transaction do
       let(:valid_attributes) { super().except(:payment_type) }
       it { is_expected.to be false }
     end
-
   end
 end

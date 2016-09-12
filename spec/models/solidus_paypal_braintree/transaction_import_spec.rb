@@ -15,7 +15,7 @@ describe SolidusPaypalBraintree::TransactionImport do
 
     context 'order has a user' do
       let(:user) { Spree::User.new }
-      let(:order) { Spree::Order.new user: user  }
+      let(:order) { Spree::Order.new user: user }
 
       it 'associates user to the source' do
         expect(subject.user).to eq user
@@ -110,9 +110,7 @@ describe SolidusPaypalBraintree::TransactionImport do
           subject
           expect(order.payments.first.amount).to eq 16
         end
-
       end
     end
-
   end
 end
