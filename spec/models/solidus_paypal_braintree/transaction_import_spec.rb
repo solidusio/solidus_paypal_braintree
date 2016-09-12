@@ -43,7 +43,7 @@ describe SolidusPaypalBraintree::TransactionImport do
     let(:line_item) { Spree::LineItem.new(variant: variant, quantity: 1, price: 10) }
     let(:address) { create :address, country: country }
     let(:order) { Spree::Order.create(store: store, line_items: [line_item], ship_address: address, currency: 'USD', total: 10, email: 'test@example.com') }
-    let(:payment_method) { SolidusPaypalBraintree::Gateway.create! name: 'Braintree' }
+    let(:payment_method) { create_gateway }
     let(:country) { create :country, iso: 'US' }
     let(:transaction_address) { nil }
 
