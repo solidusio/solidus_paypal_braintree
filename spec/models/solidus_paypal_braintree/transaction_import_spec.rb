@@ -44,7 +44,7 @@ describe SolidusPaypalBraintree::TransactionImport do
     let(:address) { create :address, country: country }
     let(:order) { Spree::Order.create(store: store, line_items: [line_item], ship_address: address, currency: 'USD', total: 10, email: 'test@example.com') }
     let(:payment_method) { create_gateway }
-    let(:country) { create :country, iso: 'US' }
+    let(:country) { create :country, iso: 'US', states_required: true }
     let(:transaction_address) { nil }
 
     let(:transaction) do

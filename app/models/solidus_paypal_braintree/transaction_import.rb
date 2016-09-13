@@ -45,7 +45,7 @@ module SolidusPaypalBraintree
           last_name: ta.last_name,
           city: ta.city,
           country: country,
-          state: country.states.find_by_abbr(ta.state_code),
+          state_name: ta.state_code,
           address1: ta.address_line_1,
           address2: ta.address_line_2,
           zipcode: ta.zip,
