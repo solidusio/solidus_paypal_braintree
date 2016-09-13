@@ -40,7 +40,7 @@ module SolidusPaypalBraintree
 
     def address
       transaction.address.try do |ta|
-        country = Spree::Country.find_by_iso(ta.country_code)
+        country = Spree::Country.find_by_iso(ta.country_code.upcase)
         Spree::Address.new first_name: ta.first_name,
           last_name: ta.last_name,
           city: ta.city,
