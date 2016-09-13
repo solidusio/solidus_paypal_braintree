@@ -1,0 +1,16 @@
+<%= form_for [main_app, SolidusPaypalBraintree::Transaction.new], id: 'braintree_complete_form', as: :transaction do |f| %>
+  <%= f.hidden_field :nonce %>
+  <%= f.hidden_field :payment_type %>
+  <%= hidden_field_tag :payment_method_id, payment_method.id %>
+  <%= f.hidden_field :phone %>
+  <%= f.hidden_field :email %>
+
+  <%= f.fields_for :address, SolidusPaypalBraintree::TransactionAddress.new do |fa| %>
+    <% [:country_code, :last_name, :first_name,
+        :city, :zip, :state_code,
+        :address_line_1, :address_line_2].each do |address_field| %>
+      <%= fa.hidden_field address_field %>
+    <% end %>
+  <% end %>
+
+<% end %>
