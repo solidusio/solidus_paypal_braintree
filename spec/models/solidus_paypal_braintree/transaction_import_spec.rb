@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe SolidusPaypalBraintree::TransactionImport do
   let(:order) { Spree::Order.new }
-  let(:transaction) { SolidusPaypalBraintree::Transaction.new nonce: 'abcd1234' }
+  let(:transaction) { SolidusPaypalBraintree::Transaction.new nonce: 'abcd1234', payment_type: "ApplePayCard" }
 
   describe '#source' do
     subject { described_class.new(order, transaction).source }
@@ -11,6 +11,10 @@ describe SolidusPaypalBraintree::TransactionImport do
 
     it 'takes the nonce from the transaction' do
       expect(subject.nonce).to eq 'abcd1234'
+    end
+
+    it 'takes the payment type from the transaction' do
+      expect(subject.payment_type).to eq 'ApplePayCard'
     end
 
     context 'order has a user' do
