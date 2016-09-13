@@ -46,7 +46,7 @@ describe SolidusPaypalBraintree::TransactionImport do
     let(:variant) { create :variant }
     let(:line_item) { Spree::LineItem.new(variant: variant, quantity: 1, price: 10) }
     let(:address) { create :address, country: country }
-    let(:order) { Spree::Order.create(store: store, line_items: [line_item], ship_address: address, currency: 'USD', total: 10, email: 'test@example.com') }
+    let(:order) { Spree::Order.create(number: "R999999999", store: store, line_items: [line_item], ship_address: address, currency: 'USD', total: 10, email: 'test@example.com') }
     let(:payment_method) { create_gateway }
     let(:country) { create :country, iso: 'US', states_required: true }
     let(:transaction_address) { nil }
@@ -57,10 +57,15 @@ describe SolidusPaypalBraintree::TransactionImport do
         phone: '123-456-7890', email: 'user@example.com'
     end
 
-    # create a shipping method so we can push through to the end
     before do
+      # create a shipping method so we can push through to the end
       country
       create :shipping_method, cost: 5
+
+      # ensure payments have the same number so VCR matches the request body
+      allow_any_instance_of(Spree::Payment).
+        to receive(:generate_identifier).
+        and_return("ABCD1234")
     end
 
     subject { described_class.new(order, transaction).import! }
