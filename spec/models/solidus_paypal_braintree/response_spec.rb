@@ -2,15 +2,16 @@ require 'spec_helper'
 
 RSpec.describe SolidusPaypalBraintree::Response do
   let(:error_result) do
-    transaction = instance_double(
-      'Braintree::Transaction',
-      status: 'error'
+    error = instance_double(
+      'Braintree::ValidationError',
+      code: '12345',
+      message: "Cannot refund a transaction unless it is settled."
     )
 
     instance_double(
       'Braintree::ErrorResult',
       success?: false,
-      transaction: transaction
+      errors: [error]
     )
   end
 
@@ -50,6 +51,18 @@ RSpec.describe SolidusPaypalBraintree::Response do
   describe '#success?' do
     it { expect(error_response.success?).to be false }
     it { expect(successful_response.success?).to be true }
+  end
+
+  describe "#message" do
+    context "with a success response" do
+      subject { successful_response.message }
+      it { is_expected.to eq "ok" }
+    end
+
+    context "with an error response" do
+      subject { error_response.message }
+      it { is_expected.to eq "Cannot refund a transaction unless it is settled. (12345)" }
+    end
   end
 
   describe '#authorization' do
