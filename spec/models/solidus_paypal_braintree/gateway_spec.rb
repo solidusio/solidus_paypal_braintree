@@ -82,6 +82,11 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       braintree.testing.settle(sale_id).transaction.id
     end
 
+    describe "#method_type" do
+      subject { gateway.method_type }
+      it { is_expected.to eq "paypal_braintree" }
+    end
+
     cassette_options = { cassette_name: "braintree/purchase" }
     describe '#purchase', vcr: cassette_options do
       subject(:purchase) { gateway.purchase(1000, source, {}) }
