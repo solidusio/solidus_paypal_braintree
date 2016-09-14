@@ -1,3 +1,4 @@
 en:
   solidus_paypal_braintree:
     nonce: Nonce
+    token: Token
