@@ -1,4 +1,6 @@
 class SolidusPaypalBraintree::TransactionsController < Spree::StoreController
+  class InvalidTransactionError < StandardError; end
+
   PERMITTED_BRAINTREE_TRANSACTION_PARAMS = [
     :nonce,
     :payment_type,
@@ -23,7 +25,8 @@ class SolidusPaypalBraintree::TransactionsController < Spree::StoreController
         return redirect_to spree.checkout_state_path(import.order.state)
       end
     else
-      render text: transaction.errors
+      raise InvalidTransactionError,
+        "Transaction invalid: #{transaction.errors.full_messages.join(', ')}"
     end
   end
 
