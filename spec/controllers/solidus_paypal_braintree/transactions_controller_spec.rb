@@ -78,9 +78,11 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
     context "when the transaction is invalid" do
       before { params[:transaction].delete(:phone) }
 
-      it "displays the errors object" do
-        subject
-        expect(response.body).to match(/^#<ActiveModel::Errors:0x[\w]{14}>$/)
+      it "raises an error" do
+        expect { post_create }.to raise_error(
+          SolidusPaypalBraintree::TransactionsController::InvalidTransactionError,
+          "Transaction invalid: Phone can't be blank"
+        )
       end
     end
   end
