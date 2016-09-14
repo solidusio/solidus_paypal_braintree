@@ -8,6 +8,8 @@ class SolidusPaypalBraintree::Source < ApplicationRecord
 
   belongs_to :customer, class_name: "SolidusPaypalBraintree::Customer"
 
+  scope :with_payment_profile, -> { joins(:customer) }
+
   # we are not currenctly supporting an "imported" flag
   def imported
     false
