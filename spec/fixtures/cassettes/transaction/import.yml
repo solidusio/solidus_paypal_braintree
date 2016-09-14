@@ -8,6 +8,7 @@ http_interactions:
       string: |
         <?xml version="1.0" encoding="UTF-8"?>
         <customer>
+          <payment-method-nonce>fake-apple-pay-visa-nonce</payment-method-nonce>
         </customer>
     headers:
       Accept-Encoding:
@@ -28,7 +29,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Tue, 13 Sep 2016 21:20:28 GMT
+      - Wed, 14 Sep 2016 21:17:31 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
@@ -49,26 +50,33 @@ http_interactions:
       Content-Encoding:
       - gzip
       Etag:
-      - W/"5f4b640a71028daa9d721b38caedf7db"
+      - W/"0fb06d1ed80617d1fca121240e96ec81"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - 36eed912-ebbc-4117-abd3-9eafa1391303
+      - 6b25e6de-8f27-455c-8b54-0801df47f13e
       X-Runtime:
-      - '0.156304'
+      - '0.226257'
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        H4sIAJxt2FcAA5SRzW6DMBCE73kKy3eXv1IgMuSWJ0gvvW3YJbjFBtkmDW9f
-        QqOkEu2hx5nPsztay91Fd+xM1qnelDx6CjkjU/eozKnkr4e9yPmu2sh6dL7X
-        ZKsNY1JhlYZp8ZzkuQxmcfVmVrdgvJh1ZvFUxO/ZUWfNR9omMvhJr68bZZ0X
-        BjQxo7qSezsSDxbUwV+k7vUAZlr5pEF1K3doe7Oe0cBl5X3S0Sn/yz5L4AkF
-        eOangUqOs/RKE6/iMHoRYSGi5BBH2zjcxvmbDB6BJT8O+L/8I/C9f7m5aBR1
-        6O6VUHlRg0V3GwrWwnRrDIiWnKMVm7vdP/ALAAD//wMAcrTRJPMBAAA=
+        H4sIAGu+2VcAA6RUvZKbMBDu7ykYelmA7TPnwXjSpE5xSZHmZkELKAcSkYRt
+        3j4CA7YPrshcx34/uzu7WqLjpSqdEyrNpTi4/spzHRSpZFzkB/fn63cSusf4
+        KUobbWSFKn5ynIizeOt54drbhhG1QYdZLi1AGGLjnWL5S/Bnl1S77H1brCN6
+        z3bqjCttiIAKHcHLg2tUgy7tqRI+Y1JZ1SDaGY4V8HKG1oUU8xwZXGbYGRPN
+        zUI9hWCQETCOaWs8uMyGhlfoxoHnPxPvhfib18Df+7v92v8d0Zuh9zc1+z//
+        zXCt38+cZBxLpqeWGDckBcX0kBSUgnboGBhTqDUucnVdIqmhXXB3gpnkClo4
+        4SLeeH4Q2m133yPeiUiXJv7WGZ0f0DrE+cU12FFM3KT+2jSvOYZXSB5e4D06
+        Khlm0JRjqUTKEkG4cbfdiA7kJMZLzRUYewGkksIUsR9EdAYuqFsEZbsPvAd5
+        jz6okX1sJINS4+DCW9u8ghxJo8q4MKbWe0rBrtPoVaKAC6MQczuTM7QrewzU
+        bqpCYd4qNIVkb6XMJe13+GaZVS3yI4oTV1J0qoMGwRJ5sRc7FRnL9je3if0w
+        9CM6BCM3FCFcaDu9/rO7zrjbsxOG4XNEP5OMKbRsVIqEoU4Vr7sZ3bsX2MnY
+        JBO48KZ7jZHvKOLt6dz+TSJ6jUbuixdoM9D5TXzEtP090tv/8R8AAAD//wMA
+        3ZxdMVIFAAA=
     http_version: 
-  recorded_at: Tue, 13 Sep 2016 21:20:28 GMT
+  recorded_at: Wed, 14 Sep 2016 21:18:25 GMT
 - request:
     method: post
     uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/customers
@@ -77,6 +85,7 @@ http_interactions:
       string: |
         <?xml version="1.0" encoding="UTF-8"?>
         <customer>
+          <payment-method-nonce>fake-apple-pay-visa-nonce</payment-method-nonce>
         </customer>
     headers:
       Accept-Encoding:
@@ -97,7 +106,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Tue, 13 Sep 2016 21:20:29 GMT
+      - Wed, 14 Sep 2016 21:17:31 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
@@ -118,26 +127,33 @@ http_interactions:
       Content-Encoding:
       - gzip
       Etag:
-      - W/"ab90f0f1abb83181e920af4a72552634"
+      - W/"53c1175f5f34d5650a7ac02d80130291"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - 275fa979-6386-4459-b532-b77a6c3506a8
+      - 6ad39ba9-6503-4c0b-bb91-b69c4219974b
       X-Runtime:
-      - '0.118023'
+      - '0.190055'
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        H4sIAJ1t2FcAA5SRQXKDMAxF9zmFx3sXcEpIMobseoJ0052CRHCKDWObNty+
-        QDNJZ2gXXeo/femPpA5X07APcl63NufJU8wZ2bJFbc85fz2+iC0/FCtV9j60
-        hlyxYkxpLLIkTuXzJlXRWEzayMoabBATdHjeyUt2Mln1ntZrFf2kU3elnQ/C
-        giFmdZPz4Hri0Ywa+IuUrenADgudDOhmoXZ1a5czKrgutE86eR1+2ecIAqGA
-        wMLQUc5xLIM2xAsZJxsR70SyPspkL+O93L6p6GGY/X2H//M/DN/755uLSlOD
-        /h4JdRAlOPS3oeAcDLfEgOjIe1qwMdv9gV8AAAD//wMAUvKsv/MBAAA=
+        H4sIAGu+2VcAA6RUvZKbMBDu7ykYelmGc2zskfGkSZ3ikiKNZ0ELKAaJkcSd
+        efsIDPh8cEXmOvb72d3Z1cJO16r0XlEboeTRD1Zr30OZKi5kfvR/vfwgkX+K
+        n1jaGKsq1PGT5zHB48063OyDYMeoCzrMcWkB0hIX7zTP9+HfXVLtssu34pnR
+        92ynzoQ2lkio0JOiPPpWN+jTnirhMyZVVQ2yneFYgShnaF0oOc+RwXWGvWFi
+        hF2opxEscgLWs22NR5+70IoK/ThcB1uy3pNg8xIGh2B3eA7+MHo39P6m5v/n
+        vxtu9fuZk0xgyc3UEheWpKC5GZKC1tAOHQPnGo3BRa6uSyQ1tAvuTjCT3EAH
+        J0K6fQdhFDHafY94JyJdmvh7Z/R+QusR77cw4EYxcZP6a9O85RheIXl4ge/R
+        Uckxg6YcSyVKlQjSj7vtMjqQkxivtdBg3QWQSklbxEHI6AxcULcI2nUfrh/k
+        PfqgRv6xkQxKg4ML722LCnIkjS7jwtraHCgFt05rVokGIa1GzN1M3qBduWOg
+        blMVSnuu0BaKn0uVK9rv8OyYVS3zE8pXoZXsVEcDkifq6i52KjKW7W9uEwdR
+        FDA6BCM3FCFCGje9/rO7zrjbsxdF0ZbRzyRjCqManSLhaFIt6m5G790L7GRs
+        kglceNO9xqoLyvhyybdWM3qLRu6LF+gy0PlNfMSM+z3S+//xHwAAAP//AwC7
+        TCV9UgUAAA==
     http_version: 
-  recorded_at: Tue, 13 Sep 2016 21:20:29 GMT
+  recorded_at: Wed, 14 Sep 2016 21:18:25 GMT
 - request:
     method: post
     uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/customers
@@ -146,6 +162,7 @@ http_interactions:
       string: |
         <?xml version="1.0" encoding="UTF-8"?>
         <customer>
+          <payment-method-nonce>fake-apple-pay-visa-nonce</payment-method-nonce>
         </customer>
     headers:
       Accept-Encoding:
@@ -166,7 +183,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Tue, 13 Sep 2016 21:20:29 GMT
+      - Wed, 14 Sep 2016 21:37:04 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
@@ -187,26 +204,33 @@ http_interactions:
       Content-Encoding:
       - gzip
       Etag:
-      - W/"10f6451e2262f3f8e016ac53ea61c1ad"
+      - W/"5c0404f4b834ba527dc7a97f588efcd1"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - c3da06c7-6cbb-4fa4-897b-580f6a942a83
+      - 2a3965fd-b035-44b4-b346-5054e04eb924
       X-Runtime:
-      - '0.119739'
+      - '0.215978'
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        H4sIAJ1t2FcAA5SRwW6DMBBE7/kKy3cXMEqByJBbvyC99LZhl+AUG2SbNvx9
-        CY2SSrSHHmeeZ3e0VvuL6dgHOa97W/LkKeaMbN2jtqeSvx5eRM731UbVow+9
-        IVdtGFMaqzzJ8yzdShXN4urNrG7BBjHrzOGpkOfsaLLmfdumKvpJr68b7XwQ
-        Fgwxq7uSBzcSjxbUwV+k7s0Adlr5ZEB3K3doe7ue0cBl5X3S0evwyz5HEAgF
-        BBamgUqOswzaEK9knDyLuBBJepDJTsY7Wbyp6BFY8uOA/8s/At/7l5uLRlOH
-        /l4JdRA1OPS3oeAcTLfGgOjIe1qxudv9A78AAAD//wMAeP67+fMBAAA=
+        H4sIAADD2VcAA6RUvXKjMBDu8xQMvSyDnRh7MJ5rrr4id8U1ngUtoAtIjCQS
+        8/YnYcCJIUUmHfv97O7saolPl7ryXlFpLsXRD1Zr30ORScZFcfR/P/8kkX9K
+        HuKs1UbWqJIHz4s5SzbbYBPuw3VMbeAwy2UlCENsvFOs2If/dmm9y18ey01M
+        37NOnXOlDRFQoyd4dfSNatGnPVXBZ0wm6wZEN8OxBl7N0KaUYp4jh8sMe8NU
+        c7NQTyEYZASMZ7oGjz6zoeE1+km4Dp7Iek+C7XMYHDa7w3r7N6Y3Q+9vG/Y1
+        /81wrd/PnOQcK6anlhg3JAPF9JAUlIJu6BgYU6g1LnJNUyFpoFtwO8FMcgUt
+        nHKRbNdBGEUxdd8j7kTEpUl+OKP3CzqPeH+4BjuKiZvU35vmNcfwCsmHF/ge
+        HZUMc2irsVQqZYUg/MRtN6YDOYnx0nAFxl4AqaUwZRKEMZ2BC+oOQdnuXRP3
+        6Ac1svtGcqg0Di68tc1rKJC0qkpKYxp9oBTsOo1epQq4MAqxsDN5g25lj4Ha
+        TdUozLlGU0p2rmQhab/Ds2VWjShOKF65ksKpjhoES+XFXuxUZCzb39w2CaIo
+        iOkQjNxQhHCh7fT6T3ediduzF0XRU0w/k4wptGxVhoShzhRv3IzeuxfYydim
+        E7jwpnuNkS8okmL/mHUqptdo5L55gTYDnd/EPabt75He/o//AQAA//8DAC0u
+        ZDJSBQAA
     http_version: 
-  recorded_at: Tue, 13 Sep 2016 21:20:29 GMT
+  recorded_at: Wed, 14 Sep 2016 21:37:58 GMT
 - request:
     method: post
     uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/transactions
@@ -220,8 +244,8 @@ http_interactions:
             <store-in-vault-on-success type="boolean">true</store-in-vault-on-success>
           </options>
           <order-id>R999999999-ABCD1234</order-id>
-          <payment-method-nonce>fake-apple-pay-visa-nonce</payment-method-nonce>
-          <customer-id>81887352</customer-id>
+          <payment-method-token>g95cyr</payment-method-token>
+          <customer-id>34132920</customer-id>
           <type>sale</type>
         </transaction>
     headers:
@@ -243,7 +267,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Tue, 13 Sep 2016 21:20:30 GMT
+      - Wed, 14 Sep 2016 21:37:04 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
@@ -264,51 +288,51 @@ http_interactions:
       Content-Encoding:
       - gzip
       Etag:
-      - W/"77b0eecd43fba29d61efabcd4e1f3ef6"
+      - W/"d7a1478938de64d4c5908bc020cfedf5"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - e8f32d21-ea72-4833-9e49-6e1d5abad132
+      - f724d2d1-96b4-4d71-95d0-7ba08e633dba
       X-Runtime:
-      - '0.438758'
+      - '0.352886'
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        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
+        H4sIAADD2VcAA+xYTW/jNhC951cYvjOynWTXCRSl210U6K1oN0XbS0BJY4sN
+        RXJJyrH66zsUJVmyqCQFeuihOUUzj8P54vDR8cOx5IsDaMOkuF+uL1fLBYhM
+        5kzs75ePX38g2+VDchFbTYWhmUVUcrFYxCxPdh9XO/GtyOMIP5zMWGork9DK
+        FlKzvwA1rchpba0gMZRDHDX/OllWaY271YQZSXBTSB5/+RJHU7ED01JWwibr
+        m8vVKo7aL6coQWcFFZbQLHNCgv4YC2UquY2jkLbxtkpJQLcQjN8vra5gGXnr
+        FG3pd0GlzhGJ9n++7f7Ip+8/f1lvrq7jqNc2kWugFnJC7cJl436Z46dlJSyT
+        zWr9gaxuyfr662Z9d/XxbnX9B+akX9Csr1T+z9afFrSZN1ZiTO7Dl/Pqen21
+        ud2sunKidMe0sUTQEs5DRSWn87pMloqKOqCBkjIekL9AapgN2VKFFCH5jh4n
+        BYiGYcUp4xzbuA8xZOTfj9BYDYBtkucajAml4GhB5K4UsxAuM8qZDZnXsMcz
+        GMqTxMPGm+MS9Bd7Vtfz4Xi1W00oVwXdvAt19RZKVFgNlk0rNSgOxrSrRB46
+        Ub3GtG1Otab1SImJHAynkBFFtWWYGgPWcigBD+94Rcj4aYq9ZX5gNqU2K4KY
+        gin1fy/+R3txWJ12MpIdA56bthcOhoDWUhPMkZLCQDC0BjcIfYxOfsRL61VA
+        Z2JctbCVVzFNGIfDdOVU6KB7vBheaI2aP8F3Od41ZlrYWGmZ4W6Yh+500Abe
+        WPp9dfPb7TaOXgWNrYxdWa/cvT6nnVlpsYOTTwo1B8c35hBNavOcOU8w+VPY
+        JNaDZJkr0A4Ljyuwd1LQ04xUjhXgLv5yn0FZeiSerwRVcIRSdfd4KiUHKpbJ
+        jnLjuFIP6HgDRkEyqrtL2spnEMn+9iarNcKbL69JWehsNpPkOnRW0CZxTgTn
+        hGLa17GUwhZJHE1EE2QNVI+BjaTdrb2piZsvNjxGnEeF5E1mw7OClXQPpNI8
+        KaxV5i6KqMF5bC5TTZlwZ6Rt7ksckpGitRvTTyVgY+ZPXO5lVIlnIV/EpRL7
+        BxAHpqVwmHtDRZ7KI7Khfot2tmlQFCnSo1/oes4LvLoAym2BnsMJMZB5UA4p
+        sye9/2xVlca6YePtK+4I2wB1rumnv+OmeMGdoANZ6zStteQDRCdo02hMhfMP
+        7y/xfMKMpON5KnfEaanIYLjrVNnlTOZV1lDvQdp6mQdVgn2roD1DKMYqMJzC
+        k+PkDieIUhKTP88cml7fssLxoWkfKqRg2IK6Hl3+/cXZIAANtYVxJw3pNSpK
+        9U7K3eN7C6++kBrE3CPHZ8ggs+07+7vujeN6Gwm+6di8c3VAWYzEIQUJVQxd
+        msp9wNF5xL2kzZIfd5yGKVCVmkwzNUuRBvp+ODX8jyi8kmVOkIUQl89Asc+Q
+        6Ja2QSy6fLaPm/kEx3uA3+XMNP0a1IG3IrthNTN95p4mOCymvo2NIndyr1yM
+        a6aFe70f+/j0FDC1ijU/uHtqBzB3w7ht5Qvx1ZxoMQ1ppY2nrzlYfJ2ZbhKN
+        VOHaDLhvePsxZvKwfyccji4BOIZ12A33DsBORcYWMlhlWYDaYkVmYneRq8pC
+        qDXaK4QwgQys8m8J92sGVYrDE2qf3JSJozncmMYMYh2znSGTmQW9bavhPm/Z
+        6gmSLXCqEDxhrvUAXd/JKcV1cRKM7k320dMJR884LH6i9YIsfmWG4kDudUNO
+        kqy323UctR8zxGO9eTf12Kzcrxkz9GNMLRLn1+Lk6Ode7Z0dQvsb9bzAJ0Pb
+        7fZDsAcGBvz4Jd1YcBNrsDagbXp2kP/RNE8u/gYAAP//AwCcbjhlyhMAAA==
     http_version: 
-  recorded_at: Tue, 13 Sep 2016 21:20:30 GMT
+  recorded_at: Wed, 14 Sep 2016 21:37:58 GMT
 - request:
     method: post
     uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/customers
@@ -317,6 +341,7 @@ http_interactions:
       string: |
         <?xml version="1.0" encoding="UTF-8"?>
         <customer>
+          <payment-method-nonce>fake-apple-pay-visa-nonce</payment-method-nonce>
         </customer>
     headers:
       Accept-Encoding:
@@ -337,7 +362,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Tue, 13 Sep 2016 21:20:30 GMT
+      - Wed, 14 Sep 2016 21:37:05 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
@@ -358,26 +383,33 @@ http_interactions:
       Content-Encoding:
       - gzip
       Etag:
-      - W/"bee72849e79bedac50b6431a2203c212"
+      - W/"63b35ea5312fd6dd670dc09ecb17d229"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - 72405f34-ba05-4162-8136-7251c1eca25d
+      - 10f0bc22-cfb7-41a8-96eb-b515d7bb0a88
       X-Runtime:
-      - '0.081552'
+      - '0.171679'
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        H4sIAJ5t2FcAA5SRwW6DMBBE7/kKy3cXA2oIkSG3fkF66W3DLsEpNsg2Sfj7
-        EhollWgPPc48z+5orXZX07IzOa87W/D4RXJGtupQ22PB3/dvYsN35UpVgw+d
-        IVeuGFMayzjP5TpPNiqaxM2bWNWADWLSmcNjnpyyg8nqz9cmVdFPentda+eD
-        sGCIWd0WPLiBeDSjFv4iVWd6sOPCJwO6Xbh909nljBquC+9CB6/DL/scQSAU
-        EFgYeyo4TjJoQ7xMZLwWMhdxuk/ibSK3qfxQ0TMw54ce/5d/Br73zzcXtaYW
-        /aMS6iAqcOjvQ8E5GO+NAdGR97RgU7fHB34BAAD//wMA49XEh/MBAAA=
+        H4sIAAHD2VcAA6RUvXKjMBDu8xQMvSwgjo09GM81V1+Ru+Iaz4IWUAISIwnb
+        vP0JDDgOpLhJx34/uzu7WqLjtSqdMyrNpTi4/spzHRSpZFzkB/f3608Susf4
+        KUobbWSFKn5ynIizONy9+P4u9CJqgw6zXFqAMMTGW8XyXfC2Tapt9v5SPEf0
+        I9upM660IQIqdAQvD65RDbq0p0r4ikllVYNoZzhWwMsZWhdSzHNkcJ1hF0w0
+        Nwv1FIJBRsA4pq3x4DIbGl6hGweevyHejvjr18DfP2/33vpvRO+G3t/U7P/8
+        d8Otfj9zknEsmZ5aYtyQFBTTQ1JQCtqhY2BModa4yNV1iaSGdsHdCWaSG2jh
+        hIt47flBGEa0+x7xTkS6NPGPzuj8gtYhzh+uwY5i4ib196Z5yzG8QvLwAj+i
+        o5JhBk05lkqkLBGEG3fbjehATmK81lyBsRdAKilMEftBRGfggrpFULb7wHuQ
+        9+iDGtnnRjIoNQ4uvLfNK8iRNKqMC2NqvacU7DqNXiUKuDAKMbczuUC7ssdA
+        7aYqFOZUoSkkO5Uyl7Tf4ckyq1rkRxRnrqToVAcNgiXyai92KjKW7W9uHfth
+        6Ed0CEZuKEK40HZ6/Wd3nXG3ZycMw01Ev5KMKbRsVIqEoU4Vr7sZfXQvsJOx
+        SSZw4U33GiPf0b7Pt019vkT0Fo3cNy/QZqDzm/iMaft7pPf/4z8AAAD//wMA
+        IeyaiVIFAAA=
     http_version: 
-  recorded_at: Tue, 13 Sep 2016 21:20:30 GMT
+  recorded_at: Wed, 14 Sep 2016 21:37:59 GMT
 - request:
     method: post
     uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/customers
@@ -386,6 +418,7 @@ http_interactions:
       string: |
         <?xml version="1.0" encoding="UTF-8"?>
         <customer>
+          <payment-method-nonce>fake-apple-pay-visa-nonce</payment-method-nonce>
         </customer>
     headers:
       Accept-Encoding:
@@ -406,7 +439,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Tue, 13 Sep 2016 21:20:31 GMT
+      - Wed, 14 Sep 2016 21:37:06 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
@@ -427,29 +460,36 @@ http_interactions:
       Content-Encoding:
       - gzip
       Etag:
-      - W/"e1ae8705121fe05234f5af11ef710eea"
+      - W/"860757fe433902267944b5e0bfe7fc21"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - 3a9d6f72-14b9-406b-893c-68a10008e4f0
+      - 2e0f1738-fd5d-43c1-b842-db150846627d
       X-Runtime:
-      - '0.133995'
+      - '0.194566'
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        H4sIAJ9t2FcAA5SRQXOCMBCF7/6KTO4pBFTUCXjrL7CX3lZ2kVgSmCS08u+L
-        1NHO0B48vvfl7b7ZqP3FNOyTnNetzbl8iTkjW7ao7Snnb4dXseH7YqHK3ofW
-        kCsWjCmNhVwmy1SuVyoaxdUbWVmDDWLUmcPTNjlnR5NVH6s6VdFven1daeeD
-        sGCIWd3kPLieeDShBv4jZWs6sMPMJwO6mbld3dr5jAouM++Ljl6HP/Y5gkAo
-        ILAwdJRzHGXQhniRxHIt4q2Q6SGRuyTepfJdRY/AlO87fC7/CPzsn24uKk0N
-        +nsl1EGU4NDfhoJzMNwaA6Ij72nGxm73D/wGAAD//wMALLit3fMBAAA=
+        H4sIAALD2VcAA6RUvXKjMBDu8xQMvSwgOCYejOeaq6/IXXGNZ0EL6AISI4nE
+        vP0JDNgOpMikY7+f3Z1dLfHxXFfOGyrNpTi4/sZzHRSZZFwUB/f3y08Sucfk
+        Ic5abWSNKnlwnJizZBtEYRhug5jaoMcsl5UgDLHxTrHiOfi3S+td/rotH2N6
+        y/bqnCttiIAaHcGrg2tUiy4dqAo+YzJZNyC6BY418GqBNqUUyxw5nBfYO6aa
+        m5V6CsEgI2Ac0zV4cJkNDa/RTQLPfyLeM/HDl8DfP+723vZvTK+Gwd827Gv+
+        q+FSf5g5yTlWTM8tMW5IBorpMSkoBd3YMTCmUGtc5ZqmQtJAt+LuBQvJBbRw
+        ykUSen4QRTHtvye8F5E+TfKjNzq/oHOI84drsKOYuVn9vWlecoyvkNy9wFt0
+        UjLMoa2mUqmUFYJwk367MR3JWYznhisw9gJILYUpE99mXYAr6g5B2e4D704+
+        oHdqZB8byaHSOLrw2javoUDSqiopjWn0nlKw6zR6kyrgwijEws7kHbqNPQZq
+        N1WjMKcaTSnZqZKFpMMOT5bZNKI4onjjSopeddAgWCrP9mLnIlPZ4ebCxI8i
+        P6ZjMHFjEcKFttMbPvvrTPo9O1EUPcX0M8mUQstWZUgY6kzxpp/RrXuFnY1t
+        OoMrb3rQGPmKIonyTJ3t1i7RxH3zAm0GuryJj5i2v0d6/T/+BwAA//8DAHBD
+        li5SBQAA
     http_version: 
-  recorded_at: Tue, 13 Sep 2016 21:20:31 GMT
+  recorded_at: Wed, 14 Sep 2016 21:38:00 GMT
 - request:
     method: put
-    uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/transactions/8ajm3y9d/submit_for_settlement
+    uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/transactions/f70fnqhd/submit_for_settlement
     body:
       encoding: UTF-8
       string: |
@@ -476,7 +516,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 13 Sep 2016 21:20:32 GMT
+      - Wed, 14 Sep 2016 21:37:06 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
@@ -497,52 +537,52 @@ http_interactions:
       Content-Encoding:
       - gzip
       Etag:
-      - W/"240ce91493e35fe8d441087ad3a5066f"
+      - W/"ce7db9ff519db80b1fb4675c32b91e15"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - 4744d3f1-6e31-440e-86ec-cb0db8279029
+      - 32d8a169-1f05-4d77-9f2c-abd3843f232e
       X-Runtime:
-      - '0.207176'
+      - '0.143822'
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        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
-        SKua7cV/0M2jq38AAAD//wMALBtjI+sUAAA=
+        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
+        wV6PtK7ZQfxH3Ty6+AcAAP//AwCgYgKy6xQAAA==
     http_version: 
-  recorded_at: Tue, 13 Sep 2016 21:20:32 GMT
+  recorded_at: Wed, 14 Sep 2016 21:38:00 GMT
 - request:
     method: post
     uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/customers
@@ -551,6 +591,7 @@ http_interactions:
       string: |
         <?xml version="1.0" encoding="UTF-8"?>
         <customer>
+          <payment-method-nonce>fake-apple-pay-visa-nonce</payment-method-nonce>
         </customer>
     headers:
       Accept-Encoding:
@@ -571,7 +612,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Tue, 13 Sep 2016 21:20:32 GMT
+      - Wed, 14 Sep 2016 21:37:06 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
@@ -592,26 +633,33 @@ http_interactions:
       Content-Encoding:
       - gzip
       Etag:
-      - W/"8ff7638c90f3524c2c102a602e82e34f"
+      - W/"673591cd46f255ba1e02cd05b5cc9e5f"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - 433a52c6-c414-41c4-b5e4-445c5531bbd9
+      - 2a69477d-a1ff-4a80-bc69-c3f5a55fd2dd
       X-Runtime:
-      - '0.102263'
+      - '0.233135'
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        H4sIAKBt2FcAA5SRQVODMBCF7/0VmdwjEGqxnUBv/oJ68bZllxJNApMELf9e
-        ip3WGfTg8b0vb/fNRu3P1rAP8kF3ruTZQ8oZubpD7U4lfzk8iye+r1aqHkLs
-        LPlqxZjSWMnNOl/nhVTJJC7exOoWXBSTLjyetvKtONqieX9sc5X8pJfXjfYh
-        CgeWmNOm5NEPxJMZGfiL1J3twY0Lnyxos3D7tnPLGQ2cF94nHYOOv+zzBJFQ
-        QGRx7KnkOMmoLfFKptlGpFuR5QeZ7WS6y+WrSu6BOT/0+L/8PfC9f765aDQZ
-        DLdKqKOowWO4DgXvYbw2BkRPIdCCTd1uH/gFAAD//wMA+l3Ux/MBAAA=
+        H4sIAALD2VcAA6RUzXKbMBC+5ykY7rKAuDb2YDy99NxD2kMvngUtoAQkKonY
+        9OkrMGAnkEMmN/b72d3Z1RIdL1XpvKLSXIqD668810GRSsZFfnB/Pf0goXuM
+        H6K00UZWqOIHx4k4i8NN6O+CMIioDTrMcmkBwhAbbxXLd8HzNqm22cu34jGi
+        92ynzrjShgio0BG8PLhGNejSnirhIyaVVQ2ineFYAS9naF1IMc+RwWWGnTHR
+        3CzUUwgGGQHjmLbGg8tsaHiFbhx4/oZ4O+KvnwJ//7jde5s/Eb0Zen9Ts8/5
+        b4Zr/X7mJONYMj21xLghKSimh6SgFLRDx8CYQq1xkavrEkkN7YK7E8wkV9DC
+        CRfx2vODMIxo9z3inYh0aeLvndH5Ca1DnN9cgx3FxE3qr03zmmN4heTNC7xH
+        RyXDDJpyLJVIWSIIN+62G9GBnMR4qbkCYy+AVFKYIvZt1hm4oG4RlO0+8N7I
+        e/SNGtn7RjIoNQ4uvLXNK8iRNKqMC2NqvacU7DqNXiUKuDAKMbczOUO7ssdA
+        7aYqFOZUoSkkO5Uyl7Tf4ckyq1rkRxSvXEnRqQ4aBEvkxV7sVGQs29/cOvbD
+        0I/oEIzcUIRwoe30+s/uOuNuz04YhpuIfiQZU2jZqBQJQ50qXnczuncvsJOx
+        SSZw4U33GiNfUMTP27/nf0lEr9HIffECbQY6v4n3mLa/R3r7P/4HAAD//wMA
+        GVWOtFIFAAA=
     http_version: 
-  recorded_at: Tue, 13 Sep 2016 21:20:32 GMT
+  recorded_at: Wed, 14 Sep 2016 21:38:00 GMT
 - request:
     method: post
     uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/customers
@@ -620,6 +668,7 @@ http_interactions:
       string: |
         <?xml version="1.0" encoding="UTF-8"?>
         <customer>
+          <payment-method-nonce>fake-apple-pay-visa-nonce</payment-method-nonce>
         </customer>
     headers:
       Accept-Encoding:
@@ -640,7 +689,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Tue, 13 Sep 2016 21:20:32 GMT
+      - Wed, 14 Sep 2016 21:37:07 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
@@ -661,24 +710,31 @@ http_interactions:
       Content-Encoding:
       - gzip
       Etag:
-      - W/"3adaa078d360f60256b0cae45e190a7d"
+      - W/"c7383ae5c7dd9b1a41fc9cf4dc824340"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - f7915fee-ab7a-49fd-9cc9-b033008d53e8
+      - eee863a0-8ab0-44af-ad5e-7e014f4b96b5
       X-Runtime:
-      - '0.084583'
+      - '0.191217'
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        H4sIAKBt2FcAA5SRwW6DMBBE7/kKy3cXMCKUyJBbvyC99LZhl+AUG2SbNvx9
-        CY2SSrSHHmeeZ3e0VvuL6dgHOa97W/LkKeaMbN2jtqeSvx5exDPfVxtVjz70
-        hly1YUxprLI8KbKtjFU0i6s3s7oFG8Ssc4enQp7zo8mb96xNVfSTXl832vkg
-        LBhiVnclD24kHi2og79I3ZsB7LTyyYDuVu7Q9nY9o4HLyvuko9fhl32OIBAK
-        CCxMA5UcZxm0IV7JONmKuBBJepDJTsa7VL6p6BFY8uOA/8s/At/7l5uLRlOH
-        /l4JdRA1OPS3oeAcTLfGgOjIe1qxudv9A78AAAD//wMAPnsN2PMBAAA=
+        H4sIAAPD2VcAA6RUS4+bMBC+769A3B0DecBGhKiXnnvY9tBLNOAJuAs2ss1u
+        +Pc1BEiysNJWvTHfY2Y04yE+XqrSeUOluRQH1195roMik4yL/OD+fPlOIveY
+        PMVZo42sUCVPjhNzlmw33iYIt1FMbdBhlssKEIbYOFQsfw7+hGkVnl+3xTqm
+        92ynPnOlDRFQoSN4eXCNatClPVXCZ0wmqxpEO8OxAl7O0LqQYp7jDJcZ9o6p
+        5mahnkIwyAgYx7Q1HlxmQ8MrdJPA83fEeyb+5iXw9+tw7+1+x/Rm6P1Nzb7u
+        D63/ZrjW72dOzhxLpqeWGDckA8X0kBSUgnboGBhTqDUucnVdIqmhXXB3gpnk
+        Clo45SLZeH4Q2W133yPeiUiXJvnWGZ0f0DrE+cU12FFM3KT+l2mGs2lecwyv
+        kDy8wHt0VDI8Q1OOpVIpSwThJt12YzqQkxgvNVdg7AWQSgpTJH4Q0xm4oG4R
+        lO0+8B7kPfqgRvaxkTOUGgcX3trmFeRIGlUmhTG13lMKdp1Gr1IFXBiFmNuZ
+        vEO7ssdA7aYqFOZUoSkkO5Uyl7Tf4ckyq1rkRxRvXEnRqQ4aBEvlxV7sVGQs
+        29/cJvGjyI/pEIzcUIRwoe30+s/uOpNuz04URbuYfiYZU2jZqAwJQ50pXncz
+        uncvsJOxSSdw4U33GiNfUSRhvi6Yiuk1Grn/vECbgc5v4iOm7e+R3v6PfwEA
+        AP//AwBiiFeMUgUAAA==
     http_version: 
-  recorded_at: Tue, 13 Sep 2016 21:20:32 GMT
+  recorded_at: Wed, 14 Sep 2016 21:38:01 GMT
 recorded_with: VCR 3.0.3

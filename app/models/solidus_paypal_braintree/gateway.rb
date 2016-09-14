@@ -161,10 +161,14 @@ module SolidusPaypalBraintree
     def create_profile(payment)
       source = payment.source
 
-      result = braintree.customer.create
-      customer_id = result.customer.id
+      result = braintree.customer.create(customer_profile_params(payment))
+      customer = result.customer
 
-      source.create_customer!(braintree_customer_id: customer_id).tap do
+      source.create_customer!(braintree_customer_id: customer.id).tap do
+        if customer.payment_methods.any?
+          source.token = customer.payment_methods.last.token
+        end
+
         source.save!
       end
     end
@@ -220,6 +224,16 @@ module SolidusPaypalBraintree
 
       if source.customer.present?
         params[:customer_id] = source.customer.braintree_customer_id
+      end
+
+      params
+    end
+
+    def customer_profile_params(payment)
+      params = {}
+
+      if payment.source.try(:nonce)
+        params[:payment_method_nonce] = payment.source.nonce
       end
 
       params

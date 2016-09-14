@@ -197,6 +197,10 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
         expect(profile.sources).to eq [source]
         expect(profile.braintree_customer_id).to be_present
       end
+
+      it "sets a token on the payment source" do
+        expect{ subject }.to change{ source.token }
+      end
     end
   end
 
