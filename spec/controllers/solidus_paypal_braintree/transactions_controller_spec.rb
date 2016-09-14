@@ -41,13 +41,26 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
         expect(order.payments.first.amount).to eq 55
       end
 
-      context "and an address is provided" do
+      context "and a valid address is provided" do
         it "creates a new address" do
           # Creating the order also creates 3 addresses, we want to make sure
           # the transaction import only creates 1 new one
           order
           expect { post_create }.to change { Spree::Address.count }.by(1)
           expect(Spree::Address.last.full_name).to eq "Wade Wilson"
+        end
+      end
+
+      context "and an invalid address is provided" do
+        before { params[:transaction][:address_attributes][:city] = nil }
+
+        it "raises a validation error" do
+          expect { post_create }.to raise_error(
+            ActiveRecord::RecordInvalid,
+            "Validation failed: " \
+            "Billing address city can't be blank, " \
+            "Shipping address city can't be blank"
+          )
         end
       end
 
