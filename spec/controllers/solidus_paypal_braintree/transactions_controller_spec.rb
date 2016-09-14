@@ -56,10 +56,9 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
 
         it "raises a validation error" do
           expect { post_create }.to raise_error(
-            ActiveRecord::RecordInvalid,
+            SolidusPaypalBraintree::TransactionImport::InvalidImportError,
             "Validation failed: " \
-            "Billing address city can't be blank, " \
-            "Shipping address city can't be blank"
+            "Transactionaddress city can't be blank"
           )
         end
       end

@@ -2,7 +2,23 @@ require 'spec_helper'
 
 describe SolidusPaypalBraintree::TransactionImport do
   let(:order) { Spree::Order.new }
-  let(:transaction) { SolidusPaypalBraintree::Transaction.new nonce: 'abcd1234', payment_type: "ApplePayCard" }
+  let(:transaction_address) { nil }
+  let(:transaction) do
+    SolidusPaypalBraintree::Transaction.new nonce: 'abcd1234',
+      payment_type: "ApplePayCard", address: transaction_address
+  end
+
+  describe "#valid?" do
+    subject { described_class.new(order, transaction).valid? }
+
+    it { is_expected.to be true }
+
+    context "invalid address" do
+      let(:transaction_address) { SolidusPaypalBraintree::TransactionAddress.new }
+
+      it { is_expected.to be false }
+    end
+  end
 
   describe '#source' do
     subject { described_class.new(order, transaction).source }
@@ -70,55 +86,72 @@ describe SolidusPaypalBraintree::TransactionImport do
 
     subject { described_class.new(order, transaction).import! }
 
-    it 'advances order to confirm state' do
-      subject
-      expect(order.state).to eq 'confirm'
+    context "passes validation" do
+      it 'advances order to confirm state' do
+        subject
+        expect(order.state).to eq 'confirm'
+      end
+
+      it 'has a payment for the cost of line items + shipment' do
+        subject
+        expect(order.payments.first.amount).to eq 15
+      end
+
+      it 'is complete and capturable', aggregate_failures: true do
+        subject
+        order.complete
+
+        expect(order).to be_complete
+        expect(order.payments.first).to be_pending
+
+        order.payments.first.capture!
+        # need to reload, as capture will update the order
+        expect(order.reload).to be_paid
+      end
+
+      context 'transaction has address' do
+        let!(:new_york) { create :state, country: country, abbr: 'NY' }
+
+        let(:transaction_address) do
+          SolidusPaypalBraintree::TransactionAddress.new country_code: 'US',
+            last_name: 'Venture', first_name: 'Thaddeus', city: 'New York',
+            state_code: 'NY', address_line_1: '350 5th Ave', zip: '10118'
+        end
+
+        it 'uses the new address', aggregate_failures: true do
+          subject
+          expect(order.shipping_address.address1).to eq '350 5th Ave'
+          expect(order.shipping_address.country).to eq country
+          expect(order.shipping_address.state).to eq new_york
+        end
+
+        context 'with a tax category' do
+          before do
+            zone = Spree::Zone.create name: 'nyc tax'
+            zone.members << Spree::ZoneMember.new(zoneable: new_york)
+            create :tax_rate, zone: zone
+          end
+
+          it 'includes the tax in the payment' do
+            subject
+            expect(order.payments.first.amount).to eq 16
+          end
+        end
+      end
     end
 
-    it 'has a payment for the cost of line items + shipment' do
-      subject
-      expect(order.payments.first.amount).to eq 15
-    end
-
-    it 'is complete and capturable', aggregate_failures: true do
-      subject
-      order.complete
-
-      expect(order).to be_complete
-      expect(order.payments.first).to be_pending
-
-      order.payments.first.capture!
-      # need to reload, as capture will update the order
-      expect(order.reload).to be_paid
-    end
-
-    context 'transaction has address' do
-      let!(:new_york) { create :state, country: country, abbr: 'NY' }
-
+    context "validation fails" do
       let(:transaction_address) do
         SolidusPaypalBraintree::TransactionAddress.new country_code: 'US',
           last_name: 'Venture', first_name: 'Thaddeus', city: 'New York',
-          state_code: 'NY', address_line_1: '350 5th Ave', zip: '10118'
+          state_code: 'NY', address_line_1: '350 5th Ave'
       end
 
-      it 'uses the new address', aggregate_failures: true do
-        subject
-        expect(order.shipping_address.address1).to eq '350 5th Ave'
-        expect(order.shipping_address.country).to eq country
-        expect(order.shipping_address.state).to eq new_york
-      end
-
-      context 'with a tax category' do
-        before do
-          zone = Spree::Zone.create name: 'nyc tax'
-          zone.members << Spree::ZoneMember.new(zoneable: new_york)
-          create :tax_rate, zone: zone
-        end
-
-        it 'includes the tax in the payment' do
-          subject
-          expect(order.payments.first.amount).to eq 16
-        end
+      it "raises an error with the validation messages" do
+        expect { subject }.to raise_error(
+          SolidusPaypalBraintree::TransactionImport::InvalidImportError,
+          "Validation failed: Transactionaddress zip can't be blank"
+        )
       end
     end
   end
