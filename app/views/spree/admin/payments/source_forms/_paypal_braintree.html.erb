@@ -1,0 +1,36 @@
+<% id = payment_method.id %>
+<% prefix = "payment_source[#{id}]" %>
+
+<fieldset class="no-border-bottom braintree-hosted-fields" data-braintree-hosted-fields data-id="<%= id %>">
+  <div class="field" data-hook="previous_cards">
+    <% if previous_cards.any? %>
+      <% previous_cards.each do |card| %>
+        <label><%= radio_button_tag :card, card.id, card == previous_cards.first %> Token: <%= card.token %><br /></label>
+      <% end %>
+      <label><%= radio_button_tag :card, "new", false, { id: "card_new#{id}" } %> <%= Spree.t(:use_new_cc) %></label>
+    <% end %>
+  </div>
+
+  <div id="card_form<%= id %>" data-hook>
+    <div class="field" data-hook="card_number">
+      <%= label_tag "card_number#{id}", Spree::CreditCard.human_attribute_name(:number), class: "required" %>
+      <div class="input" id="card_number<%= id %>"></div>
+    </div>
+
+    <div class="field" data-hook="card_expiration">
+      <%= label_tag "card_expiry#{id}", Spree::CreditCard.human_attribute_name(:expiration), class: "required" %>
+      <div class="input" id="card_expiry<%= id %>"></div>
+    </div>
+
+    <div class="field" data-hook="card_code">
+      <%= label_tag "card_code#{id}", Spree::CreditCard.human_attribute_name(:card_code), class: "required" %>
+      <div class="input" id="card_code<%= id %>"></div>
+
+      <a href="/content/cvv" class="info cvvLink" target="_blank">
+        (<%= Spree.t(:what_is_this) %>)
+      </a>
+    </div>
+
+    <div class="clear"></div>
+  </div>
+</fieldset>
