@@ -19,8 +19,16 @@ module SolidusPaypalBraintree
       end
     end
 
-    config.assets.precompile += ['spree/frontend/solidus_paypal_braintree']
-
     config.to_prepare(&method(:activate).to_proc)
+
+    def self.frontend_available?
+      defined?(Spree::Frontend::Engine) == "constant"
+    end
+
+    if frontend_available?
+      config.assets.precompile += ['spree/frontend/solidus_paypal_braintree']
+      paths["app/controllers"] << "lib/controllers/frontend"
+      paths["app/views"] << "lib/views/frontend"
+    end
   end
 end
