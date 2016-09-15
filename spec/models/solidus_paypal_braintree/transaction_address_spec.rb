@@ -18,7 +18,17 @@ describe SolidusPaypalBraintree::TransactionAddress do
       }
     end
 
+    before do
+      create :country, iso: 'US'
+    end
+
     it { is_expected.to be true }
+
+    context 'no country matches' do
+      let(:valid_attributes) { super().merge({ country_code: 'CA' }) }
+
+      it { is_expected.to be false }
+    end
 
     context "no first_name" do
       let(:valid_attributes) { super().except(:first_name) }
@@ -58,6 +68,73 @@ describe SolidusPaypalBraintree::TransactionAddress do
       it "defaults to the US" do
         subject
         expect(address.country_code).to eq "us"
+      end
+    end
+  end
+
+  describe '#spree_country' do
+    subject { described_class.new(country_code: country_code).spree_country }
+
+    before do
+      create :country, name: 'United States', iso: 'US'
+    end
+
+    ['us', 'US'].each do |code|
+      let(:country_code) { code }
+
+      it 'looks up by iso' do
+        expect(subject.name).to eq 'United States'
+      end
+    end
+
+    context 'country does not exist' do
+      let(:country_code) { 'NA' }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#spree_state' do
+    subject { described_class.new(country_code: 'US', state_code: state_code).spree_state }
+    let(:state_code) { 'newy' }
+
+    it { is_expected.to be_nil }
+
+    context 'state exists' do
+      before do
+        us = create :country, iso: 'US'
+        create :state, abbr: 'NY', name: 'New York', country: us
+      end
+
+      ['ny', ' ny', 'ny ', 'New York', 'new york', 'NY'].each do |code|
+        let(:state_code) { code }
+
+        it 'looks up the right state' do
+          expect(subject.abbr).to eq "NY"
+        end
+      end
+
+      context 'returns nil if no state matches' do
+        let(:state_code) { 'AL' }
+        it { is_expected.to be_nil }
+      end
+    end
+  end
+
+  describe '#should_match_state_model' do
+    subject { described_class.new(country_code: 'US').should_match_state_model? }
+
+    it { is_expected.to be false }
+
+    context 'country exists' do
+      let!(:us) { create :country, iso: 'US' }
+
+      it { is_expected.to be false }
+
+      context 'country has states' do
+        let!(:state) { create :state, country: us }
+
+        it { is_expected.to be true }
       end
     end
   end
