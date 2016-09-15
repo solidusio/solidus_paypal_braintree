@@ -30,6 +30,23 @@ module SolidusPaypalBraintree
       ).first )
     end
 
+    def to_spree_address
+      address = Spree::Address.new first_name: first_name,
+        last_name: last_name,
+        city: city,
+        country: spree_country,
+        address1: address_line_1,
+        address2: address_line_2,
+        zipcode: zip
+
+      if spree_state
+        address.state = spree_state
+      else
+        address.state_name = state_code
+      end
+      address
+    end
+
     # Check to see if this address should match to a state
     #   model in the database.
     def should_match_state_model?

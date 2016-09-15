@@ -138,4 +138,28 @@ describe SolidusPaypalBraintree::TransactionAddress do
       end
     end
   end
+
+  describe '#to_spree_address' do
+    subject { described_class.new(country_code: 'US', state_code: 'NY').to_spree_address }
+
+    let!(:us) { create :country, iso: 'US' }
+
+    it { is_expected.to be_a Spree::Address }
+
+    context 'country exists with states' do
+      before do
+        create :state, country: us, abbr: 'NY', name: 'New York'
+      end
+      it 'uses state model' do
+        expect(subject.state.name).to eq 'New York'
+      end
+    end
+
+    context 'country exist with no states' do
+      it 'uses state_name' do
+        expect(subject.state).to be_nil
+        expect(subject.state_text).to eq 'NY'
+      end
+    end
+  end
 end
