@@ -35,6 +35,15 @@ require 'spree/testing_support/url_helpers'
 # Requires factories defined in lib/solidus_paypal_braintree/factories.rb
 require 'solidus_paypal_braintree/factories'
 
+VCR.configure do |c|
+  c.cassette_library_dir = "spec/fixtures/cassettes"
+  c.hook_into :webmock
+  c.ignore_localhost = true
+  c.configure_rspec_metadata!
+  c.default_cassette_options = { match_requests_on: [:method, :uri, :body], allow_unused_http_interactions: false }
+  c.allow_http_connections_when_no_cassette = true
+end
+
 require 'braintree'
 
 Braintree::Configuration.logger = Rails.logger
