@@ -161,6 +161,8 @@ module SolidusPaypalBraintree
     def create_profile(payment)
       source = payment.source
 
+      return if source.token.present? || source.customer.present? || source.nonce.nil?
+
       result = braintree.customer.create(customer_profile_params(payment))
       customer = result.customer
 
