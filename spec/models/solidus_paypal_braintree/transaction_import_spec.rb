@@ -56,8 +56,7 @@ describe SolidusPaypalBraintree::TransactionImport do
     end
   end
 
-  cassette_options = { cassette_name: "transaction/import" }
-  describe '#import!', vcr: cassette_options do
+  describe '#import!' do
     let(:store) { create :store }
     let(:variant) { create :variant }
     let(:line_item) { Spree::LineItem.new(variant: variant, quantity: 1, price: 10) }

@@ -18,8 +18,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     )
   end
 
-  cassette_options = { cassette_name: "braintree/payment" }
-  describe 'making a payment on an order', vcr: cassette_options do
+  describe 'making a payment on an order' do
     include_context 'order ready for payment'
 
     before do
@@ -87,8 +86,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       it { is_expected.to eq "paypal_braintree" }
     end
 
-    cassette_options = { cassette_name: "braintree/purchase" }
-    describe '#purchase', vcr: cassette_options do
+    describe '#purchase' do
       subject(:purchase) { gateway.purchase(1000, source, {}) }
 
       include_examples "successful response"
@@ -99,8 +97,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       end
     end
 
-    cassette_options = { cassette_name: "braintree/authorize" }
-    describe "#authorize", vcr: cassette_options do
+    describe "#authorize" do
       subject(:authorize) { gateway.authorize(1000, source, {}) }
 
       include_examples "successful response"
@@ -111,8 +108,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       end
     end
 
-    cassette_options = { cassette_name: "braintree/capture" }
-    describe "#capture", vcr: cassette_options do
+    describe "#capture" do
       subject(:capture) { gateway.capture(1000, authorized_id, {}) }
 
       include_examples "successful response"
@@ -122,8 +118,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       end
     end
 
-    cassette_options = { cassette_name: "braintree/credit" }
-    describe "#credit", vcr: cassette_options do
+    describe "#credit" do
       subject(:credit) { gateway.credit(2000, source, settled_id, {}) }
 
       include_examples "successful response"
@@ -133,8 +128,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       end
     end
 
-    cassette_options = { cassette_name: "braintree/void" }
-    describe "#void", vcr: cassette_options do
+    describe "#void" do
       subject(:void) { gateway.void(authorized_id, source, {}) }
 
       include_examples "successful response"
@@ -150,8 +144,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       subject(:cancel) { gateway.cancel(transaction_id) }
 
       context "when the transaction is found" do
-        cassette_options = { cassette_name: "braintree/cancel/void" }
-        context "and it is voidable", vcr: cassette_options do
+        context "and it is voidable" do
           let(:transaction_id) { authorized_id }
 
           include_examples "successful response"
@@ -161,8 +154,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
           end
         end
 
-        cassette_options = { cassette_name: "braintree/cancel/refund" }
-        context "and it is not voidable", vcr: cassette_options do
+        context "and it is not voidable" do
           let(:transaction_id) { settled_id }
 
           include_examples "successful response"
@@ -173,8 +165,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
         end
       end
 
-      cassette_options = { cassette_name: "braintree/cancel/not_found" }
-      context "when the transaction is not found", vcr: cassette_options do
+      context "when the transaction is not found" do
         it 'raises an error', aggregate_failures: true do
           expect{ cancel }.to raise_error Braintree::NotFoundError
         end
@@ -230,8 +221,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     end
   end
 
-  cassette_options = { cassette_name: "braintree/token" }
-  describe '.generate_token', :braintree_integration, vcr: cassette_options do
+  describe '.generate_token', :braintree_integration do
     subject { gateway.generate_token }
 
     it { is_expected.to be_a(String).and be_present }
