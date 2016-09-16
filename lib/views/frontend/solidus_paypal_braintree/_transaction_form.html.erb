@@ -3,7 +3,7 @@
   <%= f.hidden_field :payment_type %>
   <%= hidden_field_tag :payment_method_id, payment_method.id %>
   <%= f.hidden_field :phone %>
-  <%= f.hidden_field :email %>
+  <%= f.hidden_field :email, value: try_spree_current_user.try!(:email) %>
 
   <%= f.fields_for :address, SolidusPaypalBraintree::TransactionAddress.new do |fa| %>
     <% [:country_code, :last_name, :first_name,
