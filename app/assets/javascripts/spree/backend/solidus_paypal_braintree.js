@@ -20,6 +20,12 @@ $(function() {
     return d.promise();
   }
 
+  function onError(err) {
+    var msg = err.name + ": " + err.message;
+    show_flash("error", msg);
+    console.error(err);
+  }
+
   function getToken(paymentMethodId, callback) {
     var opts = {
       url: "/solidus_paypal_braintree/client_token",
@@ -65,6 +71,33 @@ $(function() {
     }
   }
 
+  function addFormHook($fields) {
+    var shouldSubmit = false;
+
+    function submit(payload) {
+      shouldSubmit = true;
+
+      $("#payment_method_nonce", $fields).val(payload.nonce);
+      $paymentForm.submit();
+    }
+
+    return function(hostedFields) {
+      $paymentForm.on("submit", function(e) {
+        if ($fields.is(":visible") && !shouldSubmit) {
+          e.preventDefault()
+
+          hostedFields.tokenize(function(err, payload) {
+            if (err) {
+              onError(err);
+            } else {
+              submit(payload);
+            }
+          })
+        }
+      });
+    }
+  }
+
   $hostedFields.each(function() {
     var $this = $(this),
         $new = $("[name=card]", $this);
@@ -76,14 +109,9 @@ $(function() {
     $new.on("change", function() {
       var isNew = $(this).val() === "new";
 
-      function onError(err) {
-        var msg = err.name + ": " + err.message;
-        show_flash("error", msg);
-        console.error(err);
-      }
-
       function setHostedFieldsInstance(instance) {
         hostedFieldsInstance = instance;
+        return instance;
       }
 
       if (isNew && hostedFieldsInstance == null) {
@@ -91,7 +119,8 @@ $(function() {
           then(createClient).
           then(createHostedFields(id)).
           then(setHostedFieldsInstance).
-          catch(onError)
+          then(addFormHook($this)).
+          fail(onError)
       }
     });
   });
