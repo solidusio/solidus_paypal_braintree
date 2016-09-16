@@ -181,10 +181,9 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       end
     end
 
-    cassette_options = { cassette_name: "braintree/create_profile" }
-    describe "#create_profile", vcr: cassette_options do
+    describe "#create_profile" do
       let(:payment) do
-        create(:payment, {
+        build(:payment, {
           payment_method: gateway,
           source: source
         })
@@ -192,10 +191,41 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
 
       subject(:profile) { gateway.create_profile(payment) }
 
-      it 'creates and returns a new customer profile', aggregate_failures: true do
-        expect(profile).to be_a SolidusPaypalBraintree::Customer
-        expect(profile.sources).to eq [source]
-        expect(profile.braintree_customer_id).to be_present
+      cassette_options = { cassette_name: "braintree/create_profile" }
+      context "with no existing customer profile", vcr: cassette_options do
+        it 'creates and returns a new customer profile', aggregate_failures: true do
+          expect(profile).to be_a SolidusPaypalBraintree::Customer
+          expect(profile.sources).to eq [source]
+          expect(profile.braintree_customer_id).to be_present
+        end
+
+        it "sets a token on the payment source" do
+          expect{ subject }.to change{ source.token }
+        end
+      end
+
+      context "when the source already has a token" do
+        before { source.token = "totally-a-valid-token" }
+
+        it "does not create a new customer profile" do
+          expect(profile).to be_nil
+        end
+      end
+
+      context "when the source already has a customer" do
+        before { source.build_customer }
+
+        it "does not create a new customer profile" do
+          expect(profile).to be_nil
+        end
+      end
+
+      context "when the source has no nonce" do
+        before { source.nonce = nil }
+
+        it "does not create a new customer profile" do
+          expect(profile).to be_nil
+        end
       end
     end
   end

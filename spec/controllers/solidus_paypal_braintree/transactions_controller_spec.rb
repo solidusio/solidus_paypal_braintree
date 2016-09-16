@@ -17,7 +17,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
     let(:params) do
       {
         transaction: {
-          nonce: "ABC123",
+          nonce: "fake-valid-nonce",
           payment_type: "MonopolyMoney",
           phone: "1112223333",
           email: "batman@example.com",

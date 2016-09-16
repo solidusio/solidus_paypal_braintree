@@ -8,6 +8,7 @@ http_interactions:
       string: |
         <?xml version="1.0" encoding="UTF-8"?>
         <customer>
+          <payment-method-nonce>fake-paypal-future-nonce</payment-method-nonce>
         </customer>
     headers:
       Accept-Encoding:
@@ -28,7 +29,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Tue, 06 Sep 2016 22:26:30 GMT
+      - Wed, 14 Sep 2016 21:40:44 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
@@ -49,24 +50,30 @@ http_interactions:
       Content-Encoding:
       - gzip
       Etag:
-      - W/"431145f5e51c78e5b27309a6202f5af4"
+      - W/"d3871d38fdff59757829c1469f22bc6e"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - a04f1687-4ae7-4e9b-a086-f9cb44961da4
+      - 4cf029d5-3f99-4cc0-a907-849817386a68
       X-Runtime:
-      - '0.146319'
+      - '0.190350'
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        H4sIAJZCz1cAA5SRwW6DMBBE7/kKy3cXYhRoIkNu/YL00tuGXYJTbJBt2vD3
-        dWiUVKI9VD7NPM/uyFb7i+nYBzmve1vy9VPKGdm6R21PJX89vIhnvq9Wqh59
-        6A25asWY0ljJLJ4i26gkiqsXWd2CDSLqwuFpK8/F0RTN+6bNVPKTXm832vkg
-        LBhiVnclD24knsyog79I3ZsB7LTwyYDuFu7Q9nY5o4HLwvuko9fhl32OIBAK
-        CCxMA5UcowzaEK9kus5FuhVpfpByJ/Ndlr6p5BGY8+OA/8s/At/75zcXjaYO
-        /b0S6iBqcOhvQ8E5mG6NAdGR97Rgsdv9A78AAAD//wMABrZt9/MBAAA=
+        H4sIANzD2VcAA6RTy3KjMBC8+yso7rLAS+LEhfGe9guyl72kBjSAEj1YSSTm
+        71cCYyfGOWzlON09D/WM8sNRiugNjeVa7eN0ncQRqkozrpp9/PvpF3mID8Uq
+        r3rrtERTrKIo56y4zx7SJEnvcuqDgHmuakE54uOtYc3j5mVbym39etf+yOlH
+        NqhrbqwjCiRGiot97EyPMR0pAV8xlZYdqGGBowQuFmjXarWsUcNxgb1jabm7
+        0c8gOGQEXOSGDvcx86HjEuNik6T3JHkkafa0SXdZssuyPzm9JIz5fcf+L/+S
+        MPUfPSc1R8HseSTGHanAMHsqCsbAML8Zhg4EgarSvXKfFUGwkEygh0suhF85
+        gcYgShw3dW3IKPymKVON0zGRT4f0EZ2VDGvoxdyq1FogqLgIM+X0RJ7F4x0U
+        L6BwzTT+xCPITuDan01OJ25WcgkNkt6IonWusztKwVp0dl0a4Mp5Cxo/8zsM
+        IZl6y4IjzxJdq9mz0I2mk43rTjUHVG/caBUkewuKlfrof8W5w9zT9qWtDO+c
+        /2g3djdqnH5FVbC/qmz9zFM0c9+8pundloRvqFAQrrjjgb/2tgZhvbm3pOc6
+        /vVhT6rWN29EcMlD594i0YaNK10Kc7q8xWvMjiAwZtAvaGHb5WiK1T8AAAD/
+        /wMAOp4kYsoEAAA=
     http_version: 
-  recorded_at: Tue, 06 Sep 2016 22:27:14 GMT
+  recorded_at: Wed, 14 Sep 2016 21:41:38 GMT
 recorded_with: VCR 3.0.3
