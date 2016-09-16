@@ -37,7 +37,14 @@ window.SolidusPaypalBraintree = {
 
   initializeApplePaySession: function(applePayInstance, storeName, paymentRequest, sessionCallback) {
 
-    paymentRequest['requiredShippingContactFields'] = ['postalAddress', 'phone', 'email']
+    var requiredFields = ['postalAddress', 'phone'];
+    var currentUserEmail = document.querySelector("#transaction_email").value;
+
+    if (!currentUserEmail) {
+      requiredFields.push('email');
+    }
+
+    paymentRequest['requiredShippingContactFields'] = requiredFields
     var paymentRequest = applePayInstance.createPaymentRequest(paymentRequest);
 
     var session = new ApplePaySession(SolidusPaypalBraintree.APPLE_PAY_API_VERSION, paymentRequest);
@@ -96,7 +103,9 @@ window.SolidusPaypalBraintree = {
     }
 
     document.querySelector("#transaction_phone").value = appleContact.phoneNumber;
-    document.querySelector("#transaction_email").value = appleContact.emailAddress;
+    if (appleContact.emailAddress) {
+      document.querySelector("#transaction_email").value = appleContact.emailAddress;
+    }
   },
 
   submitBraintreePayload: function(payload) {
