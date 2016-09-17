@@ -41,7 +41,7 @@ VCR.configure do |c|
   c.ignore_localhost = true
   c.configure_rspec_metadata!
   c.default_cassette_options = { match_requests_on: [:method, :uri, :body], allow_unused_http_interactions: false }
-  c.allow_http_connections_when_no_cassette = true
+  c.allow_http_connections_when_no_cassette = false
 end
 
 require 'braintree'
