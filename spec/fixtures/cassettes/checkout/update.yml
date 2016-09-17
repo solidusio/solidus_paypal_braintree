@@ -1,0 +1,79 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/customers
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <customer>
+          <payment-method-nonce>fake-paypal-future-nonce</payment-method-nonce>
+        </customer>
+    headers:
+      Accept-Encoding:
+      - gzip
+      Accept:
+      - application/xml
+      User-Agent:
+      - Braintree Ruby Gem 2.65.0
+      X-Apiversion:
+      - '4'
+      Authorization:
+      - Basic bXdqa2t4d2NwMzJja2huZjphOTI5OGY0M2IzMGM2OTlkYjMwNzJjYzRhMDBmN2Y0OQ==
+      Content-Type:
+      - application/xml
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Sat, 17 Sep 2016 22:27:21 GMT
+      Content-Type:
+      - application/xml; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      X-Frame-Options:
+      - SAMEORIGIN
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Authentication:
+      - basic_auth
+      X-User:
+      - 3v249hqtptsg744y
+      Vary:
+      - Accept-Encoding
+      Content-Encoding:
+      - gzip
+      Etag:
+      - W/"4e04f7da31e3a010265691e383b0001b"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - ad6e0bbd-426e-492b-97d4-83a833e0a81b
+      X-Runtime:
+      - '0.228061'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAEnD3VcAA6RTy5KbMBC8+yso7rIMqSyxS8Y55Qs2l1y2BjSAdvWgJLG2
+        /z4SGHvXOIfUHtXdMyP1tNjhpGTyjtYJo/dptt6kCeracKHbffr7+Rf5kR7K
+        FasH541CW66ShAleZnmxfdpuNoyGQ8QCV3egPQnnwvJ2m78WlSqat+/dN0Y/
+        slHdCOs80aAw0ULuU28HTOlISfgXUxvVgz4vcFQg5ALtO6OXPRo4LbAjVk74
+        B/MsgkdOwCf+3OM+5eHohcK0zDfZE9lsSVY85/kuL3Z59ofRW8FYP/T8/+pv
+        BdP80XPSCJTcXa/EhSc1WO4uTcFaOM9vhnMPkkBdm0H7z4ooWEgmMMCVkDKs
+        nEBrERWOm7o3ZBR+0ZSpxyVM5FOQPqKzkmMDg5xHVcZIBJ2W8U6MXsireMxB
+        +Qoa19zgTzyB6iWuQ2wYnbhZKRS0SAYry8773u0oBefQu3VlQWgfLGjDnY9w
+        jsU0WBYdeVHoO8NfpGkNnWxc97o9oH4X1ugo2TvQvDKn8CuuE+aZbqhcbUXv
+        w0d7sLtR480b6jI/+tOxZXQ6zdwX0zS925H4DTVKIrTwIvL33jYgXTD3kfTa
+        J7w+7kk35mFGpFAiTh4cEmP5uNKlkNFlFu8xN4LAucWwoIVtt9CUq78AAAD/
+        /wMAdlthgcoEAAA=
+    http_version: 
+  recorded_at: Sat, 17 Sep 2016 22:27:21 GMT
+recorded_with: VCR 3.0.3
