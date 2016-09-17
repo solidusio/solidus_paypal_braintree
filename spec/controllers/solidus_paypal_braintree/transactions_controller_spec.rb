@@ -34,7 +34,19 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
       }
     end
 
-    context "when the transaction is valid" do
+    context "import has invalid address" do
+      before { params[:transaction][:address_attributes][:city] = nil }
+
+      it "raises a validation error" do
+        expect { post_create }.to raise_error(
+          SolidusPaypalBraintree::TransactionImport::InvalidImportError,
+          "Validation failed: " \
+          "Transactionaddress city can't be blank"
+        )
+      end
+    end
+
+    context "when the transaction is valid", vcr: { cassette_name: 'transaction/import/valid' } do
       it "imports the payment" do
         expect { post_create }.to change { order.payments.count }.by(1)
         expect(order.payments.first.amount).to eq 55
@@ -47,18 +59,6 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
           order
           expect { post_create }.to change { Spree::Address.count }.by(1)
           expect(Spree::Address.last.full_name).to eq "Wade Wilson"
-        end
-      end
-
-      context "and an invalid address is provided" do
-        before { params[:transaction][:address_attributes][:city] = nil }
-
-        it "raises a validation error" do
-          expect { post_create }.to raise_error(
-            SolidusPaypalBraintree::TransactionImport::InvalidImportError,
-            "Validation failed: " \
-            "Transactionaddress city can't be blank"
-          )
         end
       end
 
