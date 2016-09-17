@@ -154,7 +154,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
           end
         end
 
-        context "and it is not voidable", vcr: { cassette_name: 'gateway/cancel/refunds' }  do
+        context "and it is not voidable", vcr: { cassette_name: 'gateway/cancel/refunds' } do
           let(:transaction_id) { settled_id }
 
           include_examples "successful response"
@@ -165,7 +165,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
         end
       end
 
-      context "when the transaction is not found", vcr: { cassette_name: 'gateway/cancel/missing' }  do
+      context "when the transaction is not found", vcr: { cassette_name: 'gateway/cancel/missing' } do
         it 'raises an error', aggregate_failures: true do
           expect{ cancel }.to raise_error Braintree::NotFoundError
         end
@@ -224,7 +224,9 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
   describe '.generate_token' do
     subject { gateway.generate_token }
 
-    it { is_expected.to be_a(String).and be_present }
+    context 'connection enabled', vcr: { cassette_name: 'braintree/generate_token' } do
+      it { is_expected.to be_a(String).and be_present }
+    end
 
     context 'when token generation is disabled' do
       around do |ex|
