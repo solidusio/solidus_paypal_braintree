@@ -56,8 +56,7 @@ describe SolidusPaypalBraintree::TransactionImport do
     end
   end
 
-  cassette_options = { cassette_name: "transaction/import" }
-  describe '#import!', vcr: cassette_options do
+  describe '#import!' do
     let(:store) { create :store }
     let(:variant) { create :variant }
     let(:line_item) { Spree::LineItem.new(variant: variant, quantity: 1, price: 10) }
@@ -68,7 +67,7 @@ describe SolidusPaypalBraintree::TransactionImport do
     let(:transaction_address) { nil }
 
     let(:transaction) do
-      SolidusPaypalBraintree::Transaction.new nonce: 'fake-apple-pay-visa-nonce',
+      SolidusPaypalBraintree::Transaction.new nonce: 'fake-valid-nonce',
         payment_method: payment_method, address: transaction_address,
         phone: '123-456-7890', email: 'user@example.com'
     end
@@ -86,7 +85,7 @@ describe SolidusPaypalBraintree::TransactionImport do
 
     subject { described_class.new(order, transaction).import! }
 
-    context "passes validation" do
+    context "passes validation", vcr: { cassette_name: 'transaction/import/valid' } do
       it 'advances order to confirm state' do
         subject
         expect(order.state).to eq 'confirm'
@@ -97,7 +96,8 @@ describe SolidusPaypalBraintree::TransactionImport do
         expect(order.payments.first.amount).to eq 15
       end
 
-      it 'is complete and capturable', aggregate_failures: true do
+      it 'is complete and capturable', aggregate_failures: true,
+        vcr: { cassette_name: 'transaction/import/valid/capture' } do
         subject
         order.complete
 
