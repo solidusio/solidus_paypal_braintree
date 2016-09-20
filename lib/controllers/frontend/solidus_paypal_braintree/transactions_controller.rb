@@ -20,8 +20,8 @@ class SolidusPaypalBraintree::TransactionsController < Spree::StoreController
       if import.valid?
         import.import!
 
-        format.html { redirect_after_import(import) }
-        format.json { head :ok }
+        format.html { redirect_to redirect_url(import) }
+        format.json { render json: { redirectUrl: redirect_url(import) } }
       else
         status = 422
         format.html { import_error(import) }
@@ -37,11 +37,11 @@ class SolidusPaypalBraintree::TransactionsController < Spree::StoreController
       "Import invalid: #{import.errors.full_messages.join(', ')}"
   end
 
-  def redirect_after_import(import)
+  def redirect_url(import)
     if import.order.complete?
-      redirect_to spree.order_path(import.order)
+      spree.order_url(import.order)
     else
-      redirect_to spree.checkout_state_path(import.order.state)
+      spree.checkout_state_url(import.order.state)
     end
   end
 

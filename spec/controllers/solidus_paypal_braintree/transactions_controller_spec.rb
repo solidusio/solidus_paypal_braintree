@@ -10,7 +10,8 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
     allow(controller).to receive(:current_order) { order }
   end
 
-  describe "POST create" do
+  cassette_options = { cassette_name: "transactions_controller/create" }
+  describe "POST create", vcr: cassette_options do
     subject(:post_create) { post :create, params }
     let!(:country) { create :country, iso: 'US' }
     let!(:state) { create :state, abbr: 'WA', country: country }

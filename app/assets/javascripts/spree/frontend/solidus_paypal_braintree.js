@@ -86,8 +86,57 @@ window.SolidusPaypalBraintree = {
         }
         session.completePayment(ApplePaySession.STATUS_SUCCESS);
 
-        SolidusPaypalBraintree.setBraintreeApplePayContact(event.payment.shippingContact);
-        SolidusPaypalBraintree.submitBraintreePayload(payload);
+        shipping_contact = event.payment.shippingContact;
+        address_hash = {
+          country_code:   shipping_contact.countryCode,
+          first_name:     shipping_contact.givenName,
+          last_name:      shipping_contact.familyName,
+          state_code:     shipping_contact.administrativeArea,
+          city:           shipping_contact.locality,
+          zip:            shipping_contact.postalCode,
+          address_line_1: shipping_contact.addressLines[0]
+        };
+
+        if(shipping_contact.addressLines.length > 1) {
+          address_hash['address_line_2'] = shipping_contact.addressLines[1];
+        }
+
+        email = document.querySelector("#transaction_email").value
+        transaction_params = {
+          transaction: {
+            nonce: payload.nonce,
+            phone: shipping_contact.phoneNumber,
+            email: email || shipping_contact.emailAddress,
+            payment_type: payload.type,
+            address_attributes: address_hash
+          },
+          payment_method_id: document.querySelector("#payment_method_id").value
+        };
+
+        Spree.ajax({
+          data: transaction_params,
+          dataType: 'json',
+          type: 'POST',
+          url: Spree.pathFor('solidus_paypal_braintree/transactions'),
+          success: function(response) {
+            session.completePayment(ApplePaySession.STATUS_SUCCESS);
+            SolidusPaypalBraintree.setBraintreeApplePayContact(event.payment.shippingContact);
+            window.location.replace(response.redirectUrl);
+          },
+          error: function(xhr) {
+            if (xhr.status === 422) {
+              var errors = xhr.responseJSON.errors
+
+              if (errors["Address"] || errors["TransactionAddress"]) {
+                session.completePayment(ApplePaySession.STATUS_INVALID_SHIPPING_POSTAL_ADDRESS);
+              } else {
+                session.completePayment(ApplePaySession.STATUS_FAILURE);
+              }
+            }
+          }
+        });
+
+
       });
     };
 
