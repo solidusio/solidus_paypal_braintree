@@ -15,22 +15,35 @@ class SolidusPaypalBraintree::TransactionsController < Spree::StoreController
   def create
     transaction = SolidusPaypalBraintree::Transaction.new transaction_params
 
-    if transaction.valid?
-      import = SolidusPaypalBraintree::TransactionImport.new(current_order, transaction)
-      import.import!
+    respond_to do |format|
+      if transaction.valid?
+        import = SolidusPaypalBraintree::TransactionImport.new(current_order, transaction)
+        import.import!
 
-      if import.order.complete?
-        return redirect_to spree.order_path(import.order)
+        format.html { redirect_after_import(import) }
+        format.json { head :ok }
       else
-        return redirect_to spree.checkout_state_path(import.order.state)
+        status = 422
+        format.html { transaction_error(transaction) }
+        format.json {  render json: { errors: transaction.errors, status: status }, status: status }
       end
-    else
-      raise InvalidTransactionError,
-        "Transaction invalid: #{transaction.errors.full_messages.join(', ')}"
     end
   end
 
   private
+
+  def transaction_error(transaction)
+    raise InvalidTransactionError,
+      "Transaction invalid: #{transaction.errors.full_messages.join(', ')}"
+  end
+
+  def redirect_after_import(import)
+    if import.order.complete?
+      return redirect_to spree.order_path(import.order)
+    else
+      return redirect_to spree.checkout_state_path(import.order.state)
+    end
+  end
 
   def transaction_params
     params.require(:transaction)

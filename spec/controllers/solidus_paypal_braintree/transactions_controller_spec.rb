@@ -85,16 +85,42 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
           expect(post_create).to redirect_to spree.order_path(order)
         end
       end
+
+      context "format is JSON" do
+        before { params[:format] = :json }
+
+        it "has a successful response" do
+          post_create
+          expect(response).to be_success
+        end
+      end
     end
 
     context "when the transaction is invalid" do
       before { params[:transaction].delete(:phone) }
 
-      it "raises an error" do
-        expect { post_create }.to raise_error(
-          SolidusPaypalBraintree::TransactionsController::InvalidTransactionError,
-          "Transaction invalid: Phone can't be blank"
-        )
+      context "format is HTML" do
+        it "raises an error" do
+          expect { post_create }.to raise_error(
+            SolidusPaypalBraintree::TransactionsController::InvalidTransactionError,
+            "Transaction invalid: Phone can't be blank"
+          )
+        end
+      end
+
+      context "format is JSON" do
+        let(:json) { JSON.parse(response.body) }
+        before { params[:format] = :json }
+
+        it "has a failed status" do
+          post_create
+          expect(response.status).to eq 422
+        end
+
+        it "returns the errors as JSON" do
+          post_create
+          expect(json["errors"]["phone"]).to eq ["can't be blank"]
+        end
       end
     end
   end
