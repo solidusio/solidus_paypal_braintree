@@ -1,5 +1,5 @@
 class SolidusPaypalBraintree::TransactionsController < Spree::StoreController
-  class InvalidTransactionError < StandardError; end
+  class InvalidImportError < StandardError; end
 
   PERMITTED_BRAINTREE_TRANSACTION_PARAMS = [
     :nonce,
@@ -14,27 +14,27 @@ class SolidusPaypalBraintree::TransactionsController < Spree::StoreController
 
   def create
     transaction = SolidusPaypalBraintree::Transaction.new transaction_params
+    import = SolidusPaypalBraintree::TransactionImport.new(current_order, transaction)
 
     respond_to do |format|
-      if transaction.valid?
-        import = SolidusPaypalBraintree::TransactionImport.new(current_order, transaction)
+      if import.valid?
         import.import!
 
         format.html { redirect_after_import(import) }
         format.json { head :ok }
       else
         status = 422
-        format.html { transaction_error(transaction) }
-        format.json {  render json: { errors: transaction.errors, status: status }, status: status }
+        format.html { import_error(import) }
+        format.json { render json: { errors: import.errors, status: status }, status: status }
       end
     end
   end
 
   private
 
-  def transaction_error(transaction)
-    raise InvalidTransactionError,
-      "Transaction invalid: #{transaction.errors.full_messages.join(', ')}"
+  def import_error(import)
+    raise InvalidImportError,
+      "Import invalid: #{import.errors.full_messages.join(', ')}"
   end
 
   def redirect_after_import(import)

@@ -41,8 +41,8 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
 
       it "raises a validation error" do
         expect { post_create }.to raise_error(
-          SolidusPaypalBraintree::TransactionImport::InvalidImportError,
-          "Validation failed: " \
+          SolidusPaypalBraintree::TransactionsController::InvalidImportError,
+          "Import invalid: " \
           "Address is invalid, " \
           "Transactionaddress city can't be blank"
         )
@@ -55,7 +55,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
         expect(order.payments.first.amount).to eq 55
       end
 
-      context "and a valid address is provided" do
+      context "and an address is provided" do
         it "creates a new address" do
           # Creating the order also creates 3 addresses, we want to make sure
           # the transaction import only creates 1 new one
@@ -74,17 +74,19 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
         end
       end
 
-      context "when import! leaves the order in confirm" do
-        it "redirects the user to the confirm page" do
-          expect(post_create).to redirect_to spree.checkout_state_path("confirm")
+      context "format is HTML" do
+        context "when import! leaves the order in confirm" do
+          it "redirects the user to the confirm page" do
+            expect(post_create).to redirect_to spree.checkout_state_path("confirm")
+          end
         end
-      end
 
-      context "when import! completes the order" do
-        before { allow(order).to receive(:complete?).and_return(true) }
+        context "when import! completes the order" do
+          before { allow(order).to receive(:complete?).and_return(true) }
 
-        it "displays the order to the user" do
-          expect(post_create).to redirect_to spree.order_path(order)
+          it "displays the order to the user" do
+            expect(post_create).to redirect_to spree.order_path(order)
+          end
         end
       end
 
@@ -99,13 +101,13 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
     end
 
     context "when the transaction is invalid" do
-      before { params[:transaction].delete(:phone) }
+      before { params[:transaction][:email] = nil }
 
       context "format is HTML" do
-        it "raises an error" do
+        it "raises an error including the validation messages" do
           expect { post_create }.to raise_error(
-            SolidusPaypalBraintree::TransactionsController::InvalidTransactionError,
-            "Transaction invalid: Phone can't be blank"
+            SolidusPaypalBraintree::TransactionsController::InvalidImportError,
+            "Import invalid: Transaction is invalid"
           )
         end
       end
@@ -121,7 +123,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
 
         it "returns the errors as JSON" do
           post_create
-          expect(json["errors"]["phone"]).to eq ["can't be blank"]
+          expect(json["errors"]["Transaction"]).to eq ["is invalid"]
         end
       end
     end
