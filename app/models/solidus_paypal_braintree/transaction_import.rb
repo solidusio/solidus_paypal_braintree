@@ -7,6 +7,9 @@ module SolidusPaypalBraintree
     include ActiveModel::Model
 
     validate do
+      errors.add("Transaction", "is invalid") if !transaction.valid?
+      errors.add("Address", "is invalid") if address && !address.valid?
+
       if transaction.address && !transaction.address.valid?
         transaction.address.errors.each do |field, error|
           errors.add("TransactionAddress", "#{field} #{error}")
