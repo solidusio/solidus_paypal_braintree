@@ -132,7 +132,7 @@ window.SolidusPaypalBraintree = {
             if (xhr.status === 422) {
               var errors = xhr.responseJSON.errors
 
-              if (errors["Address"] || errors["TransactionAddress"]) {
+              if (errors && (errors["Address"] || errors["TransactionAddress"])) {
                 session.completePayment(ApplePaySession.STATUS_INVALID_SHIPPING_POSTAL_ADDRESS);
               } else {
                 session.completePayment(ApplePaySession.STATUS_FAILURE);
