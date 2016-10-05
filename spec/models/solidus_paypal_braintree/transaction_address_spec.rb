@@ -2,7 +2,9 @@ require 'spec_helper'
 
 describe SolidusPaypalBraintree::TransactionAddress do
   describe "#valid?" do
-    subject { described_class.new(valid_attributes).valid? }
+    let(:address) { described_class.new(valid_attributes) }
+
+    subject { address.valid? }
 
     let(:valid_attributes) do
       {
@@ -50,7 +52,13 @@ describe SolidusPaypalBraintree::TransactionAddress do
 
     context "no country_code" do
       let(:valid_attributes) { super().except(:country_code) }
-      it { is_expected.to be false }
+
+      it { is_expected.to be true }
+
+      it "defaults to the US" do
+        subject
+        expect(address.country_code).to eq "us"
+      end
     end
   end
 end
