@@ -38,6 +38,7 @@ module SolidusPaypalBraintree
     preference(:merchant_id, :string, default: nil)
     preference(:public_key,  :string, default: nil)
     preference(:private_key, :string, default: nil)
+    preference(:merchant_currency_map, :hash, default: {})
 
     def method_type
       "paypal_braintree"
@@ -218,6 +219,10 @@ module SolidusPaypalBraintree
         ALLOWED_BRAINTREE_OPTIONS.include?(key)
       end
 
+      if merchant_account_id = merchant_account_for(source, options)
+        params[:merchant_account_id] = merchant_account_id
+      end
+
       if source.token
         params[:payment_method_token] = source.token
       else
@@ -229,6 +234,12 @@ module SolidusPaypalBraintree
       end
 
       params
+    end
+
+    def merchant_account_for(_source, options)
+      if options[:currency]
+        preferred_merchant_currency_map[options[:currency]]
+      end
     end
 
     def customer_profile_params(payment)

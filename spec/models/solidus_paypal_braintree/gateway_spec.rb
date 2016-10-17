@@ -97,14 +97,26 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       end
     end
 
-    describe "#authorize", vcr: { cassette_name: 'gateway/authorize' } do
-      subject(:authorize) { gateway.authorize(1000, source, {}) }
+    describe "#authorize" do
+      subject(:authorize) { gateway.authorize(1000, source, { currency: currency }) }
+      let(:currency) { 'USD' }
 
-      include_examples "successful response"
+      context 'successful authorization', vcr: { cassette_name: 'gateway/authorize' } do
+        include_examples "successful response"
 
-      it 'authorizes the transaction', aggregate_failures: true do
-        expect(authorize.message).to eq 'authorized'
-        expect(authorize.authorization).to be_present
+        it 'authorizes the transaction', aggregate_failures: true do
+          expect(authorize.message).to eq 'authorized'
+          expect(authorize.authorization).to be_present
+        end
+      end
+
+      context 'different merchant account for currency', vcr: { cassette_name: 'gateway/authorize/EUR' } do
+        let(:currency) { 'EUR' }
+
+        it 'settles with the correct currency' do
+          transaction = braintree.transaction.find(authorize.authorization)
+          expect(transaction.merchant_account_id).to eq 'stembolt_EUR'
+        end
       end
     end
 
