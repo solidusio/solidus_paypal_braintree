@@ -39,9 +39,9 @@ class SolidusPaypalBraintree::TransactionsController < Spree::StoreController
 
   def redirect_after_import(import)
     if import.order.complete?
-      return redirect_to spree.order_path(import.order)
+      redirect_to spree.order_path(import.order)
     else
-      return redirect_to spree.checkout_state_path(import.order.state)
+      redirect_to spree.checkout_state_path(import.order.state)
     end
   end
 
