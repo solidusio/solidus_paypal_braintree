@@ -1,5 +1,4 @@
-// Placeholder manifest file.
-// the installer will append this file to the app vendored assets here: vendor/assets/javascripts/spree/frontend/all.js'
+//= require spree/braintree_hosted_fields.js
 
 window.SolidusPaypalBraintree = {
   APPLE_PAY_API_VERSION: 1,

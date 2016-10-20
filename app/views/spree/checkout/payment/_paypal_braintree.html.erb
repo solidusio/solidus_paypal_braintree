@@ -1,0 +1,27 @@
+<% id = payment_method.id %>
+
+<fieldset class="braintree-hosted-fields" data-braintree-hosted-fields data-id="<%= id %>">
+  <%= render partial: "spree/shared/braintree_hosted_fields", locals: { id: id } %>
+</fieldset>
+
+<script>
+  $(function() {
+    var $paymentForm = $("#checkout_form_payment"),
+        $hostedFields = $("[data-braintree-hosted-fields]");
+
+    function braintreeError() {
+      alert("Error initializing hosted fields");
+    }
+
+    $hostedFields.each(function() {
+      var $this = $(this);
+      var id = $this.data("id");
+
+      BraintreeHostedFields.getToken(id).
+        then(BraintreeHostedFields.createClient).
+        then(BraintreeHostedFields.createHostedFields(id)).
+        then(BraintreeHostedFields.addFormHook($this, $paymentForm)).
+        fail(braintreeError)
+    });
+  });
+</script>
