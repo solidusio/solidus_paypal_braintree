@@ -13,7 +13,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
 
   let(:source) do
     SolidusPaypalBraintree::Source.new(
-      nonce: 'fake-paypal-future-nonce',
+      nonce: 'fake-valid-nonce',
       user: user
     )
   end
