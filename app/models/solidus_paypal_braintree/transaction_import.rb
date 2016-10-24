@@ -44,6 +44,10 @@ module SolidusPaypalBraintree
           order.next
         end
 
+        if order.checkout_steps.index("payment") > (order.checkout_steps.index(order.state) || 0)
+          advance_order "payment"
+        end
+
         order.payments.new source: source,
           payment_method: transaction.payment_method,
           amount: order.total
@@ -74,8 +78,8 @@ module SolidusPaypalBraintree
 
     protected
 
-    def advance_order
-      order.next! until order.state == "confirm"
+    def advance_order(state = "confirm")
+      order.next! until order.state == state
     end
   end
 end
