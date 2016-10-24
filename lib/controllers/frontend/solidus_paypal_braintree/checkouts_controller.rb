@@ -14,9 +14,9 @@ class SolidusPaypalBraintree::CheckoutsController < Spree::CheckoutController
     @payment = Spree::PaymentCreate.new(@order, payment_params).build
 
     if @payment.save
-      render text: "ok"
+      render plain: "ok"
     else
-      render text: "not-ok"
+      render plain: "not-ok"
     end
   end
 
