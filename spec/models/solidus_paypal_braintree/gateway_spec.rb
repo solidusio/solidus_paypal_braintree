@@ -92,7 +92,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       include_examples "successful response"
 
       it 'submits the transaction for settlement', aggregate_failures: true do
-        expect(purchase.message).to eq 'settling'
+        expect(purchase.message).to eq 'submitted_for_settlement'
         expect(purchase.authorization).to be_present
       end
     end
@@ -126,7 +126,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       include_examples "successful response"
 
       it 'submits the transaction for settlement' do
-        expect(capture.message).to eq "settling"
+        expect(capture.message).to eq "submitted_for_settlement"
       end
     end
 
@@ -136,7 +136,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       include_examples "successful response"
 
       it 'credits the transaction' do
-        expect(credit.message).to eq 'settling'
+        expect(credit.message).to eq 'submitted_for_settlement'
       end
     end
 
@@ -172,7 +172,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
           include_examples "successful response"
 
           it 'refunds the transaction' do
-            expect(cancel.message).to eq 'settling'
+            expect(cancel.message).to eq 'submitted_for_settlement'
           end
         end
       end
