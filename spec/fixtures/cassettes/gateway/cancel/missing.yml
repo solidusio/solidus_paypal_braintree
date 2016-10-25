@@ -12,7 +12,7 @@ http_interactions:
       Accept:
       - application/xml
       User-Agent:
-      - Braintree Ruby Gem 2.65.0
+      - Braintree Ruby Gem 2.68.1
       X-Apiversion:
       - '4'
       Authorization:
@@ -23,7 +23,7 @@ http_interactions:
       message: Not Found
     headers:
       Date:
-      - Sat, 17 Sep 2016 20:44:08 GMT
+      - Mon, 24 Oct 2016 23:13:28 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
@@ -44,15 +44,15 @@ http_interactions:
       Cache-Control:
       - no-cache
       X-Request-Id:
-      - 34e6711a-8a27-4ca6-aa7e-bc964a692920
+      - 8e14a304-4186-43d9-8e3d-d34e76389ba0
       X-Runtime:
-      - '0.023988'
+      - '0.024553'
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        H4sIABir3VcAAwAAAP//AwAAAAAAAAAAAA==
+        H4sIAJiVDlgAAwAAAP//AwAAAAAAAAAAAA==
     http_version: 
-  recorded_at: Sat, 17 Sep 2016 20:44:08 GMT
+  recorded_at: Mon, 24 Oct 2016 23:13:26 GMT
 recorded_with: VCR 3.0.3
