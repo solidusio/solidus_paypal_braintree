@@ -4,6 +4,12 @@ $(function() {
   var $paymentForm = $("#new_payment"),
       $hostedFields = $("[data-braintree-hosted-fields]");
 
+  function onError (err) {
+    var msg = err.name + ": " + err.message;
+    show_flash("error", msg);
+    console.error(err);
+  }
+
   // exit early if we're not looking at the New Payment form, or if no
   // SolidusPaypalBraintree payment methods have been configured.
   if (!$paymentForm.length || !$hostedFields.length) { return; }
@@ -29,8 +35,8 @@ $(function() {
           then(BraintreeHostedFields.createClient).
           then(BraintreeHostedFields.createHostedFields(id)).
           then(setHostedFieldsInstance).
-          then(BraintreeHostedFields.addFormHook($this, $paymentForm)).
-          fail(BraintreeHostedFields.onError)
+          then(BraintreeHostedFields.addFormHook($paymentForm, $this, onError)).
+          fail(onError)
       }
     });
   });

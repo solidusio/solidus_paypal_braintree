@@ -13,12 +13,6 @@ window.BraintreeHostedFields = {
     return d.promise();
   },
 
-  onError: function (err) {
-    var msg = err.name + ": " + err.message;
-    show_flash("error", msg);
-    console.error(err);
-  },
-
   getToken: function (paymentMethodId, callback) {
     var opts = {
       url: "/solidus_paypal_braintree/client_token",
@@ -64,7 +58,7 @@ window.BraintreeHostedFields = {
     }
   },
 
-  addFormHook: function ($fields, $paymentForm) {
+  addFormHook: function ($paymentForm, $fields, errorCallback) {
     var shouldSubmit = false;
 
     function submit(payload) {
@@ -81,7 +75,7 @@ window.BraintreeHostedFields = {
 
           hostedFields.tokenize(function(err, payload) {
             if (err) {
-              onError(err);
+              errorCallback(err);
             } else {
               submit(payload);
             }

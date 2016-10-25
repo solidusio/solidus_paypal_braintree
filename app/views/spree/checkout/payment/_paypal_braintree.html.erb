@@ -9,8 +9,8 @@
     var $paymentForm = $("#checkout_form_payment"),
         $hostedFields = $("[data-braintree-hosted-fields]");
 
-    function braintreeError() {
-      alert("Error initializing hosted fields");
+    function braintreeError(err) {
+      alert(err.name + ": " + err.message);
     }
 
     $hostedFields.each(function() {
@@ -20,7 +20,7 @@
       BraintreeHostedFields.getToken(id).
         then(BraintreeHostedFields.createClient).
         then(BraintreeHostedFields.createHostedFields(id)).
-        then(BraintreeHostedFields.addFormHook($this, $paymentForm)).
+        then(BraintreeHostedFields.addFormHook($paymentForm, $this, braintreeError)).
         fail(braintreeError)
     });
   });
