@@ -1,4 +1,4 @@
-//= require spree/braintree_hosted_fields.js
+//= require spree/braintree_hosted_form.js
 
 $(function() {
   var $paymentForm = $("#new_payment"),
@@ -31,11 +31,10 @@ $(function() {
       }
 
       if (isNew && hostedFieldsInstance == null) {
-        BraintreeHostedFields.getToken(id).
-          then(BraintreeHostedFields.createClient).
-          then(BraintreeHostedFields.createHostedFields(id)).
+        braintreeForm = new BraintreeHostedForm($paymentForm, $this, id);
+        braintreeForm.initializeHostedFields().
           then(setHostedFieldsInstance).
-          then(BraintreeHostedFields.addFormHook($paymentForm, $this, onError)).
+          then(braintreeForm.addFormHook(onError)).
           fail(onError)
       }
     });

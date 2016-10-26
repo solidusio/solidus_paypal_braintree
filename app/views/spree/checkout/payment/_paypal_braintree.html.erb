@@ -34,10 +34,9 @@
       var $this = $(this);
       var id = $this.data("id");
 
-      BraintreeHostedFields.getToken(id).
-        then(BraintreeHostedFields.createClient).
-        then(BraintreeHostedFields.createHostedFields(id)).
-        then(BraintreeHostedFields.addFormHook($paymentForm, $this, braintreeError)).
+      var braintreeForm = new BraintreeHostedForm($paymentForm, $this, id);
+      braintreeForm.initializeHostedFields().
+        then(braintreeForm.addFormHook(braintreeError)).
         fail(braintreeError)
     });
   });
