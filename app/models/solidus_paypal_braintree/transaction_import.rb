@@ -62,17 +62,8 @@ module SolidusPaypalBraintree
     end
 
     def address
-      transaction.address.try do |ta|
-        country = Spree::Country.find_by(iso: ta.country_code.upcase)
-        Spree::Address.new first_name: ta.first_name,
-          last_name: ta.last_name,
-          city: ta.city,
-          country: country,
-          state_name: ta.state_code,
-          address1: ta.address_line_1,
-          address2: ta.address_line_2,
-          zipcode: ta.zip,
-          phone: transaction.phone
+      transaction.address && transaction.address.to_spree_address.tap do |address|
+        address.phone = transaction.phone
       end
     end
 

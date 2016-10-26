@@ -149,8 +149,7 @@ describe SolidusPaypalBraintree::TransactionImport do
 
       it "raises an error with the validation messages" do
         expect { subject }.to raise_error(
-          SolidusPaypalBraintree::TransactionImport::InvalidImportError,
-          "Validation failed: Transactionaddress zip can't be blank"
+          SolidusPaypalBraintree::TransactionImport::InvalidImportError
         )
       end
     end

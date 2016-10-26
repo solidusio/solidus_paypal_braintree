@@ -12,6 +12,8 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
 
   describe "POST create" do
     subject(:post_create) { post :create, params }
+    let!(:country) { create :country, iso: 'US' }
+    let!(:state) { create :state, abbr: 'WA', country: country }
 
     let(:params) do
       {
