@@ -11,9 +11,11 @@ module SolidusPaypalBraintree
     private
 
     def load_gateway
-      @gateway = ::SolidusPaypalBraintree::Gateway.
-        where(active: true).
-        find(params[:payment_method_id])
+      if params[:payment_method_id]
+        @gateway = ::SolidusPaypalBraintree::Gateway.find_by!(id: params[:payment_method_id])
+      else
+        @gateway = ::SolidusPaypalBraintree::Gateway.find_by!(active: true)
+      end
     end
   end
 end
