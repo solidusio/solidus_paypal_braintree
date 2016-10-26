@@ -4,6 +4,20 @@
 window.SolidusPaypalBraintree = {
   APPLE_PAY_API_VERSION: 1,
 
+  fetchToken: function(tokenCallback) {
+    Spree.ajax({
+      dataType: 'json',
+      type: 'POST',
+      url: Spree.pathFor('solidus_paypal_braintree/client_token'),
+      success: function(response) {
+        tokenCallback(response.client_token, response.payment_method_id);
+      },
+      error: function(xhr) {
+        console.error("Error fetching braintree token");
+      }
+    });
+  },
+
   initialize: function(authToken, clientReadyCallback) {
     braintree.client.create({
       authorization: authToken
