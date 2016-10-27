@@ -1,6 +1,6 @@
 <% prefix = "payment_source[#{id}]" %>
 
-<div id="card_form<%= id %>" data-hook>
+<div class="hosted-fields">
   <div class="field" data-hook="card_number">
     <%= label_tag "card_number#{id}", Spree::CreditCard.human_attribute_name(:number), class: "required" %>
     <div class="input" id="card_number<%= id %>"></div>

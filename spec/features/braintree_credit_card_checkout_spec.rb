@@ -22,7 +22,7 @@ shared_context "checkout setup" do
     visit spree.checkout_state_path(:delivery)
     click_button "Save and Continue"
     choose("Braintree")
-    expect(page).to have_selector("#card_form#{braintree.id}", visible: true)
+    expect(page).to have_selector("#payment_method_#{braintree.id}", visible: true)
     expect(page).to have_selector("iframe#braintree-hosted-field-number")
   end
 end
