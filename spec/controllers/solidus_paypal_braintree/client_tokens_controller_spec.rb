@@ -9,16 +9,32 @@ describe SolidusPaypalBraintree::ClientTokensController do
 
     before { user.generate_spree_api_key! }
 
-    subject(:response) do
-      post :create, payment_method_id: gateway.id, token: user.spree_api_key
-    end
+    context 'with a payment method id' do
+      subject(:response) do
+        post :create, token: user.spree_api_key
+      end
 
-    it "returns a client token", aggregate_failures: true do
-      expect(response).to have_http_status(:success)
-      expect(response.content_type).to eq "application/json"
-      expect(json["client_token"]).to be_present
-      expect(json["client_token"]).to be_a String
-      expect(json["payment_method_id"]).to eq gateway.id
+      it "returns a client token", aggregate_failures: true do
+        expect(response).to have_http_status(:success)
+        expect(response.content_type).to eq "application/json"
+        expect(json["client_token"]).to be_present
+        expect(json["client_token"]).to be_a String
+        expect(json["payment_method_id"]).to eq gateway.id
+      end
+
+      context 'with a payment method id' do
+        before do
+          create_gateway id: 3
+        end
+
+        subject(:response) do
+          post :create, token: user.spree_api_key, payment_method_id: 3
+        end
+
+        it 'uses the selected gateway' do
+          expect(json["payment_method_id"]).to eq 3
+        end
+      end
     end
   end
 end
