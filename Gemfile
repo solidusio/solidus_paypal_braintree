@@ -13,9 +13,9 @@ end
 gem 'solidus_auth_devise', '~> 1.0'
 
 group :development, :test do
-  gem "chromedriver-helper"
   gem "pry-rails"
-  gem "selenium-webdriver"
+  gem 'selenium-webdriver', require: false
+  gem 'chromedriver-helper', require: false
 end
 
 gemspec
