@@ -35,6 +35,14 @@ require 'spree/testing_support/url_helpers'
 # Requires factories defined in lib/solidus_paypal_braintree/factories.rb
 require 'solidus_paypal_braintree/factories'
 
+# Requires poltergeist for feature specs
+require 'capybara/poltergeist'
+Capybara.register_driver :poltergeist do |app|
+  # Paypal requires TLS v1.2 for ssl connections
+  Capybara::Poltergeist::Driver.new(app, { phantomjs_options: ['--ssl-protocol=tlsv1.2'] })
+end
+Capybara.javascript_driver = :poltergeist
+
 VCR.configure do |c|
   c.cassette_library_dir = "spec/fixtures/cassettes"
   c.hook_into :webmock
