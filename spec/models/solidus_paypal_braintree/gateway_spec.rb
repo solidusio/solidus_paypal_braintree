@@ -18,7 +18,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     )
   end
 
-  describe 'making a payment on an order', vcr: { cassette_name: 'gateway/complete' } do
+  describe 'making a payment on an order', vcr: { cassette_name: 'gateway/complete', match_requests_on: [:method, :uri] } do
     include_context 'order ready for payment'
 
     before do
