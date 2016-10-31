@@ -49,23 +49,31 @@ window.SolidusPaypalBraintree = {
     };
   },
 
-  initializeApplePaySession: function(applePayInstance, storeName, paymentRequest, sessionCallback) {
+  /* Initializes and begins the ApplePay session
+   *
+   * @param config Configuration settings for the session
+   * @param config.applePayInstance {object} The instance returned from applePay.create
+   * @param config.storeName {String} The name of the store
+   * @param config.paymentRequest {object} The payment request to submit
+   * @param config.currentUserEmail {String|undefined} The active user's email
+   * @param config.paymentMethodId {Integer} The SolidusPaypalBraintree::Gateway id
+   */
+  initializeApplePaySession: function(config, sessionCallback) {
 
     var requiredFields = ['postalAddress', 'phone'];
-    var currentUserEmail = document.querySelector("#transaction_email").value;
 
-    if (!currentUserEmail) {
+    if (!config.currentUserEmail) {
       requiredFields.push('email');
     }
 
-    paymentRequest['requiredShippingContactFields'] = requiredFields
-    var paymentRequest = applePayInstance.createPaymentRequest(paymentRequest);
+    config.paymentRequest['requiredShippingContactFields'] = requiredFields
+    var paymentRequest = config.applePayInstance.createPaymentRequest(config.paymentRequest);
 
     var session = new ApplePaySession(SolidusPaypalBraintree.APPLE_PAY_API_VERSION, paymentRequest);
     session.onvalidatemerchant = function (event) {
-      applePayInstance.performValidation({
+      config.applePayInstance.performValidation({
         validationURL: event.validationURL,
-        displayName: storeName,
+        displayName: config.storeName,
       }, function (validationErr, merchantSession) {
         if (validationErr) {
           console.error('Error validating Apple Pay:', validationErr);
@@ -77,14 +85,13 @@ window.SolidusPaypalBraintree = {
     };
 
     session.onpaymentauthorized = function (event) {
-      applePayInstance.tokenize({
+      config.applePayInstance.tokenize({
         token: event.payment.token
       }, function (tokenizeErr, payload) {
         if (tokenizeErr) {
           console.error('Error tokenizing Apple Pay:', tokenizeErr);
           session.completePayment(ApplePaySession.STATUS_FAILURE);
         }
-        session.completePayment(ApplePaySession.STATUS_SUCCESS);
 
         shipping_contact = event.payment.shippingContact;
         address_hash = {
@@ -101,16 +108,15 @@ window.SolidusPaypalBraintree = {
           address_hash['address_line_2'] = shipping_contact.addressLines[1];
         }
 
-        email = document.querySelector("#transaction_email").value
         transaction_params = {
           transaction: {
             nonce: payload.nonce,
             phone: shipping_contact.phoneNumber,
-            email: email || shipping_contact.emailAddress,
+            email: config.currentUserEmail || shipping_contact.emailAddress,
             payment_type: payload.type,
             address_attributes: address_hash
           },
-          payment_method_id: document.querySelector("#payment_method_id").value
+          payment_method_id: config.paymentMethodId
         };
 
         Spree.ajax({
