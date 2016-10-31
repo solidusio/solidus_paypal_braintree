@@ -30,6 +30,54 @@ window.SolidusPaypalBraintree = {
     });
   },
 
+  initializeWithDataCollector: function(authToken, clientReadyCallback) {
+    braintree.client.create({
+      authorization: authToken
+    }, function (clientErr, clientInstance) {
+      braintree.dataCollector.create({
+        client: clientInstance,
+        paypal: true
+      }, function (err, dataCollectorInstance) {
+        if (err) {
+          console.error('Error creating data collector:', err);
+          return;
+        }
+      });
+      if (clientErr) {
+        console.error('Error creating client:', clientErr);
+        return;
+      }
+      clientReadyCallback(clientInstance);
+    });
+  },
+
+  setupPaypal: function(braintreeClient, readyCallback) {
+    braintree.paypal.create({
+      client: braintreeClient
+    }, function (paypalErr, paypalInstance) {
+      if (paypalErr) {
+        console.error("Error creating PayPal:", paypalErr);
+        return;
+      }
+      readyCallback(paypalInstance);
+    });
+  },
+
+  initializePaypalSession: function(paypalInstance, paypalButton, paypalOptions, submitCallback) {
+    paypalButton.removeAttribute('disabled');
+    paypalButton.addEventListener('click', function(event) {
+      paypalInstance.tokenize(paypalOptions, function(tokenizeErr, payload) {
+        if (tokenizeErr) {
+          if (tokenizeErr.type !== 'CUSTOMER') {
+            console.error('Error tokenizing:', tokenizeErr);
+          }
+          return;
+        }
+        submitCallback(payload);
+      });
+    }, false);
+  },
+
   setupApplePay: function(braintreeClient, merchantId, readyCallback) {
     if(window.ApplePaySession) {
       var promise = ApplePaySession.canMakePaymentsWithActiveCard(merchantId);

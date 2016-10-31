@@ -21,7 +21,7 @@ class SolidusPaypalBraintree::TransactionsController < Spree::StoreController
         import.import!
 
         format.html { redirect_after_import(import) }
-        format.json { head :ok }
+        format.json { render json: true }
       else
         status = 422
         format.html { transaction_error(transaction) }

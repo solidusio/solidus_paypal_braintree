@@ -1,0 +1,19 @@
+<!-- Load the client component. -->
+<script src="https://js.braintreegateway.com/web/3.4.0/js/client.min.js"></script>
+<!-- Load the PayPal component. -->
+<script src="https://js.braintreegateway.com/web/3.4.0/js/paypal.min.js"></script>
+<!-- Load the data-collector component. -->
+<script src="https://js.braintreegateway.com/web/3.4.0/js/data-collector.min.js"></script>
+<script src="https://www.paypalobjects.com/api/button.js?"
+        data-merchant="braintree"
+        data-id="paypal-button"
+        data-button="checkout"
+        data-color="blue"
+        data-size="medium"
+        data-shape="pill"
+        data-button_type="button"
+        data-button_disabled="true"
+        ></script>
+<script>
+window.SolidusPaypalBraintree.fetchToken(initializePaypal)
+</script>

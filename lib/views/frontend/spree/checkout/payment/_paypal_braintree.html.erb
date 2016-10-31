@@ -1,0 +1,7 @@
+<% payment_method = current_store.payment_methods.where(active: true).find_by_type('SolidusPaypalBraintree::Gateway') %>
+<% if payment_method %>
+  <% if current_order.valid? %>
+    <%= render partial: 'solidus_paypal_braintree/address_field', locals: { shipping_address: current_order.shipping_address } %>
+  <% end %>
+  <%= render partial: 'solidus_paypal_braintree/paypal_button' %>
+<% end %>
