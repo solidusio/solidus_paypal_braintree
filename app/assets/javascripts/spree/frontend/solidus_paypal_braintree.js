@@ -93,34 +93,10 @@ window.SolidusPaypalBraintree = {
           session.completePayment(ApplePaySession.STATUS_FAILURE);
         }
 
-        shipping_contact = event.payment.shippingContact;
-        address_hash = {
-          country_code:   shipping_contact.countryCode,
-          first_name:     shipping_contact.givenName,
-          last_name:      shipping_contact.familyName,
-          state_code:     shipping_contact.administrativeArea,
-          city:           shipping_contact.locality,
-          zip:            shipping_contact.postalCode,
-          address_line_1: shipping_contact.addressLines[0]
-        };
-
-        if(shipping_contact.addressLines.length > 1) {
-          address_hash['address_line_2'] = shipping_contact.addressLines[1];
-        }
-
-        transaction_params = {
-          transaction: {
-            nonce: payload.nonce,
-            phone: shipping_contact.phoneNumber,
-            email: config.currentUserEmail || shipping_contact.emailAddress,
-            payment_type: payload.type,
-            address_attributes: address_hash
-          },
-          payment_method_id: config.paymentMethodId
-        };
+        var contact = event.payment.shippingContact;
 
         Spree.ajax({
-          data: transaction_params,
+          data: SolidusPaypalBraintree.buildTransaction(payload, config, contact),
           dataType: 'json',
           type: 'POST',
           url: Spree.pathFor('solidus_paypal_braintree/transactions'),
@@ -141,12 +117,42 @@ window.SolidusPaypalBraintree = {
           }
         });
 
-
       });
     };
 
     sessionCallback(session);
 
     session.begin();
+  },
+
+  buildTransaction: function(payload, config, shippingContact) {
+    return {
+      transaction: {
+        nonce: payload.nonce,
+        phone: shippingContact.phoneNumber,
+        email: config.currentUserEmail || shippingContact.emailAddress,
+        payment_type: payload.type,
+        address_attributes: SolidusPaypalBraintree.buildAddress(shippingContact)
+      },
+      payment_method_id: config.paymentMethodId
+    };
+  },
+
+  buildAddress: function(shippingContact) {
+    var addressHash = {
+      country_code:   shippingContact.countryCode,
+      first_name:     shippingContact.givenName,
+      last_name:      shippingContact.familyName,
+      state_code:     shippingContact.administrativeArea,
+      city:           shippingContact.locality,
+      zip:            shippingContact.postalCode,
+      address_line_1: shippingContact.addressLines[0]
+    };
+
+    if(shippingContact.addressLines.length > 1) {
+      addressHash['address_line_2'] = shippingContact.addressLines[1];
+    }
+
+    return addressHash;
   }
 }
