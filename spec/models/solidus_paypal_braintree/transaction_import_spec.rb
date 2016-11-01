@@ -2,16 +2,25 @@ require 'spec_helper'
 
 describe SolidusPaypalBraintree::TransactionImport do
   let(:order) { Spree::Order.new }
+  let(:braintree_gateway) { SolidusPaypalBraintree::Gateway.new }
   let(:transaction_address) { nil }
   let(:transaction) do
     SolidusPaypalBraintree::Transaction.new nonce: 'abcd1234',
-      payment_type: "ApplePayCard", address: transaction_address
+      payment_type: "ApplePayCard", address: transaction_address,
+      payment_method: braintree_gateway, email: "test@example.com",
+      phone: "123-456-6789"
   end
 
   describe "#valid?" do
     subject { described_class.new(order, transaction).valid? }
 
     it { is_expected.to be true }
+
+    context "invalid transaction" do
+      let(:transaction) { SolidusPaypalBraintree::Transaction.new }
+
+      it { is_expected.to be false }
+    end
 
     context "invalid address" do
       let(:transaction_address) { SolidusPaypalBraintree::TransactionAddress.new }
@@ -69,7 +78,7 @@ describe SolidusPaypalBraintree::TransactionImport do
     let(:transaction) do
       SolidusPaypalBraintree::Transaction.new nonce: 'fake-valid-nonce',
         payment_method: payment_method, address: transaction_address,
-        phone: '123-456-7890', email: 'user@example.com'
+        payment_type: "ApplePay", phone: '123-456-7890', email: 'user@example.com'
     end
 
     before do

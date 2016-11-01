@@ -49,23 +49,31 @@ window.SolidusPaypalBraintree = {
     };
   },
 
-  initializeApplePaySession: function(applePayInstance, storeName, paymentRequest, sessionCallback) {
+  /* Initializes and begins the ApplePay session
+   *
+   * @param config Configuration settings for the session
+   * @param config.applePayInstance {object} The instance returned from applePay.create
+   * @param config.storeName {String} The name of the store
+   * @param config.paymentRequest {object} The payment request to submit
+   * @param config.currentUserEmail {String|undefined} The active user's email
+   * @param config.paymentMethodId {Integer} The SolidusPaypalBraintree::Gateway id
+   */
+  initializeApplePaySession: function(config, sessionCallback) {
 
     var requiredFields = ['postalAddress', 'phone'];
-    var currentUserEmail = document.querySelector("#transaction_email").value;
 
-    if (!currentUserEmail) {
+    if (!config.currentUserEmail) {
       requiredFields.push('email');
     }
 
-    paymentRequest['requiredShippingContactFields'] = requiredFields
-    var paymentRequest = applePayInstance.createPaymentRequest(paymentRequest);
+    config.paymentRequest['requiredShippingContactFields'] = requiredFields
+    var paymentRequest = config.applePayInstance.createPaymentRequest(config.paymentRequest);
 
     var session = new ApplePaySession(SolidusPaypalBraintree.APPLE_PAY_API_VERSION, paymentRequest);
     session.onvalidatemerchant = function (event) {
-      applePayInstance.performValidation({
+      config.applePayInstance.performValidation({
         validationURL: event.validationURL,
-        displayName: storeName,
+        displayName: config.storeName,
       }, function (validationErr, merchantSession) {
         if (validationErr) {
           console.error('Error validating Apple Pay:', validationErr);
@@ -77,17 +85,38 @@ window.SolidusPaypalBraintree = {
     };
 
     session.onpaymentauthorized = function (event) {
-      applePayInstance.tokenize({
+      config.applePayInstance.tokenize({
         token: event.payment.token
       }, function (tokenizeErr, payload) {
         if (tokenizeErr) {
           console.error('Error tokenizing Apple Pay:', tokenizeErr);
           session.completePayment(ApplePaySession.STATUS_FAILURE);
         }
-        session.completePayment(ApplePaySession.STATUS_SUCCESS);
 
-        SolidusPaypalBraintree.setBraintreeApplePayContact(event.payment.shippingContact);
-        SolidusPaypalBraintree.submitBraintreePayload(payload);
+        var contact = event.payment.shippingContact;
+
+        Spree.ajax({
+          data: SolidusPaypalBraintree.buildTransaction(payload, config, contact),
+          dataType: 'json',
+          type: 'POST',
+          url: Spree.pathFor('solidus_paypal_braintree/transactions'),
+          success: function(response) {
+            session.completePayment(ApplePaySession.STATUS_SUCCESS);
+            window.location.replace(response.redirectUrl);
+          },
+          error: function(xhr) {
+            if (xhr.status === 422) {
+              var errors = xhr.responseJSON.errors
+
+              if (errors && (errors["Address"] || errors["TransactionAddress"])) {
+                session.completePayment(ApplePaySession.STATUS_INVALID_SHIPPING_POSTAL_ADDRESS);
+              } else {
+                session.completePayment(ApplePaySession.STATUS_FAILURE);
+              }
+            }
+          }
+        });
+
       });
     };
 
@@ -96,35 +125,34 @@ window.SolidusPaypalBraintree = {
     session.begin();
   },
 
-  setBraintreeApplePayContact: function(appleContact) {
-    var apple_map = {
-      locality: 'city',
-      countryCode: 'country_code',
-      familyName: 'last_name',
-      givenName: 'first_name',
-      postalCode: 'zip',
-      administrativeArea: 'state_code',
-    }
-    for (var key in apple_map) {
-      document.querySelector("#transaction_address_attributes_" + apple_map[key]).value = appleContact[key];
-    }
-
-    window.addressCon = appleContact;
-    document.querySelector("#transaction_address_attributes_address_line_1").value = appleContact.addressLines[0];
-
-    if(appleContact.addressLines.length > 1) {
-      document.querySelector("#transaction_address_attributes_address_line_2").value = appleContact.addressLines[1];
-    }
-
-    document.querySelector("#transaction_phone").value = appleContact.phoneNumber;
-    if (appleContact.emailAddress) {
-      document.querySelector("#transaction_email").value = appleContact.emailAddress;
-    }
+  buildTransaction: function(payload, config, shippingContact) {
+    return {
+      transaction: {
+        nonce: payload.nonce,
+        phone: shippingContact.phoneNumber,
+        email: config.currentUserEmail || shippingContact.emailAddress,
+        payment_type: payload.type,
+        address_attributes: SolidusPaypalBraintree.buildAddress(shippingContact)
+      },
+      payment_method_id: config.paymentMethodId
+    };
   },
 
-  submitBraintreePayload: function(payload) {
-    document.querySelector("#transaction_nonce").value = payload.nonce;
-    document.querySelector("#transaction_payment_type").value = payload.type;
-    document.querySelector('#new_transaction').submit();
+  buildAddress: function(shippingContact) {
+    var addressHash = {
+      country_code:   shippingContact.countryCode,
+      first_name:     shippingContact.givenName,
+      last_name:      shippingContact.familyName,
+      state_code:     shippingContact.administrativeArea,
+      city:           shippingContact.locality,
+      zip:            shippingContact.postalCode,
+      address_line_1: shippingContact.addressLines[0]
+    };
+
+    if(shippingContact.addressLines.length > 1) {
+      addressHash['address_line_2'] = shippingContact.addressLines[1];
+    }
+
+    return addressHash;
   }
 }
