@@ -63,10 +63,18 @@ window.SolidusPaypalBraintree = {
     });
   },
 
-  initializePaypalSession: function(paypalInstance, paypalButton, paypalOptions, submitCallback) {
-    paypalButton.removeAttribute('disabled');
-    paypalButton.addEventListener('click', function(event) {
-      paypalInstance.tokenize(paypalOptions, function(tokenizeErr, payload) {
+  /* Initializes and begins the Paypal session
+   *
+   * @param config Configuration settings for the session
+   * @param config.paypalInstance {object} The Paypal instance returned by Braintree
+   * @param config.paypalButton {object} The button DOM element
+   * @param config.paypalOptions {object} Configuration options for Paypal
+   * @param submitCallback Callback function after successful tokenization
+   */
+  initializePaypalSession: function(config, submitCallback) {
+    config.paypalButton.removeAttribute('disabled');
+    config.paypalButton.addEventListener('click', function(event) {
+      config.paypalInstance.tokenize(config.paypalOptions, function(tokenizeErr, payload) {
         if (tokenizeErr) {
           if (tokenizeErr.type !== 'CUSTOMER') {
             console.error('Error tokenizing:', tokenizeErr);

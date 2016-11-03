@@ -9,7 +9,11 @@ initializePaypal = function(authToken, paymentMethodId) {
       } else {
         var paypalOptions = {flow: 'vault', enableShippingAddress: true}
       }
-      window.SolidusPaypalBraintree.initializePaypalSession(paypalInstance, paypalButton, paypalOptions, submitBraintreeTransaction);
+      window.SolidusPaypalBraintree.initializePaypalSession({
+        paypalInstance: paypalInstance,
+        paypalButton: paypalButton,
+        paypalOptions: paypalOptions,
+      }, submitBraintreeTransaction);
     });
   });
 };
@@ -21,7 +25,11 @@ initializePaypalCredit = function(authToken, paymentMethodId) {
       var paypalButton = document.querySelector('#paypal-credit-button');
       var address = JSON.parse(document.querySelector('#shipping_address').value);
       var paypalOptions = {flow: 'checkout', amount: amount, currency: currency, shippingAddressOverride: address, shippingAddressEditable: false, enableShippingAddress: true}
-      window.SolidusPaypalBraintree.initializePaypalSession(paypalInstance, paypalButton, paypalOptions, submitBraintreeTransaction);
+      window.SolidusPaypalBraintree.initializePaypalSession({
+        paypalInstance: paypalInstance,
+        paypalButton: paypalButton,
+        paypalOptions: paypalOptions,
+      }, submitBraintreeTransaction);
     });
   });
 };
