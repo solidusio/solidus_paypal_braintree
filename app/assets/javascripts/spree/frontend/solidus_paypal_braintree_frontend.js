@@ -43,19 +43,26 @@ submitBraintreeTransaction = function(payload) {
     var first_name = payload.details.firstName;
     var last_name = payload.details.lastName;
   }
-  var transactionParams = { "payment_method_id" : window.paymentMethodId,
-                            "transaction" : { "email" : payload.details.email,
-                                              "phone" : payload.details.phone,
-                                              "nonce" : payload.nonce,
-                                              "payment_type" : payload.type,
-                                              "address_attributes" : { "first_name" : first_name,
-                                                                       "last_name" : last_name,
-                                                                       "address_line_1" : payload.details.shippingAddress.line1,
-                                                                       "address_line_2" : payload.details.shippingAddress.line2,
-                                                                       "city" : payload.details.shippingAddress.city,
-                                                                       "state_code" : payload.details.shippingAddress.state,
-                                                                       "zip" : payload.details.shippingAddress.postalCode,
-                                                                       "country_code" : payload.details.shippingAddress.countryCode } } }
+  var transactionParams = {
+    "payment_method_id" : window.paymentMethodId,
+    "transaction" : {
+      "email" : payload.details.email,
+      "phone" : payload.details.phone,
+      "nonce" : payload.nonce,
+      "payment_type" : payload.type,
+      "address_attributes" : {
+        "first_name" : first_name,
+        "last_name" : last_name,
+        "address_line_1" : payload.details.shippingAddress.line1,
+        "address_line_2" : payload.details.shippingAddress.line2,
+        "city" : payload.details.shippingAddress.city,
+        "state_code" : payload.details.shippingAddress.state,
+        "zip" : payload.details.shippingAddress.postalCode,
+        "country_code" : payload.details.shippingAddress.countryCode
+      }
+    }
+  }
+
   Spree.ajax({
     url: Spree.pathFor("solidus_paypal_braintree/transactions"),
     type: 'POST',
