@@ -106,4 +106,36 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
       end
     end
   end
+
+  describe "#apple_pay?" do
+    subject { described_class.new(payment_type: type).apple_pay? }
+
+    context "when the payment type is Apple Pay" do
+      let(:type) { "ApplePayCard" }
+
+      it { is_expected.to be true }
+    end
+
+    context "when the payment type is not PayPal" do
+      let(:type) { "DogeCoin" }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe "#paypal?" do
+    subject { described_class.new(payment_type: type).paypal? }
+
+    context "when the payment type is PayPal" do
+      let(:type) { "PayPalAccount" }
+
+      it { is_expected.to be true }
+    end
+
+    context "when the payment type is not PayPal" do
+      let(:type) { "MonopolyMoney" }
+
+      it { is_expected.to be false }
+    end
+  end
 end

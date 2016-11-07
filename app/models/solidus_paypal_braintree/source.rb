@@ -1,4 +1,7 @@
 class SolidusPaypalBraintree::Source < ApplicationRecord
+  PAYPAL = "PayPalAccount"
+  APPLE_PAY = "ApplePayCard"
+
   belongs_to :user, class_name: "Spree::User"
   belongs_to :payment_method, class_name: 'Spree::PaymentMethod'
   has_many :payments, as: :source, class_name: "Spree::Payment"
@@ -28,5 +31,13 @@ class SolidusPaypalBraintree::Source < ApplicationRecord
 
   def friendly_payment_type
     I18n.t(payment_type.underscore, scope: "solidus_paypal_braintree.payment_type")
+  end
+
+  def apple_pay?
+    payment_type == APPLE_PAY
+  end
+
+  def paypal?
+    payment_type == PAYPAL
   end
 end
