@@ -25,4 +25,8 @@ class SolidusPaypalBraintree::Source < ApplicationRecord
   def can_credit?(payment)
     payment.completed? && payment.credit_allowed > 0
   end
+
+  def friendly_payment_type
+    I18n.t(payment_type.underscore, scope: "solidus_paypal_braintree.payment_type")
+  end
 end

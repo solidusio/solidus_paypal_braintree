@@ -86,4 +86,24 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
       it { is_expected.not_to be }
     end
   end
+
+  describe "#friendly_payment_type" do
+    subject { described_class.new(payment_type: type).friendly_payment_type }
+
+    context "when then payment type is PayPal" do
+      let(:type) { "PayPalAccount" }
+
+      it "returns the translated payment type" do
+        expect(subject).to eq "PayPal"
+      end
+    end
+
+    context "when the payment type is Apple Pay" do
+      let(:type) { "ApplePayCard" }
+
+      it "returns the translated payment type" do
+        expect(subject).to eq "Apple Pay"
+      end
+    end
+  end
 end
