@@ -41,7 +41,9 @@ Capybara.register_driver :poltergeist do |app|
   # Paypal requires TLS v1.2 for ssl connections
   Capybara::Poltergeist::Driver.new(app, { phantomjs_options: ['--ssl-protocol=tlsv1.2'] })
 end
-Capybara.javascript_driver = :poltergeist
+Capybara.register_driver :chrome do |app|
+  Capybara::Selenium::Driver.new(app, browser: :chrome)
+end
 
 VCR.configure do |c|
   c.cassette_library_dir = "spec/fixtures/cassettes"
@@ -90,6 +92,10 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
   config.include Spree::TestingSupport::UrlHelpers
   config.include BraintreeHelpers
+
+  config.before(:each, type: :feature, js: true) do |ex|
+    Capybara.current_driver = ex.metadata[:driver] || :poltergeist
+  end
 
   config.before :suite do
     DatabaseCleaner.strategy = :transaction
