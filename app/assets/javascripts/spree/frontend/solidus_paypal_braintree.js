@@ -1,14 +1,6 @@
 // Placeholder manifest file.
 // the installer will append this file to the app vendored assets here: vendor/assets/javascripts/spree/frontend/all.js'
 
-/**
- * Callback definition for tokenization
- *
- * @callback tokenizeCallback
- * @param {object} The error returned by Braintree if one occurred
- * @param {object} The payload returned by Braintree for successful tokenization
- */
-
 window.SolidusPaypalBraintree = {
   APPLE_PAY_API_VERSION: 1,
 
@@ -57,34 +49,6 @@ window.SolidusPaypalBraintree = {
       }
       clientReadyCallback(clientInstance);
     });
-  },
-
-  setupPaypal: function(braintreeClient, readyCallback) {
-    braintree.paypal.create({
-      client: braintreeClient
-    }, function (paypalErr, paypalInstance) {
-      if (paypalErr) {
-        console.error("Error creating PayPal:", paypalErr);
-        return;
-      }
-      readyCallback(paypalInstance);
-    });
-  },
-
-  /* Initializes and begins the Paypal session
-   *
-   * @param config Configuration settings for the session
-   * @param config.paypalInstance {object} The Paypal instance returned by Braintree
-   * @param config.paypalButton {object} The button DOM element
-   * @param config.paypalOptions {object} Configuration options for Paypal
-   * @param config.error {tokenizeErrorCallback} Callback function for tokenize errors
-   * @param {tokenizeCallback} callback Callback function for tokenization
-   */
-  initializePaypalSession: function(config, callback) {
-    config.paypalButton.removeAttribute('disabled');
-    config.paypalButton.addEventListener('click', function(event) {
-      config.paypalInstance.tokenize(config.paypalOptions, callback);
-    }, false);
   },
 
   setupApplePay: function(braintreeClient, merchantId, readyCallback) {

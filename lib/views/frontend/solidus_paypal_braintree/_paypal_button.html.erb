@@ -1,3 +1,5 @@
+<% address = current_order.ship_address %>
+
 <!-- Load the client component. -->
 <script src="https://js.braintreegateway.com/web/3.4.0/js/client.min.js"></script>
 <!-- Load the PayPal component. -->
@@ -15,5 +17,22 @@
         data-button_disabled="true"
         ></script>
 <script>
-window.SolidusPaypalBraintree.fetchToken(initializePaypal)
+  var address = {
+    line1: '<%= address.address1 %>',
+    line2: '<%= address.address2 %>',
+    city: '<%= address.city %>',
+    state: '<%= address.state.name %>',
+    postalCode: '<%= address.zipcode %>',
+    countryCode: '<%= address.country.iso %>',
+    phone: '<%= address.phone %>',
+    recipientName: '<%= "#{address.firstname} #{address.lastname}" %>'
+  }
+  var button = new PaypalButton(document.querySelector("#paypal-button"));
+
+  button.initialize({
+    flow: 'vault',
+    enableShippingAddress: true,
+    shippingAddressOverride: address,
+    shippingAddressEditable: false
+  });
 </script>
