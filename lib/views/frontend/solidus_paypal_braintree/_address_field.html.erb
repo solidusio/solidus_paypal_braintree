@@ -1,9 +1,0 @@
-<% address = {line1: shipping_address.address1,
-              line2: shipping_address.address2,
-              city: shipping_address.city,
-              state: shipping_address.state.name,
-              postalCode: shipping_address.zipcode,
-              countryCode: shipping_address.country.iso,
-              phone: shipping_address.phone,
-              recipientName: "#{shipping_address.firstname} #{shipping_address.lastname}"}.to_json %>
-<%= hidden_field_tag 'shipping_address', address %>

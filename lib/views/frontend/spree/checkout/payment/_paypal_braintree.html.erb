@@ -1,4 +1,38 @@
-<% if current_order.valid? %>
-  <%= render partial: 'solidus_paypal_braintree/address_field', locals: { shipping_address: current_order.shipping_address } %>
-<% end %>
-<%= render partial: 'solidus_paypal_braintree/paypal_button' %>
+<% address = current_order.ship_address %>
+
+<!-- Load the client component. -->
+<script src="https://js.braintreegateway.com/web/3.4.0/js/client.min.js"></script>
+<!-- Load the PayPal component. -->
+<script src="https://js.braintreegateway.com/web/3.4.0/js/paypal.min.js"></script>
+<!-- Load the data-collector component. -->
+<script src="https://js.braintreegateway.com/web/3.4.0/js/data-collector.min.js"></script>
+<script src="https://www.paypalobjects.com/api/button.js?"
+        data-merchant="braintree"
+        data-id="paypal-button"
+        data-button="checkout"
+        data-color="blue"
+        data-size="medium"
+        data-shape="pill"
+        data-button_type="button"
+        data-button_disabled="true"
+        ></script>
+<script>
+  var address = {
+    line1: '<%= address.address1 %>',
+    line2: '<%= address.address2 %>',
+    city: '<%= address.city %>',
+    state: '<%= address.state.name %>',
+    postalCode: '<%= address.zipcode %>',
+    countryCode: '<%= address.country.iso %>',
+    phone: '<%= address.phone %>',
+    recipientName: '<%= "#{address.firstname} #{address.lastname}" %>'
+  }
+  var button = new PaypalButton(document.querySelector("#paypal-button"));
+
+  button.initialize({
+    flow: 'vault',
+    enableShippingAddress: true,
+    shippingAddressOverride: address,
+    shippingAddressEditable: false
+  });
+</script>
