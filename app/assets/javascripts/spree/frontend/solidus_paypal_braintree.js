@@ -30,6 +30,27 @@ window.SolidusPaypalBraintree = {
     });
   },
 
+  initializeWithDataCollector: function(authToken, clientReadyCallback) {
+    braintree.client.create({
+      authorization: authToken
+    }, function (clientErr, clientInstance) {
+      braintree.dataCollector.create({
+        client: clientInstance,
+        paypal: true
+      }, function (err, dataCollectorInstance) {
+        if (err) {
+          console.error('Error creating data collector:', err);
+          return;
+        }
+      });
+      if (clientErr) {
+        console.error('Error creating client:', clientErr);
+        return;
+      }
+      clientReadyCallback(clientInstance);
+    });
+  },
+
   setupApplePay: function(braintreeClient, merchantId, readyCallback) {
     if(window.ApplePaySession) {
       var promise = ApplePaySession.canMakePaymentsWithActiveCard(merchantId);
