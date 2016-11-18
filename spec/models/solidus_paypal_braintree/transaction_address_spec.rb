@@ -72,6 +72,37 @@ describe SolidusPaypalBraintree::TransactionAddress do
     end
   end
 
+  describe "#attributes=" do
+    subject { described_class.new(attrs) }
+
+    context "when an ISO code is provided" do
+      let(:attrs) { { country_code: "US" } }
+
+      it "uses the ISO code provided" do
+        expect(subject.country_code).to eq "US"
+      end
+    end
+
+    context "when the ISO code is blank" do
+      context "and a valid country name is provided" do
+        let!(:canada) { create :country, name: "Canada", iso: "CA" }
+        let(:attrs) { { country_name: "Canada" } }
+
+        it "looks up the ISO code by the country name" do
+          expect(subject.country_code).to eq "CA"
+        end
+      end
+
+      context "and no valid country name is provided" do
+        let(:attrs) { { country_name: "Neverland" } }
+
+        it "leaves the country code blank" do
+          expect(subject.country_code).to be_nil
+        end
+      end
+    end
+  end
+
   describe '#spree_country' do
     subject { described_class.new(country_code: country_code).spree_country }
 

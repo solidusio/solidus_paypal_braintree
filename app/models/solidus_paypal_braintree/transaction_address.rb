@@ -4,6 +4,7 @@ module SolidusPaypalBraintree
   class TransactionAddress
     include ActiveModel::Model
     include ActiveModel::Validations::Callbacks
+    include SolidusPaypalBraintree::CountryMapper
 
     attr_accessor :country_code, :last_name, :first_name,
       :city, :zip, :state_code, :address_line_1, :address_line_2
@@ -17,6 +18,15 @@ module SolidusPaypalBraintree
 
     validates :spree_country, presence: true
     validates :spree_state, presence: true, if: :should_match_state_model?
+
+    def initialize(attributes = {})
+      country_name = attributes.delete(:country_name) || ""
+      if attributes[:country_code].blank?
+        attributes[:country_code] = iso_from_name(country_name)
+      end
+
+      super(attributes)
+    end
 
     def spree_country
       country_code && (@country ||= Spree::Country.find_by(iso: country_code.upcase))
