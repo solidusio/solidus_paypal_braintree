@@ -57,20 +57,27 @@ describe "Checkout", type: :feature, js: true do
   # this greatly increases the test time, so it is left out since CI runs
   # these with poltergeist.
   def move_through_paypal_popup
-      expect(page).to have_button("paypal-button")
-      popup = page.window_opened_by do
-        click_button("paypal-button")
-      end
-      page.switch_to_window(popup)
-      expect(page).to_not have_selector('body.loading')
-      page.within_frame("injectedUl") do
-        fill_in("email", with: "stembolt_buyer@stembolttest.com")
-        fill_in("password", with: "test1234")
-        click_button("btnLogin")
-      end
-      expect(page).to have_button('Agree & Continue')
-      click_button("Agree & Continue")
-      page.switch_to_window(page.windows.first)
+    expect(page).to have_button("paypal-button")
+    popup = page.window_opened_by do
+      click_button("paypal-button")
+    end
+    page.switch_to_window(popup)
+    expect(page).to_not have_selector('body.loading')
+    page.within_frame("injectedUl") do
+      fill_in("email", with: "stembolt_buyer@stembolttest.com")
+      fill_in("password", with: "test1234")
+    end
+
+    # The check for 'body.loading' check doesn't work well from the within_frame
+    # context, so we need to jump out before performing that check.
+    expect(page).to_not have_selector('body.loading')
+    page.within_frame("injectedUl") do
+      click_button("btnLogin")
+    end
+
+    expect(page).to_not have_selector('body.loading')
+    click_button("Agree & Continue")
+    page.switch_to_window(page.windows.first)
   end
 
   def fill_in_address
