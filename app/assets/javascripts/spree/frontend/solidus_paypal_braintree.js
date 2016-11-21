@@ -161,6 +161,7 @@ window.SolidusPaypalBraintree = {
 
   buildAddress: function(shippingContact) {
     var addressHash = {
+      country_name:   shippingContact.country,
       country_code:   shippingContact.countryCode,
       first_name:     shippingContact.givenName,
       last_name:      shippingContact.familyName,

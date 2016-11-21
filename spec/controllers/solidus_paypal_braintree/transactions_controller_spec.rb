@@ -66,6 +66,19 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
         end
       end
 
+      context "and no country ISO was provided" do
+        before do
+          params[:transaction][:address_attributes][:country_code] = ""
+          params[:transaction][:address_attributes][:country_name] = "United States"
+        end
+
+        it "creates a new address, looking up the ISO by country name" do
+          order
+          expect { post_create }.to change { Spree::Address.count }.by(1)
+          expect(Spree::Address.last.country.iso).to eq "US"
+        end
+      end
+
       context "and the transaction does not have an address" do
         before { params[:transaction].delete(:address_attributes) }
 
