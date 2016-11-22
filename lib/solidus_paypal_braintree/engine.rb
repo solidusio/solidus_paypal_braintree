@@ -1,7 +1,6 @@
 module SolidusPaypalBraintree
   class Engine < Rails::Engine
-    require 'spree/core'
-    isolate_namespace Spree
+    isolate_namespace SolidusPaypalBraintree
     engine_name 'solidus_paypal_braintree'
 
     # use rspec for tests

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller do
+  routes { SolidusPaypalBraintree::Engine.routes }
+
   include_context "order ready for payment"
 
   let(:payment_method) { create_gateway }
