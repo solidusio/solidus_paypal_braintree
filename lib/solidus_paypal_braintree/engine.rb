@@ -39,6 +39,7 @@ module SolidusPaypalBraintree
 
     if backend_available?
       paths["app/controllers"] << "lib/controllers/backend"
+      paths["app/views"] << "lib/views/backend"
     end
   end
 end

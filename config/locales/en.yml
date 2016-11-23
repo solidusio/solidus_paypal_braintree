@@ -5,3 +5,7 @@ en:
     payment_type:
       apple_pay_card: Apple Pay
       pay_pal_account: PayPal
+    configurations:
+      title: Braintree Configurations
+      update_success: Successfully updated Braintree configurations.
+      update_error: An error occurred while updating Braintree configurations.
