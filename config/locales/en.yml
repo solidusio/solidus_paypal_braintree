@@ -1,4 +1,8 @@
 en:
+  spree:
+    admin:
+      tab:
+        braintree: Braintree
   solidus_paypal_braintree:
     nonce: Nonce
     token: Token
@@ -7,5 +11,6 @@ en:
       pay_pal_account: PayPal
     configurations:
       title: Braintree Configurations
+      tab: Braintree
       update_success: Successfully updated Braintree configurations.
       update_error: An error occurred while updating Braintree configurations.
