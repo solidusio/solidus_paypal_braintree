@@ -6,15 +6,6 @@ module SolidusPaypalBraintree
       ' To re-enable set the `token_generation_enabled` preference on the' \
       ' gateway to `true`.'.freeze
 
-    PAYPAL_OPTIONS = {
-      store_in_vault_on_success: true,
-      submit_for_settlement: true
-    }.freeze
-
-    PAYPAL_AUTHORIZE_OPTIONS = {
-      store_in_vault_on_success: true
-    }.freeze
-
     ALLOWED_BRAINTREE_OPTIONS = [
       :device_data,
       :device_session_id,
@@ -39,6 +30,7 @@ module SolidusPaypalBraintree
     preference(:public_key,  :string, default: nil)
     preference(:private_key, :string, default: nil)
     preference(:merchant_currency_map, :hash, default: {})
+    preference(:paypal_payee_email_map, :hash, default: {})
 
     def method_type
       "paypal_braintree"
@@ -73,8 +65,7 @@ module SolidusPaypalBraintree
     def purchase(money_cents, source, gateway_options)
       result = braintree.transaction.sale(
         amount: dollars(money_cents),
-        options: PAYPAL_OPTIONS,
-        **transaction_options(source, gateway_options)
+        **transaction_options(source, gateway_options, true)
       )
 
       Response.build(result)
@@ -91,7 +82,6 @@ module SolidusPaypalBraintree
     def authorize(money_cents, source, gateway_options)
       result = braintree.transaction.sale(
         amount: dollars(money_cents),
-        options: PAYPAL_AUTHORIZE_OPTIONS,
         **transaction_options(source, gateway_options)
       )
 
@@ -214,9 +204,19 @@ module SolidusPaypalBraintree
       dollars.to_money.cents
     end
 
-    def transaction_options(source, options)
+    def transaction_options(source, options, submit_for_settlement = false)
       params = options.select do |key, _|
         ALLOWED_BRAINTREE_OPTIONS.include?(key)
+      end
+
+      params[:options] = { store_in_vault_on_success: true }
+
+      if submit_for_settlement
+        params[:options][:submit_for_settlement] = true
+      end
+
+      if paypal_email = paypal_payee_email_for(source, options)
+        params[:options][:paypal] = { payee_email: paypal_email }
       end
 
       if merchant_account_id = merchant_account_for(source, options)
@@ -239,6 +239,12 @@ module SolidusPaypalBraintree
     def merchant_account_for(_source, options)
       if options[:currency]
         preferred_merchant_currency_map[options[:currency]]
+      end
+    end
+
+    def paypal_payee_email_for(source, options)
+      if source.paypal?
+        preferred_paypal_payee_email_map[options[:currency]]
       end
     end
 
