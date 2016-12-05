@@ -17,6 +17,11 @@ module SolidusPaypalBraintree
       unless payment_method.is_a? SolidusPaypalBraintree::Gateway
         errors.add(:payment_method, 'Must be braintree')
       end
+      if address && !address.valid?
+        address.errors.each do |field, error|
+          errors.add(:address, "#{field} #{error}")
+        end
+      end
     end
 
     def address_attributes=(attributes)
