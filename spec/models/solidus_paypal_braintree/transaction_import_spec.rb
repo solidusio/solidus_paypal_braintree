@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe SolidusPaypalBraintree::TransactionImport do
   let(:order) { Spree::Order.new }
+  let!(:country) { create :country, iso: "US" }
   let(:braintree_gateway) { SolidusPaypalBraintree::Gateway.new }
   let(:transaction_address) { nil }
   let(:transaction) do
@@ -10,9 +11,10 @@ describe SolidusPaypalBraintree::TransactionImport do
       payment_method: braintree_gateway, email: "test@example.com",
       phone: "123-456-6789"
   end
+  let(:transaction_import) { described_class.new(order, transaction) }
 
   describe "#valid?" do
-    subject { described_class.new(order, transaction).valid? }
+    subject { transaction_import.valid? }
 
     it { is_expected.to be true }
 
@@ -23,9 +25,19 @@ describe SolidusPaypalBraintree::TransactionImport do
     end
 
     context "invalid address" do
-      let(:transaction_address) { SolidusPaypalBraintree::TransactionAddress.new }
+      let(:transaction_address) do
+        SolidusPaypalBraintree::TransactionAddress.new first_name: "Bruce",
+          last_name: "Wayne", address_line_1: "42 Spruce Lane", city: "Gotham",
+          state_code: "WA", country_code: "US"
+      end
 
       it { is_expected.to be false }
+
+      it "sets useful error messages" do
+        transaction_import.valid?
+        expect(transaction_import.errors.full_messages).
+          to eq ["Address is invalid", "Address zip can't be blank"]
+      end
     end
   end
 

@@ -45,7 +45,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
           SolidusPaypalBraintree::TransactionsController::InvalidImportError,
           "Import invalid: " \
           "Address is invalid, " \
-          "Transactionaddress city can't be blank"
+          "Address city can't be blank"
         )
       end
     end
@@ -121,7 +121,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
         it "raises an error including the validation messages" do
           expect { post_create }.to raise_error(
             SolidusPaypalBraintree::TransactionsController::InvalidImportError,
-            "Import invalid: Transaction is invalid"
+            "Import invalid: Email can't be blank"
           )
         end
       end
@@ -137,7 +137,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
 
         it "returns the errors as JSON" do
           post_create
-          expect(json["errors"]["Transaction"]).to eq ["is invalid"]
+          expect(json["errors"]["email"]).to eq ["can't be blank"]
         end
       end
     end
