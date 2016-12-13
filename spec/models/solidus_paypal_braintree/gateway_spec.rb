@@ -14,9 +14,11 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
   let(:source) do
     SolidusPaypalBraintree::Source.new(
       nonce: 'fake-valid-nonce',
-      user: user
+      user: user,
+      payment_type: payment_type
     )
   end
+  let(:payment_type) { SolidusPaypalBraintree::Source::PAYPAL }
 
   describe 'making a payment on an order', vcr: { cassette_name: 'gateway/complete' } do
     include_context 'order ready for payment'
@@ -110,12 +112,30 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
         end
       end
 
-      context 'different merchant account for currency', vcr: { cassette_name: 'gateway/authorize/EUR' } do
+      context 'different merchant account for currency', vcr: { cassette_name: 'gateway/authorize/merchant_account/EUR' } do
         let(:currency) { 'EUR' }
 
         it 'settles with the correct currency' do
           transaction = braintree.transaction.find(authorize.authorization)
           expect(transaction.merchant_account_id).to eq 'stembolt_EUR'
+        end
+      end
+
+      context 'different paypal payee email for currency', vcr: { cassette_name: 'gateway/authorize/paypal/EUR' } do
+        let(:currency) { 'EUR' }
+
+        it 'uses the correct payee email' do
+          expect_any_instance_of(Braintree::TransactionGateway).
+            to receive(:sale).
+            with(hash_including({
+              options: {
+                store_in_vault_on_success: true,
+                paypal: {
+                  payee_email: 'paypal+europe@example.com'
+                }
+              }
+          })).and_call_original
+          authorize
         end
       end
     end
