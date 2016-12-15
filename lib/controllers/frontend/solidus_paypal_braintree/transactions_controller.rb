@@ -18,7 +18,7 @@ class SolidusPaypalBraintree::TransactionsController < Spree::StoreController
 
     respond_to do |format|
       if import.valid?
-        import.import!
+        import.import!(import_state)
 
         format.html { redirect_to redirect_url(import) }
         format.json { render json: { redirectUrl: redirect_url(import) } }
@@ -31,6 +31,10 @@ class SolidusPaypalBraintree::TransactionsController < Spree::StoreController
   end
 
   private
+
+  def import_state
+    params[:state] || 'confirm'
+  end
 
   def import_error(import)
     raise InvalidImportError,
