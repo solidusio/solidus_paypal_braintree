@@ -2,6 +2,8 @@ require 'spec_helper'
 require 'support/order_ready_for_payment'
 
 RSpec.describe SolidusPaypalBraintree::CheckoutsController, type: :controller do
+  routes { SolidusPaypalBraintree::Engine.routes }
+
   include_context 'order ready for payment'
 
   describe 'PATCH update', vcr: { cassette_name: 'checkout/update' } do

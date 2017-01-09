@@ -1,7 +1,6 @@
 module SolidusPaypalBraintree
   class Engine < Rails::Engine
-    require 'spree/core'
-    isolate_namespace Spree
+    isolate_namespace SolidusPaypalBraintree
     engine_name 'solidus_paypal_braintree'
 
     # use rspec for tests
@@ -25,6 +24,10 @@ module SolidusPaypalBraintree
       defined?(Spree::Frontend::Engine) == "constant"
     end
 
+    def self.backend_available?
+      defined?(Spree::Backend::Engine) == "constant"
+    end
+
     if frontend_available?
       config.assets.precompile += [
         'spree/frontend/solidus_paypal_braintree',
@@ -32,6 +35,11 @@ module SolidusPaypalBraintree
       ]
       paths["app/controllers"] << "lib/controllers/frontend"
       paths["app/views"] << "lib/views/frontend"
+    end
+
+    if backend_available?
+      paths["app/controllers"] << "lib/controllers/backend"
+      paths["app/views"] << "lib/views/backend"
     end
   end
 end
