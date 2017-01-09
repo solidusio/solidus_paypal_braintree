@@ -76,7 +76,7 @@ which allows the source to be reused.
 
 If you are creating your own checkout view or would like to customize the
 [options that get passed to tokenize](https://braintree.github.io/braintree-web/3.6.3/PayPal.html#tokenize)
-, you can initialize your own using the PaypalButton JS object:
+, you can initialize your own using the `PaypalButton` JS object:
 
 ```javascript
 var button = new PaypalButton(document.querySelector("#your-button-id"));
@@ -84,6 +84,16 @@ var button = new PaypalButton(document.querySelector("#your-button-id"));
 button.initialize({
   // your configuration options here
 });
+```
+
+After successful tokenization, a callback function is invoked that submits the
+transaction via AJAX and advances the order to confirm. It is possible to provide
+your own callback function to customize the behaviour after tokenize as follows:
+
+```javascript
+var button = new PaypalButton(document.querySelector("#your-button-id"));
+
+button.setTokenizeCallback(your-callback);
 ```
 
 Testing
