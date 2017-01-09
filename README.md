@@ -1,7 +1,9 @@
 SolidusPaypalBraintree
 ======================
 
-Introduction goes here.
+[![Build Status](https://travis-ci.org/solidusio/solidus_paypal_braintree.svg?branch=master)](https://travis-ci.org/solidusio/solidus_paypal_braintree)
+
+`solidus_paypal_braintree` is an extension that adds support for using [Braintree](https://www.braintreepayments.com) as a payment source in your [Solidus](https://solidus.io/) store. It supports Apple Pay, PayPal, and credit card transactions.
 
 Installation
 ------------
