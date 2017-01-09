@@ -19,6 +19,23 @@ bundle
 bundle exec rails g solidus_paypal_braintree:install
 ```
 
+Store Configuration
+-------------------
+
+This gem adds a configuration model - `SolidusPaypalBraintree::Configuration` -
+that belongs to `Spree::Store` as `braintree_configuration`. In multi-store
+Solidus applications, this model allows admins to enable/disable payment types
+on a per-store basis.
+
+The migrations for this gem will add a default configuration to all stores that
+has each payment type disabled. It also adds a `before_create` callback to
+`Spree::Store` that builds a default configuration. You can customize the
+default configuration that gets created by overriding the private
+`build_default_configuration` method on `Spree::Store`.
+
+A view override is provided that adds a `Braintree` tab to the admin settings
+submenu. Admins can go here to edit the configuration for each store.
+
 Apple Pay
 ---------
 
