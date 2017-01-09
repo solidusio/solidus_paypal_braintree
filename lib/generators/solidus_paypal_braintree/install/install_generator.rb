@@ -20,7 +20,7 @@ module SolidusPaypalBraintree
 
       def mount_engine
         insert_into_file File.join('config', 'routes.rb'), after: "Rails.application.routes.draw do\n" do
-          "mount SolidusPaypalBraintree::Engine, at: '/solidus_paypal_braintree'"
+          "mount SolidusPaypalBraintree::Engine, at: '/solidus_paypal_braintree'\n"
         end
       end
 
