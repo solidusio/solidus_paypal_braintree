@@ -19,6 +19,44 @@ bundle
 bundle exec rails g solidus_paypal_braintree:install
 ```
 
+Apple Pay
+---------
+
+### Setup
+Braintree has some [excellent documentation](https://developers.braintreepayments.com/guides/apple-pay/configuration/javascript/v3) on what you'll need to do to get Apple Pay up and running.
+
+In order to make everything a little simpler, this extension includes some client-side code to get you started. Specifically, it provides some wrappers to help with the initialization of an Apple Pay session. The following is a relatively bare-bones implementation:
+```javascript
+var applePayButton = document.getElementById('your-apple-pay-button');
+window.SolidusPaypalBraintree.fetchToken(function(clientToken) {
+  window.SolidusPaypalBraintree.initialize(clientToken, function(braintreeClient) {
+    window.SolidusPaypalBraintree.setupApplePay(braintreeClient, "YOUR-MERCHANT-ID", funtion(applePayInstance) {
+      applePayButton.addEventListener('click', function() { beginApplePayCheckout(applePayInstance) });
+    }
+  }
+}
+
+beginApplePayCheckout = function(applePayInstance) {
+  window.SolidusPaypalBraintree.initializeApplePaySession({
+    applePayInstance: applePayInstance,
+    storeName: 'Your Store Name',
+    currentUserEmail: Spree.current_email,
+    paymentMethodId: Spree.braintreePaymentMethodId,
+  }, (session) => {
+    // Add in your logic for onshippingcontactselected and onshippingmethodselected.
+  }
+};
+```
+
+For additional information checkout the [Apple's documentation](https://developer.apple.com/reference/applepayjs/) and [Braintree's documentation](https://developers.braintreepayments.com/guides/apple-pay/client-side/javascript/v3).
+
+### Development
+Developing with Apple Pay has a few gotchas. First and foremost, you'll need to ensure you have access to a device running iOS 10+. (I've heard there's also been progress on adding support to the Simulator.)
+
+Next, you'll need an Apple Pay sandbox account. You can check out Apple's [documentation](https://developer.apple.com/support/apple-pay-sandbox/) for additional help in performing this step.
+
+Finally, Apple Pay requires the site to be served via HTTPS. I recommend setting up a proxy server to help solve this. There are [lots of guides](https://www.google.ca/search?q=nginx+reverse+proxy+ssl+localhost) on how this can be achieved.
+
 Testing
 -------
 
