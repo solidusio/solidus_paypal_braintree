@@ -15,7 +15,6 @@ rvm:
   - 2.3.1
 env:
   matrix:
-    - SOLIDUS_BRANCH=v1.1
     - SOLIDUS_BRANCH=v1.2
     - SOLIDUS_BRANCH=v1.3
     - SOLIDUS_BRANCH=v1.4
