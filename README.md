@@ -19,6 +19,30 @@ bundle
 bundle exec rails g solidus_paypal_braintree:install
 ```
 
+Usage
+-----
+
+This gem extends Solidus by providing a new payment method and source, named
+`SolidusPaypalBraintree::Gateway` and `SolidusPaypalBraintree::Source` respectively.
+All payment types - PayPal, ApplePay, and Credit Cards - are supported through
+the same payment method.
+
+The payment method requires 3 preferences to be set to process payments:
+- `merchant_id`
+- `public_key`
+- `private_key`
+
+These values can be obtained by logging in to your Braintree account and going
+to `Account -> My User` and clicking `View Authorizations` in the **API Keys,
+Tokenization Keys, Encryption Keys** section.
+
+The payment method also provides an optional preference `merchant_currency_map`.
+This preference allows users to provide different Merchant Account Ids for
+different currencies. If you only plan to accept payment in one currency, the
+defaut Merchant Account Id will be used and you can omit this option.
+An example of setting this preference can be found
+[here](https://github.com/solidusio/solidus_paypal_braintree/blob/master/spec/spec_helper.rb#L70-L72).
+
 Store Configuration
 -------------------
 
@@ -73,6 +97,42 @@ Developing with Apple Pay has a few gotchas. First and foremost, you'll need to 
 Next, you'll need an Apple Pay sandbox account. You can check out Apple's [documentation](https://developer.apple.com/support/apple-pay-sandbox/) for additional help in performing this step.
 
 Finally, Apple Pay requires the site to be served via HTTPS. I recommend setting up a proxy server to help solve this. There are [lots of guides](https://www.google.ca/search?q=nginx+reverse+proxy+ssl+localhost) on how this can be achieved.
+
+PayPal
+------
+
+A default checkout view is provided that will display PayPal as a payment option.
+It will only be displayed if the `SolidusPaypalBraintree::Gateway` payment
+method is configured to display on the frontend and PayPal is enabled in the
+store's configuration.
+
+The checkout view
+[initializes the PayPal button](/lib/views/frontend/spree/checkout/payment/_paypal_braintree.html.erb)
+using the
+[vault flow](https://developers.braintreepayments.com/guides/paypal/overview/javascript/v3),
+which allows the source to be reused.
+
+If you are creating your own checkout view or would like to customize the
+[options that get passed to tokenize](https://braintree.github.io/braintree-web/3.6.3/PayPal.html#tokenize)
+, you can initialize your own using the `PaypalButton` JS object:
+
+```javascript
+var button = new PaypalButton(document.querySelector("#your-button-id"));
+
+button.initialize({
+  // your configuration options here
+});
+```
+
+After successful tokenization, a callback function is invoked that submits the
+transaction via AJAX and advances the order to confirm. It is possible to provide
+your own callback function to customize the behaviour after tokenize as follows:
+
+```javascript
+var button = new PaypalButton(document.querySelector("#your-button-id"));
+
+button.setTokenizeCallback(your-callback);
+```
 
 Testing
 -------
