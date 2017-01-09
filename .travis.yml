@@ -1,11 +1,7 @@
 sudo: false
-cache: bundler
 language: ruby
-bundler_args: --quiet
-script:
-  - bundle exec rake
 rvm:
-  - 2.3.0
+  - 2.3.1
 env:
   matrix:
     - SOLIDUS_BRANCH=v1.1
