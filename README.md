@@ -60,6 +60,32 @@ default configuration that gets created by overriding the private
 A view override is provided that adds a `Braintree` tab to the admin settings
 submenu. Admins can go here to edit the configuration for each store.
 
+PayPal
+------
+
+A default checkout view is provided that will display PayPal as a payment option.
+It will only be displayed if the `SolidusPaypalBraintree::Gateway` payment
+method is configured to display on the frontend and PayPal is enabled in the
+store's configuration.
+
+The checkout view
+[initializes the PayPal button](/lib/views/frontend/spree/checkout/payment/_paypal_braintree.html.erb)
+using the
+[vault flow](https://developers.braintreepayments.com/guides/paypal/overview/javascript/v3),
+which allows the source to be reused.
+
+If you are creating your own checkout view or would like to customize the
+[options that get passed to tokenize](https://braintree.github.io/braintree-web/3.6.3/PayPal.html#tokenize)
+, you can initialize your own using the PaypalButton JS object:
+
+```javascript
+var button = new PaypalButton(document.querySelector("#your-button-id"));
+
+button.initialize({
+  // your configuration options here
+});
+```
+
 Testing
 -------
 
