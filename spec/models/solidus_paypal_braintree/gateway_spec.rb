@@ -37,6 +37,8 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     end
 
     it 'can complete an order' do
+      order.payments.reset
+
       expect(order.total).to eq 55
 
       expect(payment.capture_events.count).to eq 0

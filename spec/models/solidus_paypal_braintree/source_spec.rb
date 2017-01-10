@@ -23,19 +23,19 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     subject { described_class.new.can_capture?(payment) }
 
     context "when the payment state is pending" do
-      let(:payment) { build_stubbed(:payment, state: "pending") }
+      let(:payment) { build(:payment, state: "pending") }
 
       it { is_expected.to be }
     end
 
     context "when the payment state is checkout" do
-      let(:payment) { build_stubbed(:payment, state: "checkout") }
+      let(:payment) { build(:payment, state: "checkout") }
 
       it { is_expected.to be }
     end
 
     context "when the payment is completed" do
-      let(:payment) { build_stubbed(:payment, state: "completed") }
+      let(:payment) { build(:payment, state: "completed") }
 
       it { is_expected.to_not be }
     end
@@ -45,19 +45,19 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     subject { described_class.new.can_void?(payment) }
 
     context "when the payment failed" do
-      let(:payment) { build_stubbed(:payment, state: "failed") }
+      let(:payment) { build(:payment, state: "failed") }
 
       it { is_expected.not_to be }
     end
 
     context "when the payment is already voided" do
-      let(:payment) { build_stubbed(:payment, state: "void") }
+      let(:payment) { build(:payment, state: "void") }
 
       it { is_expected.not_to be }
     end
 
     context "when the payment is completed" do
-      let(:payment) { build_stubbed(:payment, state: "completed") }
+      let(:payment) { build(:payment, state: "completed") }
 
       it { is_expected.to be }
     end
@@ -68,20 +68,20 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
 
     context "when the payment is completed" do
       context "and the credit allowed is 100" do
-        let(:payment) { build_stubbed(:payment, state: "completed", amount: 100) }
+        let(:payment) { build(:payment, state: "completed", amount: 100) }
 
         it { is_expected.to be }
       end
 
       context "and the credit allowed is 0" do
-        let(:payment) { build_stubbed(:payment, state: "completed", amount: 0) }
+        let(:payment) { build(:payment, state: "completed", amount: 0) }
 
         it { is_expected.not_to be }
       end
     end
 
     context "when the payment has not been completed" do
-      let(:payment) { build_stubbed(:payment, state: "checkout") }
+      let(:payment) { build(:payment, state: "checkout") }
 
       it { is_expected.not_to be }
     end
