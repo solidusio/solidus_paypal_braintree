@@ -209,6 +209,7 @@ module SolidusPaypalBraintree
         ALLOWED_BRAINTREE_OPTIONS.include?(key)
       end
 
+      params[:channel] = "Solidus"
       params[:options] = { store_in_vault_on_success: true }
 
       if submit_for_settlement
