@@ -209,6 +209,10 @@ Metrics/AbcSize:
 Metrics/BlockNesting:
   Enabled: false
 
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*.rb'
+
 Metrics/ClassLength:
   Enabled: false
 
