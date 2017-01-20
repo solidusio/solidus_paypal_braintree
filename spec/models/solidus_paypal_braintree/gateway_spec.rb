@@ -108,6 +108,13 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       context 'successful authorization', vcr: { cassette_name: 'gateway/authorize' } do
         include_examples "successful response"
 
+        it 'passes "Solidus" as the channel parameter in the request' do
+          expect_any_instance_of(Braintree::TransactionGateway).
+            to receive(:sale).
+            with(hash_including({ channel: "Solidus" })).and_call_original
+          authorize
+        end
+
         it 'authorizes the transaction', aggregate_failures: true do
           expect(authorize.message).to eq 'authorized'
           expect(authorize.authorization).to be_present
