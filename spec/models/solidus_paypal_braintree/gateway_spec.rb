@@ -20,6 +20,35 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
   end
   let(:payment_type) { SolidusPaypalBraintree::Source::PAYPAL }
 
+  describe "saving preference hashes as strings" do
+    subject { gateway.update(update_params) }
+
+    context "with valid hash syntax" do
+      let(:update_params) do
+        {
+          preferred_merchant_currency_map: '{"EUR" => "test_merchant_account_id"}',
+          preferred_paypal_payee_email_map: '{"CAD" => "bruce+wayne@example.com"}'
+        }
+      end
+
+      it "successfully updates the preference" do
+        subject
+        expect(gateway.preferred_merchant_currency_map).to eq({ "EUR" => "test_merchant_account_id" })
+        expect(gateway.preferred_paypal_payee_email_map).to eq({ "CAD" => "bruce+wayne@example.com" })
+      end
+    end
+
+    context "with invalid user input" do
+      let(:update_params) do
+        { preferred_merchant_currency_map: '{this_is_not_a_valid_hash}' }
+      end
+
+      it "raise a JSON parser error" do
+        expect{ subject }.to raise_error(JSON::ParserError)
+      end
+    end
+  end
+
   describe 'making a payment on an order', vcr: { cassette_name: 'gateway/complete' } do
     include_context 'order ready for payment'
 
