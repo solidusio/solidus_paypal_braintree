@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe SolidusPaypalBraintree::ClientTokensController do
+  routes { SolidusPaypalBraintree::Engine.routes }
+
   cassette_options = { cassette_name: "braintree/token" }
   describe "POST create", vcr: cassette_options do
     let!(:gateway) { create_gateway }

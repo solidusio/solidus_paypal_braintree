@@ -39,7 +39,11 @@ require 'solidus_paypal_braintree/factories'
 require 'capybara/poltergeist'
 Capybara.register_driver :poltergeist do |app|
   # Paypal requires TLS v1.2 for ssl connections
-  Capybara::Poltergeist::Driver.new(app, { phantomjs_options: ['--ssl-protocol=tlsv1.2'] })
+  Capybara::Poltergeist::Driver.new(app, {
+    phantomjs_logger: Rails.logger,
+    phantomjs_options: ['--ssl-protocol=tlsv1.2'],
+    timeout: 1.minute
+  })
 end
 Capybara.register_driver :chrome do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome)

@@ -1,0 +1,26 @@
+<% content_for :page_title do %>
+  <%= t(:title, scope: 'solidus_paypal_braintree.configurations') %>
+<% end %>
+
+<%= form_for :configurations, url: solidus_paypal_braintree.configurations_path do |f| %>
+  <% @configurations.each do |config| %>
+    <div class="row">
+      <fieldset>
+        <h1><%= config.store.name %></h1>
+
+        <%= f.fields_for 'configuration_fields[]', config do |c| %>
+          <div class="field">
+            <%= c.label :paypal %>
+            <%= c.check_box :paypal %>
+          </div>
+          <div class="field">
+            <%= c.label :apple_pay %>
+            <%= c.check_box :apple_pay %>
+          </div>
+        <% end %>
+      </fieldset>
+    </div>
+  <% end %>
+
+  <%= submit_tag %>
+<% end %>

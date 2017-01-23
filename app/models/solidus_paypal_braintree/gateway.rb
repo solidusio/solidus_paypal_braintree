@@ -204,11 +204,23 @@ module SolidusPaypalBraintree
       dollars.to_money.cents
     end
 
+    def to_hash(preference_string)
+      JSON.parse(preference_string.gsub("=>", ":"))
+    end
+
+    def convert_preference_value(value, type)
+      if type == :hash && value.is_a?(String)
+        value = to_hash(value)
+      end
+      super
+    end
+
     def transaction_options(source, options, submit_for_settlement = false)
       params = options.select do |key, _|
         ALLOWED_BRAINTREE_OPTIONS.include?(key)
       end
 
+      params[:channel] = "Solidus"
       params[:options] = { store_in_vault_on_success: true }
 
       if submit_for_settlement
