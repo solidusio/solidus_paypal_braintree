@@ -1,9 +1,0 @@
-<% content_for :head do %>
-  <%= javascript_include_tag "spree/checkout/braintree" %>
-<% end %>
-
-<% id = payment_method.id %>
-
-<fieldset class="braintree-hosted-fields" data-braintree-hosted-fields data-id="<%= id %>">
-  <%= render partial: "spree/shared/braintree_hosted_fields", locals: { id: id } %>
-</fieldset>
