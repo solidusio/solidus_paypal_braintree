@@ -16,7 +16,7 @@ http_interactions:
       Accept:
       - application/xml
       User-Agent:
-      - Braintree Ruby Gem 2.68.1
+      - Braintree Ruby Gem 2.72.0
       X-Apiversion:
       - '4'
       Authorization:
@@ -29,7 +29,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Mon, 24 Oct 2016 23:13:28 GMT
+      - Thu, 02 Feb 2017 00:47:41 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
@@ -50,38 +50,38 @@ http_interactions:
       Content-Encoding:
       - gzip
       Etag:
-      - W/"b45f821c71f9ade9b8b6a9a1dd3b4f1d"
+      - W/"8f41b1a022dfdbf117b0b81bb196cea5"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - 5d0d9ff4-c932-4346-8942-de6d81a21bf0
+      - b9517a0d-1e73-4c49-8fba-74f6e9614a6b
       X-Runtime:
-      - '0.420233'
+      - '0.413956'
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        H4sIAJiVDlgAA6xVTXPiMAy991cwuZuQACXtBPe2x71su4e97DixQlwcO2s7
-        Lfz7tUO+KITSobf46clWpCcpftoVfPIGSjMp1l4wnXkTEKmkTGzW3svzDxR5
-        T/guTittZAEK300mMaN4tQxmi3A1i317cJi1pTkRBjmjopuH8HWVFKtsu8zn
-        sT+0OnbGlDZIkAImgvG1Z1QFnl+bOBmzpLIoidif4FAQxk/QMpfi9I6M7E6w
-        d0g0M2feU0AMUETMxOxLWHvUHg0rwMPhLLhHwQyFi+dw/hjMH8PoT+z3DrV/
-        VdKv+fcOh/frnKOMAae6C4kyg1KiqG4uJUqRveesx/YDYrGEcW6riQilCrRu
-        8UMd51FbwQZrC42OijxEe+54FRvCaC3bx85XtLFqowBMG/cICXYGBHVJu0jj
-        MiWcmbGnFGys/keMpdSGcGSbAvDDIpitYn8IDX+nEkbtaxgRXuYkHP3xj8z5
-        NUxR2Rqw9BPqpYTfJunmlhuFXd/hj8jSylXgxSwIo8hxRIc7TSP3HP7NNLGR
-        dechI5ecWpmOpcApzs0iRjh+EVsh34W9qcd62iGVMkNM64qIFLAjnqKdx+2Z
-        vb73eqbTtbHSxS+/BswObfkUEmb6Pz4ce2NGKt7GnUjJgQgPu8w5am3syZWy
-        VUG2YSru4h9c+tHSusCuZKqOBxVSmBwHYeyfgGfYeyDKZi+cHdFr9IgN9GPs
-        GeEaGq9BJDkQbnKrE+jDHmAtjRVkA6hSHOfGlPrR94nWYPQ0UYQJN5U29gff
-        yX5qpeOXZF+AMH8LMLmkf7ncSP/NSnRais0TiDempHCEtSaCJnJnB253f/ei
-        lZNrhoSIbR/aEdpS65m6wEEUBbHfHFqbDUVJPpB2C3QEBSWxOvopra357m2S
-        Vmm9onv/Hmtpukp0qljpanG8g/ouM3ILAqfmlQrbxYdTa6sE+1fVoyypNW0z
-        w+yKU5hky+Vq8ZAtH7Igo/OI3qdZGlggWyyjJLOaGXXt7v6GwfQGopBI0+2I
-        pjr7wEPZMA4ddzYjdbMP9/IRUI++uBmDcHatf5yRJ4v7C6Pj8tK+vLIvLewr
-        1vVVy/riqr6wqK9c09cu6WtX9NUL+tP1/C0r5OYOiP2B2LoD2GMvJ3z3HwAA
-        //8DAEAr+SE3DAAA
+        H4sIAK2BklgAA6xVTXPaMBC951cwviu2CRSTMc6tx16a9NBLR7bWWEWWXElO
+        4N93ZfxFwJROMsMBvX0rrXff7sZP+1LMXkEbruTGC+8DbwYyU4zL7cZ7ef5K
+        Iu8puYuz2lhVgk7uZrOYs2QZzR/WURDEPh4chrasoNISPK80267nv1dpucp3
+        y+Ih9sdWx865NpZIWsJMcrHxrK7B8xuToFOWTJUVlYczHErKxRlaFUqe35HT
+        /Rn2Bqnh9sJ7GqgFRqid2UMFG4/h0fISvGQehCsSzPH3HASPi9XjIvgZ+4ND
+        419X7P/8B4fj+03OSc5BMNOHxLglGdXMtJdSrenBc9ZT+xFBLOVCYDUJZUyD
+        MR1+rGNkugq2WFdoclLkMTpwp6vYEiZr2T12uaKt1VgNYLu4J0iwtyCZS9pV
+        mlAZFdxOPaVhi/qfMFbKWCoINgUk60UYrGJ/DI0/p5ZWHxqYUFEVdD754e+Z
+        D7cwZY014Nk/qNcS/jFJt7d8UNjNHf6ELFGuMlkE4TyKHEf2uNM0cc8lP7ih
+        GFl/HjMKJRjKdCoFTnFuFnEqkhe5k+pN4k0DNtCOqVQ54cbUVGaQOOI52nt8
+        PLO3997AdLq2KN3k5fuI2aMdn0HK7fDFx+NgzGkturhTpQRQ6SUuc47aGAdy
+        rbEqBBumFi7+0aXvLZ0L7Cuum3hIqaQtknAe+2fgBfYBqMbszYMTeoOesIG9
+        jz2nwkDrNYqkACpsgTqBIewR1tF4SbdAai2SwtrKPPo+NQasuU815dJNpS1+
+        4Bs93KN0/IoeSpD2Vwm2UOyXUFvlv6JE7yu5fQL5yrWSjrAxVLJU7XHg9vf3
+        L6KcXDOkVO6G0E7QjtrM1EUSRlEY++2hs2EoWomRtDugJ2ioKOrom0Jb+3+w
+        KVZnzYoe/Aeso5k6NZnmlavF6Q4ausyqHWAXl8t9uYj946mz1ZL/qZtRljaa
+        xsxwXHE6oflyuVqs8+U6D3P2ELEvWZ6FCOSLZZTmqJlJ1/7uTxhMryBLRQzb
+        TWiqt488NIZx7LiLGWmafbyXT4Bm9MXtGISLa/39jDxb3P8xOq4v7esr+9rC
+        vmFd37Ssr67qK4v6xjV965K+dUXfvKD/uZ4/ZYV8uANifyS2/gB4HOSU3P0F
+        AAD//wMApBQACzcMAAA=
     http_version: 
-  recorded_at: Mon, 24 Oct 2016 23:13:27 GMT
+  recorded_at: Thu, 02 Feb 2017 00:47:41 GMT
 recorded_with: VCR 3.0.3
