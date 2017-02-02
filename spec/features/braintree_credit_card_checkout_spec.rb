@@ -25,6 +25,10 @@ shared_context "checkout setup" do
     expect(page).to have_selector("#payment_method_#{braintree.id}", visible: true)
     expect(page).to have_selector("iframe#braintree-hosted-field-number")
   end
+
+  around(:each) do |example|
+    Capybara.using_wait_time(20) { example.run }
+  end
 end
 
 describe 'entering credit card details', type: :feature, js: true do
