@@ -7,6 +7,9 @@ shared_context "checkout setup" do
 
   before(:each) do
     braintree.save!
+    create(:store, payment_methods: [gateway, braintree]).tap do |store|
+      store.braintree_configuration.update!(credit_card: true)
+    end
     order = OrderWalkthrough.up_to(:delivery)
 
     user = create(:user)
