@@ -24,7 +24,7 @@ module SolidusPaypalBraintree
 
     def configurations_params
       params.require(:configurations).
-        permit(configuration_fields: [:paypal, :apple_pay])
+        permit(configuration_fields: [:paypal, :apple_pay, :credit_card])
     end
   end
 end
