@@ -1,38 +1,46 @@
 <% address = current_order.ship_address %>
+<% id = payment_method.id %>
 
-<!-- Load the client component. -->
-<script src="https://js.braintreegateway.com/web/3.4.0/js/client.min.js"></script>
-<!-- Load the PayPal component. -->
-<script src="https://js.braintreegateway.com/web/3.4.0/js/paypal.min.js"></script>
-<!-- Load the data-collector component. -->
-<script src="https://js.braintreegateway.com/web/3.4.0/js/data-collector.min.js"></script>
-<script src="https://www.paypalobjects.com/api/button.js?"
-        data-merchant="braintree"
-        data-id="paypal-button"
-        data-button="checkout"
-        data-color="blue"
-        data-size="medium"
-        data-shape="pill"
-        data-button_type="button"
-        data-button_disabled="true"
-        ></script>
-<script>
-  var address = {
-    line1: '<%= address.address1 %>',
-    line2: '<%= address.address2 %>',
-    city: '<%= address.city %>',
-    state: '<%= address.state.name %>',
-    postalCode: '<%= address.zipcode %>',
-    countryCode: '<%= address.country.iso %>',
-    phone: '<%= address.phone %>',
-    recipientName: '<%= "#{address.firstname} #{address.lastname}" %>'
-  }
-  var button = new PaypalButton(document.querySelector("#paypal-button"));
+<% content_for :head do %>
+  <%= javascript_include_tag "spree/checkout/braintree" %>
+<% end %>
 
-  button.initialize({
-    flow: 'vault',
-    enableShippingAddress: true,
-    shippingAddressOverride: address,
-    shippingAddressEditable: false
-  });
-</script>
+<% if current_store.braintree_configuration.paypal? %>
+  <script src="https://www.paypalobjects.com/api/button.js?"
+          data-merchant="braintree"
+          data-id="paypal-button"
+          data-button="checkout"
+          data-color="blue"
+          data-size="medium"
+          data-shape="pill"
+          data-button_type="button"
+          data-button_disabled="true"
+          ></script>
+
+  <script>
+    var address = {
+      line1: '<%= address.address1 %>',
+      line2: '<%= address.address2 %>',
+      city: '<%= address.city %>',
+      state: '<%= address.state.name %>',
+      postalCode: '<%= address.zipcode %>',
+      countryCode: '<%= address.country.iso %>',
+      phone: '<%= address.phone %>',
+      recipientName: '<%= "#{address.firstname} #{address.lastname}" %>'
+    }
+    var button = new PaypalButton(document.querySelector("#paypal-button"));
+
+    button.initialize({
+      flow: 'vault',
+      enableShippingAddress: true,
+      shippingAddressOverride: address,
+      shippingAddressEditable: false
+    });
+  </script>
+<% end %>
+
+<% if current_store.braintree_configuration.credit_card? %>
+  <fieldset class="braintree-hosted-fields" data-braintree-hosted-fields data-id="<%= id %>">
+    <%= render "spree/shared/braintree_hosted_fields", id: id %>
+  </fieldset>
+<% end %>

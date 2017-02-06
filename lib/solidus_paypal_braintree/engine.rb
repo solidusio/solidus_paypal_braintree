@@ -10,6 +10,7 @@ module SolidusPaypalBraintree
 
     initializer "register_solidus_paypal_braintree_gateway", after: "spree.register.payment_methods" do |app|
       app.config.spree.payment_methods << SolidusPaypalBraintree::Gateway
+      Spree::PermittedAttributes.source_attributes << :nonce
     end
 
     def self.activate
@@ -17,6 +18,8 @@ module SolidusPaypalBraintree
         Rails.configuration.cache_classes ? require(c) : load(c)
       end
     end
+
+    config.assets.precompile += ["spree/backend/solidus_paypal_braintree"]
 
     config.to_prepare(&method(:activate).to_proc)
 
@@ -31,7 +34,8 @@ module SolidusPaypalBraintree
     if frontend_available?
       config.assets.precompile += [
         'spree/frontend/solidus_paypal_braintree',
-        'spree/frontend/paypal_button'
+        'spree/frontend/paypal_button',
+        'spree/checkout/braintree'
       ]
       paths["app/controllers"] << "lib/controllers/frontend"
       paths["app/views"] << "lib/views/frontend"

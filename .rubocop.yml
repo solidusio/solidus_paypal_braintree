@@ -233,3 +233,6 @@ Metrics/ParameterLists:
 
 Metrics/PerceivedComplexity:
   Enabled: false
+
+Bundler/OrderedGems:
+  Enabled: false

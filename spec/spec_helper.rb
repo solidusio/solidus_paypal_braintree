@@ -41,7 +41,7 @@ Capybara.register_driver :poltergeist do |app|
   # Paypal requires TLS v1.2 for ssl connections
   Capybara::Poltergeist::Driver.new(app, {
     phantomjs_logger: Rails.logger,
-    phantomjs_options: ['--ssl-protocol=tlsv1.2'],
+    phantomjs_options: ['--ssl-protocol=any'],
     timeout: 1.minute
   })
 end
