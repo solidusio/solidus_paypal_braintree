@@ -49,11 +49,12 @@ module SolidusPaypalBraintree
     private
 
     def braintree_payment_method
+      return unless braintree_client
       @braintree_payment_method ||= braintree_client.payment_method.find(token)
     end
 
     def braintree_client
-      @braintree_client ||= payment_method.braintree
+      @braintree_client ||= payment_method.try(:braintree)
     end
   end
 end
