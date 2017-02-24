@@ -2,3 +2,11 @@
 Placeholder manifest file.
 the installer will append this file to the app vendored assets here: 'vendor/assets/stylesheets/spree/frontend/all.css'
 */
+
+.braintree-hosted-fields .input {
+  border: 1px solid #d9d9db;
+  border-radius: 3px;
+  color: #5498DA;
+  height: 30px;
+  padding: 5px 10px;
+}

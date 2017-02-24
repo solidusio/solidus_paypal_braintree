@@ -194,6 +194,24 @@ module SolidusPaypalBraintree
       true
     end
 
+    def sources_by_order(order)
+      source_ids = order.payments.where(payment_method_id: id).pluck(:source_id).uniq
+      payment_source_class.where(id: source_ids).with_payment_profile
+    end
+
+    def reusable_sources(order)
+      if order.completed?
+        sources_by_order(order)
+      elsif order.user_id
+        payment_source_class.where(
+          payment_method_id: id,
+          user_id: order.user_id
+        ).with_payment_profile
+      else
+        []
+      end
+    end
+
     private
 
     def dollars(cents)

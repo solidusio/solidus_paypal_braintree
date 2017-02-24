@@ -1,0 +1,25 @@
+<% prefix = "payment_source[#{id}]" %>
+
+<div class="hosted-fields">
+  <div class="field" data-hook="card_number">
+    <%= label_tag "card_number#{id}", Spree::CreditCard.human_attribute_name(:number), class: "required" %>
+    <div class="input" id="card_number<%= id %>"></div>
+  </div>
+
+  <div class="field" data-hook="card_expiration">
+    <%= label_tag "card_expiry#{id}", Spree::CreditCard.human_attribute_name(:expiration), class: "required" %>
+    <div class="input" id="card_expiry<%= id %>"></div>
+  </div>
+
+  <div class="field" data-hook="card_code">
+    <%= label_tag "card_code#{id}", Spree::CreditCard.human_attribute_name(:card_code), class: "required" %>
+    <div class="input" id="card_code<%= id %>"></div>
+
+    <a href="/content/cvv" class="info cvvLink" target="_blank">
+      (<%= Spree.t(:what_is_this) %>)
+    </a>
+  </div>
+
+  <div class="clear"></div>
+  <input type="hidden" id="payment_method_nonce" name="<%= prefix %>[nonce]">
+</div>

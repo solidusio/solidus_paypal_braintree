@@ -2,7 +2,11 @@ require 'spec_helper'
 
 describe "Checkout", type: :feature, js: true do
   Capybara.default_max_wait_time = 30
-  let!(:store) { create(:store, payment_methods: [payment_method]) }
+  let!(:store) do
+    create(:store, payment_methods: [payment_method]).tap do |s|
+      s.braintree_configuration.update!(paypal: true)
+    end
+  end
   let!(:country) { create(:country, states_required: true) }
   let!(:state) { create(:state, country: country, abbr: "CA", name: "California") }
   let!(:shipping_method) { create(:shipping_method) }
