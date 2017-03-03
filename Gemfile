@@ -7,6 +7,7 @@ if branch == "master" || branch >= "v2.0"
   gem "rails-controller-testing", group: :test
 else
   gem "rails", "~> 4.2"
+  gem "rails_test_params_backport", group: :test
 end
 
 # Provides basic authentication functionality for testing parts of your engine
