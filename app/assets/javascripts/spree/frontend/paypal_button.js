@@ -1,4 +1,4 @@
-//= require braintree/3.5.0/paypal
+//= require braintree/3.9.0/paypal
 
 /**
  * Constructor for PayPal button object
@@ -15,7 +15,7 @@ function PaypalButton(element) {
  * @param {object} options - The options passed to tokenize when constructing
  *                           the PayPal instance
  *
- * See {@link https://braintree.github.io/braintree-web/3.5.0/PayPal.html#tokenize}
+ * See {@link https://braintree.github.io/braintree-web/3.9.0/PayPal.html#tokenize}
  */
 PaypalButton.prototype.initialize = function(options) {
   var self = this;
@@ -153,9 +153,9 @@ PaypalButton.prototype.addressParams = function(payload) {
 $(document).ready(function() {
   if (document.getElementById("empty-cart")) {
     $.when(
-      $.getScript("https://js.braintreegateway.com/web/3.5.0/js/client.min.js"),
-      $.getScript("https://js.braintreegateway.com/web/3.5.0/js/paypal.min.js"),
-      $.getScript("https://js.braintreegateway.com/web/3.5.0/js/data-collector.min.js"),
+      $.getScript("https://js.braintreegateway.com/web/3.9.0/js/client.min.js"),
+      $.getScript("https://js.braintreegateway.com/web/3.9.0/js/paypal.min.js"),
+      $.getScript("https://js.braintreegateway.com/web/3.9.0/js/data-collector.min.js"),
       $.Deferred(function( deferred ){
         $( deferred.resolve );
       })

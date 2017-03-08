@@ -45,7 +45,7 @@ types[VISA] = {
   prefixPattern: /^4$/,
   exactPattern: /^4\d*$/,
   gaps: [4, 8, 12],
-  lengths: [16],
+  lengths: [16, 18, 19],
   code: {
     name: CVV,
     size: 3
@@ -242,7 +242,7 @@ module.exports = creditCardType;
     payload = _packagePayload(event, args, origin);
     if (payload === false) { return false; }
 
-    _broadcast(win.top, payload, origin);
+    _broadcast(win.top || win.self, payload, origin);
 
     return true;
   }
@@ -510,12 +510,14 @@ module.exports = function assign(target) {
 }
 
 },{}],5:[function(_dereq_,module,exports){
-module.exports={
-  "src": "about:blank",
-  "frameBorder": 0,
-  "allowtransparency": true,
-  "scrolling": "no"
-}
+'use strict';
+
+module.exports = {
+  src: 'about:blank',
+  frameBorder: 0,
+  allowtransparency: true,
+  scrolling: 'no'
+};
 
 },{}],6:[function(_dereq_,module,exports){
 'use strict';
@@ -539,53 +541,64 @@ module.exports = function setAttributes(element, attributes) {
 },{}],7:[function(_dereq_,module,exports){
 'use strict';
 
-var BraintreeError = _dereq_('./lib/error');
+var BraintreeError = _dereq_('../../lib/braintree-error');
+var errors = _dereq_('../shared/errors');
+var whitelist = _dereq_('../shared/constants').whitelistedAttributes;
 
-module.exports = {
-  CALLBACK_REQUIRED: {
-    type: BraintreeError.types.MERCHANT,
-    code: 'CALLBACK_REQUIRED'
-  },
-  INSTANTIATION_OPTION_REQUIRED: {
-    type: BraintreeError.types.MERCHANT,
-    code: 'INSTANTIATION_OPTION_REQUIRED'
-  },
-  INCOMPATIBLE_VERSIONS: {
-    type: BraintreeError.types.MERCHANT,
-    code: 'INCOMPATIBLE_VERSIONS'
-  },
-  METHOD_CALLED_AFTER_TEARDOWN: {
-    type: BraintreeError.types.MERCHANT,
-    code: 'METHOD_CALLED_AFTER_TEARDOWN'
-  },
-  BRAINTREE_API_ACCESS_RESTRICTED: {
-    type: BraintreeError.types.MERCHANT,
-    code: 'BRAINTREE_API_ACCESS_RESTRICTED',
-    message: 'Your access is restricted and cannot use this part of the Braintree API.'
+function attributeValidationError(attribute, value) {
+  var err;
+
+  if (!whitelist.hasOwnProperty(attribute)) {
+    err = new BraintreeError({
+      type: errors.HOSTED_FIELDS_ATTRIBUTE_NOT_SUPPORTED.type,
+      code: errors.HOSTED_FIELDS_ATTRIBUTE_NOT_SUPPORTED.code,
+      message: 'The "' + attribute + '" attribute is not supported in Hosted Fields.'
+    });
+  } else if (!_isValid(attribute, value)) {
+    err = new BraintreeError({
+      type: errors.HOSTED_FIELDS_ATTRIBUTE_VALUE_NOT_ALLOWED.type,
+      code: errors.HOSTED_FIELDS_ATTRIBUTE_VALUE_NOT_ALLOWED.code,
+      message: 'Value "' + value + '" is not allowed for "' + attribute + '" attribute.'
+    });
   }
-};
 
-},{"./lib/error":28}],8:[function(_dereq_,module,exports){
+  return err;
+}
+
+function _isValid(attribute, value) {
+  if (whitelist[attribute] === 'string') {
+    return typeof value === 'string' || typeof value === 'number';
+  } else if (whitelist[attribute] === 'boolean') {
+    return String(value) === 'true' || String(value) === 'false';
+  }
+
+  return false;
+}
+
+module.exports = attributeValidationError;
+
+},{"../../lib/braintree-error":18,"../shared/constants":12,"../shared/errors":13}],8:[function(_dereq_,module,exports){
 'use strict';
 
 var constants = _dereq_('../shared/constants');
+var useMin = _dereq_('../../lib/use-min');
 
-module.exports = function composeUrl(assetsUrl, componentId) {
+module.exports = function composeUrl(assetsUrl, componentId, isDebug) {
   return assetsUrl +
     '/web/' +
     constants.VERSION +
-    '/html/hosted-fields-frame.html#' +
+    '/html/hosted-fields-frame' + useMin(isDebug) + '.html#' +
     componentId;
 };
 
-},{"../shared/constants":12}],9:[function(_dereq_,module,exports){
+},{"../../lib/use-min":38,"../shared/constants":12}],9:[function(_dereq_,module,exports){
 'use strict';
 
 var Destructor = _dereq_('../../lib/destructor');
 var classlist = _dereq_('../../lib/classlist');
 var iFramer = _dereq_('iframer');
 var Bus = _dereq_('../../lib/bus');
-var BraintreeError = _dereq_('../../lib/error');
+var BraintreeError = _dereq_('../../lib/braintree-error');
 var composeUrl = _dereq_('./compose-url');
 var constants = _dereq_('../shared/constants');
 var errors = _dereq_('../shared/errors');
@@ -599,12 +612,13 @@ var EventEmitter = _dereq_('../../lib/event-emitter');
 var injectFrame = _dereq_('./inject-frame');
 var analytics = _dereq_('../../lib/analytics');
 var whitelistedFields = constants.whitelistedFields;
-var VERSION = "3.5.0";
+var VERSION = "3.9.0";
 var methods = _dereq_('../../lib/methods');
 var convertMethodsToError = _dereq_('../../lib/convert-methods-to-error');
 var deferred = _dereq_('../../lib/deferred');
-var sharedErrors = _dereq_('../../errors');
+var sharedErrors = _dereq_('../../lib/errors');
 var getCardTypes = _dereq_('credit-card-type');
+var attributeValidationError = _dereq_('./attribute-validation-error');
 
 /**
  * @typedef {object} HostedFields~tokenizePayload
@@ -841,7 +855,7 @@ function createInputEventHandler(fields) {
  * @classdesc This class represents a Hosted Fields component produced by {@link module:braintree-web/hosted-fields.create|braintree-web/hosted-fields.create}. Instances of this class have methods for interacting with the input fields within Hosted Fields' iframes.
  */
 function HostedFields(options) {
-  var failureTimeout, clientVersion;
+  var failureTimeout, clientVersion, clientConfig;
   var self = this;
   var fields = {};
   var fieldCount = 0;
@@ -855,7 +869,8 @@ function HostedFields(options) {
     });
   }
 
-  clientVersion = options.client.getConfiguration().analyticsMetadata.sdkVersion;
+  clientConfig = options.client.getConfiguration();
+  clientVersion = clientConfig.analyticsMetadata.sdkVersion;
   if (clientVersion !== VERSION) {
     throw new BraintreeError({
       type: sharedErrors.INCOMPATIBLE_VERSIONS.type,
@@ -893,7 +908,7 @@ function HostedFields(options) {
 
   this._client = options.client;
 
-  analytics.sendEvent(this._client, 'web.custom.hosted-fields.initialized');
+  analytics.sendEvent(this._client, 'custom.hosted-fields.initialized');
 
   Object.keys(options.fields).forEach(function (key) {
     var field, container, frame;
@@ -955,12 +970,12 @@ function HostedFields(options) {
     };
 
     setTimeout(function () {
-      frame.src = composeUrl(self._client.getConfiguration().gatewayConfiguration.assetsUrl, componentId);
+      frame.src = composeUrl(clientConfig.gatewayConfiguration.assetsUrl, componentId, clientConfig.isDebug);
     }, 0);
   }.bind(this));
 
   failureTimeout = setTimeout(function () {
-    analytics.sendEvent(self._client, 'web.custom.hosted-fields.load.timed-out');
+    analytics.sendEvent(self._client, 'custom.hosted-fields.load.timed-out');
   }, INTEGRATION_TIMEOUT_MS);
 
   this._bus.on(events.FRAME_READY, function (reply) {
@@ -1050,7 +1065,7 @@ HostedFields.prototype.teardown = function (callback) {
   var client = this._client;
 
   this._destructor.teardown(function (err) {
-    analytics.sendEvent(client, 'web.custom.hosted-fields.teardown-completed');
+    analytics.sendEvent(client, 'custom.hosted-fields.teardown-completed');
 
     if (typeof callback === 'function') {
       callback = deferred(callback);
@@ -1064,6 +1079,7 @@ HostedFields.prototype.teardown = function (callback) {
  * @public
  * @param {object} [options] All tokenization options for the Hosted Fields component.
  * @param {boolean} [options.vault=false] When true, will vault the tokenized card. Cards will only be vaulted when using a client created with a client token that includes a customer ID.
+ * @param {string} [options.billingAddress.postalCode] When supplied, this postal code will be tokenized along with the contents of the fields. If a postal code is provided as part of the Hosted Fields configuration, the value of the field will be tokenized and this value will be ignored.
  * @param {callback} callback The second argument, <code>data</code>, is a {@link HostedFields~tokenizePayload|tokenizePayload}
  * @example <caption>Tokenize a card</caption>
  * hostedFieldsInstance.tokenize(function (tokenizeErr, payload) {
@@ -1091,6 +1107,18 @@ HostedFields.prototype.teardown = function (callback) {
  * @example <caption>Tokenize and vault a card</caption>
  * hostedFieldsInstance.tokenize({
  *   vault: true
+ * }, function (tokenizeErr, payload) {
+ *   if (tokenizeErr) {
+ *     console.error(tokenizeErr);
+ *   } else {
+ *     console.log('Got nonce:', payload.nonce);
+ *   }
+ * });
+ * @example <caption>Tokenize a card with the postal code option</caption>
+ * hostedFieldsInstance.tokenize({
+ *   billingAddress: {
+ *     postalCode: '11111'
+ *   }
  * }, function (tokenizeErr, payload) {
  *   if (tokenizeErr) {
  *     console.error(tokenizeErr);
@@ -1198,56 +1226,87 @@ HostedFields.prototype.removeClass = function (field, classname, callback) {
 };
 
 /**
- * Sets the placeholder of a {@link module:braintree-web/hosted-fields~field field}.
+ * Sets an attribute of a {@link module:braintree-web/hosted-fields~field field}.
+ * Supported attributes are `aria-invalid`, `aria-required`, `disabled`, and `placeholder`.
+ *
  * @public
- * @param {string} field The field whose placeholder you wish to change. Must be a valid {@link module:braintree-web/hosted-fields~fieldOptions fieldOption}.
- * @param {string} placeholder Will be used as the `placeholder` attribute of the input.
- * @param {callback} [callback] Callback executed on completion, containing an error if one occurred. No data is returned if the placeholder updated successfully.
+ * @param {object} options The options for the attribute you wish to set.
+ * @param {string} options.field The field to which you wish to add an attribute. Must be a valid {@link module:braintree-web/hosted-fields~fieldOptions fieldOption}.
+ * @param {string} options.attribute The name of the attribute you wish to add to the field.
+ * @param {string} options.value The value for the attribute.
+ * @param {callback} [callback] Callback executed on completion, containing an error if one occurred. No data is returned if the attribute is set successfully.
  *
- * @example
- * hostedFieldsInstance.setPlaceholder('number', '4111 1111 1111 1111', function (placeholderErr) {
- *   if (placeholderErr) {
- *     console.error(placeholderErr);
+ * @example <caption>Set the placeholder attribute of a field</caption>
+ * hostedFieldsInstance.setAttribute({
+ *   field: 'number',
+ *   attribute: 'placeholder',
+ *   value: '1111 1111 1111 1111'
+ * }, function (attributeErr) {
+ *   if (attributeErr) {
+ *     console.error(attributeErr);
  *   }
  * });
  *
- * @example <caption>Update CVV field on card type change</caption>
- * hostedFieldsInstance.on('cardTypeChange', function (event) {
- *   // Update the placeholder value if there is only one possible card type
- *   if (event.cards.length === 1) {
- *     hostedFields.setPlaceholder('cvv', event.cards[0].code.name, function (placeholderErr) {
- *       if (placeholderErr) {
- *         // Handle errors, such as invalid field name
- *         console.error(placeholderErr);
- *       }
- *     });
+ * @example <caption>Set the aria-required attribute of a field</caption>
+ * hostedFieldsInstance.setAttribute({
+ *   field: 'number',
+ *   attribute: 'aria-required',
+ *   value: true
+ * }, function (attributeErr) {
+ *   if (attributeErr) {
+ *     console.error(attributeErr);
  *   }
  * });
+ *
  * @returns {void}
  */
-HostedFields.prototype.setPlaceholder = function (field, placeholder, callback) {
-  var err;
+HostedFields.prototype.setAttribute = function (options, callback) {
+  var attributeErr, err;
 
-  if (!whitelistedFields.hasOwnProperty(field)) {
+  if (!whitelistedFields.hasOwnProperty(options.field)) {
     err = new BraintreeError({
       type: errors.HOSTED_FIELDS_FIELD_INVALID.type,
       code: errors.HOSTED_FIELDS_FIELD_INVALID.code,
-      message: '"' + field + '" is not a valid field. You must use a valid field option when setting a placeholder.'
+      message: '"' + options.field + '" is not a valid field. You must use a valid field option when setting an attribute.'
     });
-  } else if (!this._fields.hasOwnProperty(field)) {
+  } else if (!this._fields.hasOwnProperty(options.field)) {
     err = new BraintreeError({
       type: errors.HOSTED_FIELDS_FIELD_NOT_PRESENT.type,
       code: errors.HOSTED_FIELDS_FIELD_NOT_PRESENT.code,
-      message: 'Cannot set placeholder for "' + field + '" field because it is not part of the current Hosted Fields options.'
+      message: 'Cannot set attribute for "' + options.field + '" field because it is not part of the current Hosted Fields options.'
     });
   } else {
-    this._bus.emit(events.SET_PLACEHOLDER, field, placeholder);
+    attributeErr = attributeValidationError(options.attribute, options.value);
+
+    if (attributeErr) {
+      err = attributeErr;
+    } else {
+      this._bus.emit(events.SET_ATTRIBUTE, options.field, options.attribute, options.value);
+    }
   }
 
   if (typeof callback === 'function') {
     callback = deferred(callback);
     callback(err);
   }
+};
+
+/**
+ * @deprecated since version 3.8.0. Use {@link HostedFields#setAttribute|setAttribute} instead.
+ *
+ * @public
+ * @param {string} field The field whose placeholder you wish to change. Must be a valid {@link module:braintree-web/hosted-fields~fieldOptions fieldOption}.
+ * @param {string} placeholder Will be used as the `placeholder` attribute of the input.
+ * @param {callback} [callback] Callback executed on completion, containing an error if one occurred. No data is returned if the placeholder updated successfully.
+ *
+ * @returns {void}
+ */
+HostedFields.prototype.setPlaceholder = function (field, placeholder, callback) {
+  this.setAttribute({
+    field: field,
+    attribute: 'placeholder',
+    value: placeholder
+  }, callback);
 };
 
 /**
@@ -1310,7 +1369,7 @@ HostedFields.prototype.getState = function () {
 
 module.exports = HostedFields;
 
-},{"../../errors":7,"../../lib/analytics":16,"../../lib/bus":20,"../../lib/classlist":21,"../../lib/constants":22,"../../lib/convert-methods-to-error":23,"../../lib/deferred":25,"../../lib/destructor":26,"../../lib/error":28,"../../lib/event-emitter":29,"../../lib/is-ios":30,"../../lib/methods":33,"../../lib/throw-if-no-callback":36,"../../lib/uuid":37,"../shared/constants":12,"../shared/errors":13,"../shared/find-parent-tags":14,"./compose-url":8,"./inject-frame":10,"credit-card-type":1,"iframer":3}],10:[function(_dereq_,module,exports){
+},{"../../lib/analytics":16,"../../lib/braintree-error":18,"../../lib/bus":21,"../../lib/classlist":22,"../../lib/constants":23,"../../lib/convert-methods-to-error":24,"../../lib/deferred":26,"../../lib/destructor":27,"../../lib/errors":29,"../../lib/event-emitter":30,"../../lib/is-ios":31,"../../lib/methods":34,"../../lib/throw-if-no-callback":37,"../../lib/uuid":39,"../shared/constants":12,"../shared/errors":13,"../shared/find-parent-tags":14,"./attribute-validation-error":7,"./compose-url":8,"./inject-frame":10,"credit-card-type":1,"iframer":3}],10:[function(_dereq_,module,exports){
 'use strict';
 
 module.exports = function injectFrame(frame, container) {
@@ -1334,7 +1393,7 @@ module.exports = function injectFrame(frame, container) {
 var HostedFields = _dereq_('./external/hosted-fields');
 var deferred = _dereq_('../lib/deferred');
 var throwIfNoCallback = _dereq_('../lib/throw-if-no-callback');
-var VERSION = "3.5.0";
+var VERSION = "3.9.0";
 
 /**
  * Fields used in {@link module:braintree-web/hosted-fields~fieldOptions fields options}
@@ -1363,7 +1422,33 @@ var VERSION = "3.5.0";
  *
  * These are the CSS properties that Hosted Fields supports. Any other CSS should be specified on your page and outside of any Braintree configuration. Trying to set unsupported properties will fail and put a warning in the console.
  *
- * `color` `font-family` `font-size-adjust` `font-size` `font-stretch` `font-style` `font-variant-alternates` `font-variant-caps` `font-variant-east-asian` `font-variant-ligatures` `font-variant-numeric` `font-variant` `font-weight` `font` `line-height` `opacity` `outline` `text-shadow` `transition` `-moz-osx-font-smoothing` `-moz-tap-highlight-color` `-moz-transition` `-webkit-font-smoothing` `-webkit-tap-highlight-color` `-webkit-transition`
+ * Supported CSS properties are:
+ * `color`
+ * `font-family`
+ * `font-size-adjust`
+ * `font-size`
+ * `font-stretch`
+ * `font-style`
+ * `font-variant-alternates`
+ * `font-variant-caps`
+ * `font-variant-east-asian`
+ * `font-variant-ligatures`
+ * `font-variant-numeric`
+ * `font-variant`
+ * `font-weight`
+ * `font`
+ * `letter-spacing`
+ * `line-height`
+ * `opacity`
+ * `outline`
+ * `text-shadow`
+ * `transition`
+ * `-moz-osx-font-smoothing`
+ * `-moz-tap-highlight-color`
+ * `-moz-transition`
+ * `-webkit-font-smoothing`
+ * `-webkit-tap-highlight-color`
+ * `-webkit-transition`
  * @typedef {object} styleOptions
  */
 
@@ -1397,7 +1482,7 @@ var VERSION = "3.5.0";
  *     },
  *     cvv: {
  *       selector: '#cvv',
- *       placeholder: 'â€¢â€¢â€¢'
+ *       placeholder: '•••'
  *     },
  *     expirationDate: {
  *       selector: '#expiration-date',
@@ -1433,12 +1518,12 @@ module.exports = {
   VERSION: VERSION
 };
 
-},{"../lib/deferred":25,"../lib/throw-if-no-callback":36,"./external/hosted-fields":9}],12:[function(_dereq_,module,exports){
+},{"../lib/deferred":26,"../lib/throw-if-no-callback":37,"./external/hosted-fields":9}],12:[function(_dereq_,module,exports){
 'use strict';
 /* eslint-disable no-reserved-keys */
 
 var enumerate = _dereq_('../../lib/enumerate');
-var VERSION = "3.5.0";
+var VERSION = "3.9.0";
 
 var constants = {
   VERSION: VERSION,
@@ -1491,6 +1576,7 @@ var constants = {
     'font-variant-ligatures',
     'font-variant-numeric',
     'font-weight',
+    'letter-spacing',
     'line-height',
     'opacity',
     'outline',
@@ -1522,6 +1608,12 @@ var constants = {
       name: 'postal-code',
       label: 'Postal Code'
     }
+  },
+  whitelistedAttributes: {
+    'aria-invalid': 'boolean',
+    'aria-required': 'boolean',
+    disabled: 'boolean',
+    placeholder: 'string'
   }
 };
 
@@ -1534,16 +1626,16 @@ constants.events = enumerate([
   'TRIGGER_INPUT_FOCUS',
   'ADD_CLASS',
   'REMOVE_CLASS',
-  'SET_PLACEHOLDER',
+  'SET_ATTRIBUTE',
   'CLEAR_FIELD'
 ], 'hosted-fields:');
 
 module.exports = constants;
 
-},{"../../lib/enumerate":27}],13:[function(_dereq_,module,exports){
+},{"../../lib/enumerate":28}],13:[function(_dereq_,module,exports){
 'use strict';
 
-var BraintreeError = _dereq_('../../lib/error');
+var BraintreeError = _dereq_('../../lib/braintree-error');
 
 module.exports = {
   HOSTED_FIELDS_INVALID_FIELD_KEY: {
@@ -1587,10 +1679,18 @@ module.exports = {
     type: BraintreeError.types.CUSTOMER,
     code: 'HOSTED_FIELDS_FIELDS_INVALID',
     message: 'Some payment input fields are invalid. Cannot tokenize invalid card fields.'
+  },
+  HOSTED_FIELDS_ATTRIBUTE_NOT_SUPPORTED: {
+    type: BraintreeError.types.MERCHANT,
+    code: 'HOSTED_FIELDS_ATTRIBUTE_NOT_SUPPORTED'
+  },
+  HOSTED_FIELDS_ATTRIBUTE_VALUE_NOT_ALLOWED: {
+    type: BraintreeError.types.MERCHANT,
+    code: 'HOSTED_FIELDS_ATTRIBUTE_VALUE_NOT_ALLOWED'
   }
 };
 
-},{"../../lib/error":28}],14:[function(_dereq_,module,exports){
+},{"../../lib/braintree-error":18}],14:[function(_dereq_,module,exports){
 'use strict';
 
 function findParentTags(element, tag) {
@@ -1644,7 +1744,7 @@ function addMetadata(configuration, data) {
 
 module.exports = addMetadata;
 
-},{"./constants":22,"./create-authorization-data":24,"./json-clone":32}],16:[function(_dereq_,module,exports){
+},{"./constants":23,"./create-authorization-data":25,"./json-clone":33}],16:[function(_dereq_,module,exports){
 'use strict';
 
 var constants = _dereq_('./constants');
@@ -1660,7 +1760,10 @@ function sendAnalyticsEvent(client, kind, callback) {
   var timestamp = _millisToSeconds(Date.now());
   var url = configuration.gatewayConfiguration.analytics.url;
   var data = {
-    analytics: [{kind: kind, timestamp: timestamp}]
+    analytics: [{
+      kind: constants.ANALYTICS_PREFIX + kind,
+      timestamp: timestamp
+    }]
   };
 
   request({
@@ -1675,7 +1778,7 @@ module.exports = {
   sendEvent: sendAnalyticsEvent
 };
 
-},{"./add-metadata":15,"./constants":22}],17:[function(_dereq_,module,exports){
+},{"./add-metadata":15,"./constants":23}],17:[function(_dereq_,module,exports){
 'use strict';
 
 var once = _dereq_('./once');
@@ -1719,7 +1822,84 @@ module.exports = function (functions, cb) {
   }
 };
 
-},{"./once":34}],18:[function(_dereq_,module,exports){
+},{"./once":35}],18:[function(_dereq_,module,exports){
+'use strict';
+
+var enumerate = _dereq_('./enumerate');
+
+/**
+ * @class
+ * @global
+ * @param {object} options Construction options
+ * @classdesc This class is used to report error conditions, frequently as the first parameter to callbacks throughout the Braintree SDK.
+ * @description <strong>You cannot use this constructor directly. Interact with instances of this class through {@link callback callbacks}.</strong>
+ */
+function BraintreeError(options) {
+  if (!BraintreeError.types.hasOwnProperty(options.type)) {
+    throw new Error(options.type + ' is not a valid type.');
+  }
+
+  if (!options.code) {
+    throw new Error('Error code required.');
+  }
+
+  if (!options.message) {
+    throw new Error('Error message required.');
+  }
+
+  this.name = 'BraintreeError';
+
+  /**
+   * @type {string}
+   * @description A code that corresponds to specific errors.
+   */
+  this.code = options.code;
+
+  /**
+   * @type {string}
+   * @description A short description of the error.
+   */
+  this.message = options.message;
+
+  /**
+   * @type {BraintreeError.types}
+   * @description The type of error.
+   */
+  this.type = options.type;
+
+  /**
+   * @type {object=}
+   * @description Additional information about the error, such as an underlying network error response.
+   */
+  this.details = options.details;
+}
+
+BraintreeError.prototype = Object.create(Error.prototype);
+BraintreeError.prototype.constructor = BraintreeError;
+
+/**
+ * Enum for {@link BraintreeError} types.
+ * @name BraintreeError.types
+ * @enum
+ * @readonly
+ * @memberof BraintreeError
+ * @property {string} CUSTOMER An error caused by the customer.
+ * @property {string} MERCHANT An error that is actionable by the merchant.
+ * @property {string} NETWORK An error due to a network problem.
+ * @property {string} INTERNAL An error caused by Braintree code.
+ * @property {string} UNKNOWN An error where the origin is unknown.
+ */
+BraintreeError.types = enumerate([
+  'CUSTOMER',
+  'MERCHANT',
+  'NETWORK',
+  'INTERNAL',
+  'UNKNOWN'
+]);
+
+module.exports = BraintreeError;
+
+},{"./enumerate":28}],19:[function(_dereq_,module,exports){
 'use strict';
 
 var isWhitelistedDomain = _dereq_('../is-whitelisted-domain');
@@ -1751,7 +1931,7 @@ module.exports = {
   checkOrigin: checkOrigin
 };
 
-},{"../is-whitelisted-domain":31}],19:[function(_dereq_,module,exports){
+},{"../is-whitelisted-domain":32}],20:[function(_dereq_,module,exports){
 'use strict';
 
 var enumerate = _dereq_('../enumerate');
@@ -1760,13 +1940,13 @@ module.exports = enumerate([
   'CONFIGURATION_REQUEST'
 ], 'bus:');
 
-},{"../enumerate":27}],20:[function(_dereq_,module,exports){
+},{"../enumerate":28}],21:[function(_dereq_,module,exports){
 'use strict';
 
 var bus = _dereq_('framebus');
 var events = _dereq_('./events');
 var checkOrigin = _dereq_('./check-origin').checkOrigin;
-var BraintreeError = _dereq_('../error');
+var BraintreeError = _dereq_('../braintree-error');
 
 function BraintreeBus(options) {
   options = options || {};
@@ -1891,7 +2071,7 @@ BraintreeBus.events = events;
 
 module.exports = BraintreeBus;
 
-},{"../error":28,"./check-origin":18,"./events":19,"framebus":2}],21:[function(_dereq_,module,exports){
+},{"../braintree-error":18,"./check-origin":19,"./events":20,"framebus":2}],22:[function(_dereq_,module,exports){
 'use strict';
 
 function _classesOf(element) {
@@ -1930,13 +2110,14 @@ module.exports = {
   toggle: toggle
 };
 
-},{}],22:[function(_dereq_,module,exports){
+},{}],23:[function(_dereq_,module,exports){
 'use strict';
 
-var VERSION = "3.5.0";
+var VERSION = "3.9.0";
 var PLATFORM = 'web';
 
 module.exports = {
+  ANALYTICS_PREFIX: 'web.',
   ANALYTICS_REQUEST_TIMEOUT_MS: 2000,
   INTEGRATION_TIMEOUT_MS: 60000,
   VERSION: VERSION,
@@ -1946,11 +2127,11 @@ module.exports = {
   BRAINTREE_LIBRARY_VERSION: 'braintree/' + PLATFORM + '/' + VERSION
 };
 
-},{}],23:[function(_dereq_,module,exports){
+},{}],24:[function(_dereq_,module,exports){
 'use strict';
 
-var BraintreeError = _dereq_('./error');
-var sharedErrors = _dereq_('../errors');
+var BraintreeError = _dereq_('./braintree-error');
+var sharedErrors = _dereq_('./errors');
 
 module.exports = function (instance, methodNames) {
   methodNames.forEach(function (methodName) {
@@ -1964,7 +2145,7 @@ module.exports = function (instance, methodNames) {
   });
 };
 
-},{"../errors":7,"./error":28}],24:[function(_dereq_,module,exports){
+},{"./braintree-error":18,"./errors":29}],25:[function(_dereq_,module,exports){
 'use strict';
 
 var atob = _dereq_('../lib/polyfill').atob;
@@ -1973,8 +2154,6 @@ var apiUrls = {
   production: 'https://api.braintreegateway.com:443',
   sandbox: 'https://api.sandbox.braintreegateway.com:443'
 };
-
-/* eslint-enable no-undef,block-scoped-var */
 
 function _isTokenizationKey(str) {
   return /^[a-zA-Z0-9]+_[a-zA-Z0-9]+_[a-zA-Z0-9_]+$/.test(str);
@@ -2013,7 +2192,7 @@ function createAuthorizationData(authorization) {
 
 module.exports = createAuthorizationData;
 
-},{"../lib/polyfill":35}],25:[function(_dereq_,module,exports){
+},{"../lib/polyfill":36}],26:[function(_dereq_,module,exports){
 'use strict';
 
 module.exports = function (fn) {
@@ -2027,7 +2206,7 @@ module.exports = function (fn) {
   };
 };
 
-},{}],26:[function(_dereq_,module,exports){
+},{}],27:[function(_dereq_,module,exports){
 'use strict';
 
 var batchExecuteFunctions = _dereq_('./batch-execute-functions');
@@ -2064,7 +2243,7 @@ Destructor.prototype.teardown = function (callback) {
 
 module.exports = Destructor;
 
-},{"./batch-execute-functions":17}],27:[function(_dereq_,module,exports){
+},{"./batch-execute-functions":17}],28:[function(_dereq_,module,exports){
 'use strict';
 
 function enumerate(values, prefix) {
@@ -2078,84 +2257,40 @@ function enumerate(values, prefix) {
 
 module.exports = enumerate;
 
-},{}],28:[function(_dereq_,module,exports){
+},{}],29:[function(_dereq_,module,exports){
 'use strict';
 
-var enumerate = _dereq_('./enumerate');
+var BraintreeError = _dereq_('./braintree-error');
 
-/**
- * @class
- * @global
- * @param {object} options Construction options
- * @classdesc This class is used to report error conditions, frequently as the first parameter to callbacks throughout the Braintree SDK.
- * @description <strong>You cannot use this constructor directly. Interact with instances of this class through {@link callback callbacks}.</strong>
- */
-function BraintreeError(options) {
-  if (!BraintreeError.types.hasOwnProperty(options.type)) {
-    throw new Error(options.type + ' is not a valid type.');
+module.exports = {
+  CALLBACK_REQUIRED: {
+    type: BraintreeError.types.MERCHANT,
+    code: 'CALLBACK_REQUIRED'
+  },
+  INSTANTIATION_OPTION_REQUIRED: {
+    type: BraintreeError.types.MERCHANT,
+    code: 'INSTANTIATION_OPTION_REQUIRED'
+  },
+  INVALID_OPTION: {
+    type: BraintreeError.types.MERCHANT,
+    code: 'INVALID_OPTION'
+  },
+  INCOMPATIBLE_VERSIONS: {
+    type: BraintreeError.types.MERCHANT,
+    code: 'INCOMPATIBLE_VERSIONS'
+  },
+  METHOD_CALLED_AFTER_TEARDOWN: {
+    type: BraintreeError.types.MERCHANT,
+    code: 'METHOD_CALLED_AFTER_TEARDOWN'
+  },
+  BRAINTREE_API_ACCESS_RESTRICTED: {
+    type: BraintreeError.types.MERCHANT,
+    code: 'BRAINTREE_API_ACCESS_RESTRICTED',
+    message: 'Your access is restricted and cannot use this part of the Braintree API.'
   }
+};
 
-  if (!options.code) {
-    throw new Error('Error code required.');
-  }
-
-  if (!options.message) {
-    throw new Error('Error message required.');
-  }
-
-  this.name = 'BraintreeError';
-
-  /**
-   * @type {string}
-   * @description A code that corresponds to specific errors.
-   */
-  this.code = options.code;
-
-  /**
-   * @type {string}
-   * @description A short description of the error.
-   */
-  this.message = options.message;
-
-  /**
-   * @type {BraintreeError.types}
-   * @description The type of error.
-   */
-  this.type = options.type;
-
-  /**
-   * @type {object=}
-   * @description Additional information about the error, such as an underlying network error response.
-   */
-  this.details = options.details;
-}
-
-BraintreeError.prototype = Object.create(Error.prototype);
-BraintreeError.prototype.constructor = BraintreeError;
-
-/**
- * Enum for {@link BraintreeError} types.
- * @name BraintreeError.types
- * @enum
- * @readonly
- * @memberof BraintreeError
- * @property {string} CUSTOMER An error caused by the customer.
- * @property {string} MERCHANT An error that is actionable by the merchant.
- * @property {string} NETWORK An error due to a network problem.
- * @property {string} INTERNAL An error caused by Braintree code.
- * @property {string} UNKNOWN An error where the origin is unknown.
- */
-BraintreeError.types = enumerate([
-  'CUSTOMER',
-  'MERCHANT',
-  'NETWORK',
-  'INTERNAL',
-  'UNKNOWN'
-]);
-
-module.exports = BraintreeError;
-
-},{"./enumerate":27}],29:[function(_dereq_,module,exports){
+},{"./braintree-error":18}],30:[function(_dereq_,module,exports){
 'use strict';
 
 function EventEmitter() {
@@ -2185,7 +2320,7 @@ EventEmitter.prototype._emit = function (event) {
 
 module.exports = EventEmitter;
 
-},{}],30:[function(_dereq_,module,exports){
+},{}],31:[function(_dereq_,module,exports){
 'use strict';
 
 module.exports = function isIos(userAgent) {
@@ -2193,17 +2328,16 @@ module.exports = function isIos(userAgent) {
   return /(iPad|iPhone|iPod)/i.test(userAgent);
 };
 
-},{}],31:[function(_dereq_,module,exports){
+},{}],32:[function(_dereq_,module,exports){
 'use strict';
 
 var parser;
 var legalHosts = {
   'paypal.com': 1,
   'braintreepayments.com': 1,
-  'braintreegateway.com': 1
+  'braintreegateway.com': 1,
+  'braintree-api.com': 1
 };
-
-/* eslint-enable no-undef,block-scoped-var */
 
 function stripSubdomains(domain) {
   return domain.split('.').slice(-2).join('.');
@@ -2227,14 +2361,14 @@ function isWhitelistedDomain(url) {
 
 module.exports = isWhitelistedDomain;
 
-},{}],32:[function(_dereq_,module,exports){
+},{}],33:[function(_dereq_,module,exports){
 'use strict';
 
 module.exports = function (value) {
   return JSON.parse(JSON.stringify(value));
 };
 
-},{}],33:[function(_dereq_,module,exports){
+},{}],34:[function(_dereq_,module,exports){
 'use strict';
 
 module.exports = function (obj) {
@@ -2243,7 +2377,7 @@ module.exports = function (obj) {
   });
 };
 
-},{}],34:[function(_dereq_,module,exports){
+},{}],35:[function(_dereq_,module,exports){
 'use strict';
 
 function once(fn) {
@@ -2259,7 +2393,7 @@ function once(fn) {
 
 module.exports = once;
 
-},{}],35:[function(_dereq_,module,exports){
+},{}],36:[function(_dereq_,module,exports){
 (function (global){
 'use strict';
 
@@ -2298,11 +2432,11 @@ module.exports = {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],36:[function(_dereq_,module,exports){
+},{}],37:[function(_dereq_,module,exports){
 'use strict';
 
-var BraintreeError = _dereq_('./error');
-var sharedErrors = _dereq_('../errors');
+var BraintreeError = _dereq_('./braintree-error');
+var sharedErrors = _dereq_('./errors');
 
 module.exports = function (callback, functionName) {
   if (typeof callback !== 'function') {
@@ -2314,7 +2448,16 @@ module.exports = function (callback, functionName) {
   }
 };
 
-},{"../errors":7,"./error":28}],37:[function(_dereq_,module,exports){
+},{"./braintree-error":18,"./errors":29}],38:[function(_dereq_,module,exports){
+'use strict';
+
+function useMin(isDebug) {
+  return isDebug ? '' : '.min';
+}
+
+module.exports = useMin;
+
+},{}],39:[function(_dereq_,module,exports){
 'use strict';
 
 function uuid() {

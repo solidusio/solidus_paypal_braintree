@@ -1,7 +1,242 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}(g.braintree || (g.braintree = {})).dataCollector = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+(function (root) {
+
+  // Store setTimeout reference so promise-polyfill will be unaffected by
+  // other code modifying setTimeout (like sinon.useFakeTimers())
+  var setTimeoutFunc = setTimeout;
+
+  function noop() {}
+  
+  // Polyfill for Function.prototype.bind
+  function bind(fn, thisArg) {
+    return function () {
+      fn.apply(thisArg, arguments);
+    };
+  }
+
+  function Promise(fn) {
+    if (typeof this !== 'object') throw new TypeError('Promises must be constructed via new');
+    if (typeof fn !== 'function') throw new TypeError('not a function');
+    this._state = 0;
+    this._handled = false;
+    this._value = undefined;
+    this._deferreds = [];
+
+    doResolve(fn, this);
+  }
+
+  function handle(self, deferred) {
+    while (self._state === 3) {
+      self = self._value;
+    }
+    if (self._state === 0) {
+      self._deferreds.push(deferred);
+      return;
+    }
+    self._handled = true;
+    Promise._immediateFn(function () {
+      var cb = self._state === 1 ? deferred.onFulfilled : deferred.onRejected;
+      if (cb === null) {
+        (self._state === 1 ? resolve : reject)(deferred.promise, self._value);
+        return;
+      }
+      var ret;
+      try {
+        ret = cb(self._value);
+      } catch (e) {
+        reject(deferred.promise, e);
+        return;
+      }
+      resolve(deferred.promise, ret);
+    });
+  }
+
+  function resolve(self, newValue) {
+    try {
+      // Promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
+      if (newValue === self) throw new TypeError('A promise cannot be resolved with itself.');
+      if (newValue && (typeof newValue === 'object' || typeof newValue === 'function')) {
+        var then = newValue.then;
+        if (newValue instanceof Promise) {
+          self._state = 3;
+          self._value = newValue;
+          finale(self);
+          return;
+        } else if (typeof then === 'function') {
+          doResolve(bind(then, newValue), self);
+          return;
+        }
+      }
+      self._state = 1;
+      self._value = newValue;
+      finale(self);
+    } catch (e) {
+      reject(self, e);
+    }
+  }
+
+  function reject(self, newValue) {
+    self._state = 2;
+    self._value = newValue;
+    finale(self);
+  }
+
+  function finale(self) {
+    if (self._state === 2 && self._deferreds.length === 0) {
+      Promise._immediateFn(function() {
+        if (!self._handled) {
+          Promise._unhandledRejectionFn(self._value);
+        }
+      });
+    }
+
+    for (var i = 0, len = self._deferreds.length; i < len; i++) {
+      handle(self, self._deferreds[i]);
+    }
+    self._deferreds = null;
+  }
+
+  function Handler(onFulfilled, onRejected, promise) {
+    this.onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : null;
+    this.onRejected = typeof onRejected === 'function' ? onRejected : null;
+    this.promise = promise;
+  }
+
+  /**
+   * Take a potentially misbehaving resolver function and make sure
+   * onFulfilled and onRejected are only called once.
+   *
+   * Makes no guarantees about asynchrony.
+   */
+  function doResolve(fn, self) {
+    var done = false;
+    try {
+      fn(function (value) {
+        if (done) return;
+        done = true;
+        resolve(self, value);
+      }, function (reason) {
+        if (done) return;
+        done = true;
+        reject(self, reason);
+      });
+    } catch (ex) {
+      if (done) return;
+      done = true;
+      reject(self, ex);
+    }
+  }
+
+  Promise.prototype['catch'] = function (onRejected) {
+    return this.then(null, onRejected);
+  };
+
+  Promise.prototype.then = function (onFulfilled, onRejected) {
+    var prom = new (this.constructor)(noop);
+
+    handle(this, new Handler(onFulfilled, onRejected, prom));
+    return prom;
+  };
+
+  Promise.all = function (arr) {
+    var args = Array.prototype.slice.call(arr);
+
+    return new Promise(function (resolve, reject) {
+      if (args.length === 0) return resolve([]);
+      var remaining = args.length;
+
+      function res(i, val) {
+        try {
+          if (val && (typeof val === 'object' || typeof val === 'function')) {
+            var then = val.then;
+            if (typeof then === 'function') {
+              then.call(val, function (val) {
+                res(i, val);
+              }, reject);
+              return;
+            }
+          }
+          args[i] = val;
+          if (--remaining === 0) {
+            resolve(args);
+          }
+        } catch (ex) {
+          reject(ex);
+        }
+      }
+
+      for (var i = 0; i < args.length; i++) {
+        res(i, args[i]);
+      }
+    });
+  };
+
+  Promise.resolve = function (value) {
+    if (value && typeof value === 'object' && value.constructor === Promise) {
+      return value;
+    }
+
+    return new Promise(function (resolve) {
+      resolve(value);
+    });
+  };
+
+  Promise.reject = function (value) {
+    return new Promise(function (resolve, reject) {
+      reject(value);
+    });
+  };
+
+  Promise.race = function (values) {
+    return new Promise(function (resolve, reject) {
+      for (var i = 0, len = values.length; i < len; i++) {
+        values[i].then(resolve, reject);
+      }
+    });
+  };
+
+  // Use polyfill for setImmediate for performance gains
+  Promise._immediateFn = (typeof setImmediate === 'function' && function (fn) { setImmediate(fn); }) ||
+    function (fn) {
+      setTimeoutFunc(fn, 0);
+    };
+
+  Promise._unhandledRejectionFn = function _unhandledRejectionFn(err) {
+    if (typeof console !== 'undefined' && console) {
+      console.warn('Possible Unhandled Promise Rejection:', err); // eslint-disable-line no-console
+    }
+  };
+
+  /**
+   * Set the immediate function to execute callbacks
+   * @param fn {function} Function to execute
+   * @deprecated
+   */
+  Promise._setImmediateFn = function _setImmediateFn(fn) {
+    Promise._immediateFn = fn;
+  };
+
+  /**
+   * Change the function to execute on unhandled rejection
+   * @param {function} fn Function to execute on unhandled rejection
+   * @deprecated
+   */
+  Promise._setUnhandledRejectionFn = function _setUnhandledRejectionFn(fn) {
+    Promise._unhandledRejectionFn = fn;
+  };
+  
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = Promise;
+  } else if (!root.Promise) {
+    root.Promise = Promise;
+  }
+
+})(this);
+
+},{}],2:[function(_dereq_,module,exports){
 'use strict';
 
-var BraintreeError = _dereq_('../lib/error');
+var BraintreeError = _dereq_('../lib/braintree-error');
 
 module.exports = {
   DATA_COLLECTOR_KOUNT_NOT_ENABLED: {
@@ -13,11 +248,6 @@ module.exports = {
     type: BraintreeError.types.MERCHANT,
     code: 'DATA_COLLECTOR_KOUNT_ERROR'
   },
-  DATA_COLLECTOR_PAYPAL_NOT_ENABLED: {
-    type: BraintreeError.types.MERCHANT,
-    code: 'DATA_COLLECTOR_PAYPAL_NOT_ENABLED',
-    message: 'PayPal is not enabled for this merchant.'
-  },
   DATA_COLLECTOR_REQUIRES_CREATE_OPTIONS: {
     type: BraintreeError.types.MERCHANT,
     code: 'DATA_COLLECTOR_REQUIRES_CREATE_OPTIONS',
@@ -25,7 +255,7 @@ module.exports = {
   }
 };
 
-},{"../lib/error":10}],2:[function(_dereq_,module,exports){
+},{"../lib/braintree-error":7}],3:[function(_dereq_,module,exports){
 'use strict';
 
 function setup() {
@@ -87,7 +317,7 @@ function _createThirdPartyBlock() {
   iframe.src = 'about:blank';
   iframe.title = '';
   iframe.role = 'presentation'; // a11y
-  (iframe.frameElement || iframe).style.cssText = 'width: 0; height: 0; border: 0';
+  (iframe.frameElement || iframe).style.cssText = 'width: 0; height: 0; border: 0; position: absolute; z-index: -999';
   document.body.appendChild(iframe);
 
   try {
@@ -128,20 +358,19 @@ module.exports = {
   setup: setup
 };
 
-},{}],3:[function(_dereq_,module,exports){
+},{}],4:[function(_dereq_,module,exports){
 'use strict';
-/* eslint-disable camelcase */
 /** @module braintree-web/data-collector */
 
 var kount = _dereq_('./kount');
 var fraudnet = _dereq_('./fraudnet');
-var BraintreeError = _dereq_('../lib/error');
+var BraintreeError = _dereq_('../lib/braintree-error');
 var methods = _dereq_('../lib/methods');
-var throwIfNoCallback = _dereq_('../lib/throw-if-no-callback');
 var convertMethodsToError = _dereq_('../lib/convert-methods-to-error');
-var deferred = _dereq_('../lib/deferred');
-var VERSION = "3.5.0";
-var sharedErrors = _dereq_('../errors');
+var VERSION = "3.9.0";
+var Promise = _dereq_('../lib/promise');
+var wrapPromise = _dereq_('../lib/wrap-promise');
+var sharedErrors = _dereq_('../lib/errors');
 var errors = _dereq_('./errors');
 
 /**
@@ -149,7 +378,7 @@ var errors = _dereq_('./errors');
  * @global
  * @name DataCollector
  * @description <strong>Do not use this constructor directly. Use {@link module:braintree-web/data-collector.create|braintree-web.data-collector.create} instead.</strong>
- * @classdesc This class is used for advanced fraud integration with PayPal and Kount. Instances of this class have {@link DataCollector#deviceData|deviceData} which is used to correlate user sessions with server transactions.
+ * @classdesc This class is used for advanced fraud integration with PayPal and Kount. Instances of this class have {@link DataCollector#deviceData|deviceData} which is used to correlate user sessions with server transactions. Before using DataCollector, make sure you have enabled advanced fraud protection in the Braintree gateway. To use your own Kount ID, contact our support team ([support@braintreepayments.com](mailto:support@braintreepayments.com) or [877.434.2894](tel:877.434.2894)).
  */
 
 /**
@@ -167,115 +396,130 @@ var errors = _dereq_('./errors');
  * @description Cleanly remove all event handlers and DOM nodes that were added.
  * @param {callback} [callback] Called once teardown is complete. No data is returned if teardown completes successfully.
  * @instance
- * @returns {void}
+ * @example
+ * dataCollectorInstance.teardown();
+ * @returns {Promise|void} Returns a promise that resolves when the teardown is complete if no callback is provided.
  */
 
 /**
  * @static
  * @function create
+ * @description Creates a DataCollector instance. Requires advanced fraud protection to be enabled in the Braintree gateway. Contact our [support team](mailto:support@braintreepayments.com) to configure your Kount ID.
  * @param {object} options Creation options:
  * @param {Client} options.client A {@link Client} instance.
  * @param {boolean} [options.kount] If true, Kount fraud data collection is enabled.
  * @param {boolean} [options.paypal] If true, PayPal fraud data collection is enabled.
- * @param {callback} callback The second argument, `data`, is the {@link DataCollector} instance.
- * @returns {void}
+ * @param {callback} [callback] The second argument, `data`, is the {@link DataCollector} instance.
+ * @example
+ * var createClient = require('braintree-web/client').create;
+ * var createDataCollector = require('braintree-web/data-collector').create;
+ *
+ * createClient({
+ *   authorization: CLIENT_AUTHORIZATION
+ * }, function (clientErr, clientInstance) {
+ *   if (err) {
+ *     // handle client error
+ *     return;
+ *   }
+ *   createDataCollector({
+ *     client: clientInstance,
+ *     kount: true
+ *   }, function (dataCollectorErr, dataCollectorInstance) {
+ *     if (dataCollectorErr) {
+ *       // handle data collector error
+ *       return;
+ *     }
+ *     // data collector is set up
+ *   });
+ * });
+ *
+ * @returns {Promise|void} Returns a promise that resolves the {@link DataCollector} instance if no callback is provided.
  */
-function create(options, callback) {
-  var data, kountInstance, fraudnetInstance, result, config, clientVersion;
-  var instances = [];
+function create(options) {
+  return new Promise(function (resolve) {
+    var data, kountInstance, fraudnetInstance, config, clientVersion;
+    var result = {};
+    var instances = [];
+    var teardown = createTeardownMethod(result, instances);
 
-  throwIfNoCallback(callback, 'create');
-
-  callback = deferred(callback);
-
-  function teardown(cb) {
-    var i;
-
-    for (i = 0; i < instances.length; i++) {
-      instances[i].teardown();
-    }
-
-    convertMethodsToError(result, methods(result));
-
-    if (cb) {
-      cb = deferred(cb);
-      cb();
-    }
-  }
-
-  if (options.client == null) {
-    callback(new BraintreeError({
-      type: sharedErrors.INSTANTIATION_OPTION_REQUIRED.type,
-      code: sharedErrors.INSTANTIATION_OPTION_REQUIRED.code,
-      message: 'options.client is required when instantiating Data Collector.'
-    }));
-    return;
-  }
-
-  config = options.client.getConfiguration();
-  clientVersion = config.analyticsMetadata.sdkVersion;
-
-  if (clientVersion !== VERSION) {
-    callback(new BraintreeError({
-      type: sharedErrors.INCOMPATIBLE_VERSIONS.type,
-      code: sharedErrors.INCOMPATIBLE_VERSIONS.code,
-      message: 'Client (version ' + clientVersion + ') and Data Collector (version ' + VERSION + ') components must be from the same SDK version.'
-    }));
-    return;
-  }
-
-  if (options.kount === true) {
-    if (!config.gatewayConfiguration.kount) {
-      callback(new BraintreeError(errors.DATA_COLLECTOR_KOUNT_NOT_ENABLED));
-      return;
-    }
-
-    try {
-      kountInstance = kount.setup({
-        environment: config.gatewayConfiguration.environment,
-        merchantId: config.gatewayConfiguration.kount.kountMerchantId
+    if (options.client == null) {
+      throw new BraintreeError({
+        type: sharedErrors.INSTANTIATION_OPTION_REQUIRED.type,
+        code: sharedErrors.INSTANTIATION_OPTION_REQUIRED.code,
+        message: 'options.client is required when instantiating Data Collector.'
       });
-    } catch (err) {
-      callback(new BraintreeError({
-        type: errors.DATA_COLLECTOR_KOUNT_ERROR.type,
-        code: errors.DATA_COLLECTOR_KOUNT_ERROR.code,
-        message: err.message
-      }));
-      return;
     }
 
-    data = kountInstance.deviceData;
-    instances.push(kountInstance);
-  } else {
-    data = {};
-  }
+    config = options.client.getConfiguration();
+    clientVersion = config.analyticsMetadata.sdkVersion;
 
-  if (options.paypal === true) {
-    if (config.gatewayConfiguration.paypalEnabled !== true) {
-      callback(new BraintreeError(errors.DATA_COLLECTOR_PAYPAL_NOT_ENABLED));
-      return;
+    if (clientVersion !== VERSION) {
+      throw new BraintreeError({
+        type: sharedErrors.INCOMPATIBLE_VERSIONS.type,
+        code: sharedErrors.INCOMPATIBLE_VERSIONS.code,
+        message: 'Client (version ' + clientVersion + ') and Data Collector (version ' + VERSION + ') components must be from the same SDK version.'
+      });
     }
 
-    fraudnetInstance = fraudnet.setup();
-    data.correlation_id = fraudnetInstance.sessionId;
-    instances.push(fraudnetInstance);
-  }
+    if (options.kount === true) {
+      if (!config.gatewayConfiguration.kount) {
+        throw new BraintreeError(errors.DATA_COLLECTOR_KOUNT_NOT_ENABLED);
+      }
 
-  if (instances.length === 0) {
-    callback(new BraintreeError(errors.DATA_COLLECTOR_REQUIRES_CREATE_OPTIONS));
-    return;
-  }
+      try {
+        kountInstance = kount.setup({
+          environment: config.gatewayConfiguration.environment,
+          merchantId: config.gatewayConfiguration.kount.kountMerchantId
+        });
+      } catch (err) {
+        throw new BraintreeError({
+          type: errors.DATA_COLLECTOR_KOUNT_ERROR.type,
+          code: errors.DATA_COLLECTOR_KOUNT_ERROR.code,
+          message: err.message
+        });
+      }
 
-  result = {
-    deviceData: JSON.stringify(data),
-    teardown: teardown
-  };
+      data = kountInstance.deviceData;
+      instances.push(kountInstance);
+    } else {
+      data = {};
+    }
 
-  callback(null, result);
+    if (options.paypal === true) {
+      fraudnetInstance = fraudnet.setup();
+      data.correlation_id = fraudnetInstance.sessionId; // eslint-disable-line camelcase
+      instances.push(fraudnetInstance);
+    }
+
+    if (instances.length === 0) {
+      throw new BraintreeError(errors.DATA_COLLECTOR_REQUIRES_CREATE_OPTIONS);
+    }
+
+    result.deviceData = JSON.stringify(data);
+    result.teardown = teardown;
+
+    resolve(result);
+  });
+}
+
+function createTeardownMethod(result, instances) {
+  return wrapPromise(function teardown() {
+    return new Promise(function (resolve) {
+      var i;
+
+      for (i = 0; i < instances.length; i++) {
+        instances[i].teardown();
+      }
+
+      convertMethodsToError(result, methods(result));
+
+      resolve();
+    });
+  });
 }
 
 module.exports = {
-  create: create,
+  create: wrapPromise(create),
   /**
    * @description The current version of the SDK, i.e. `{@pkg version}`.
    * @type {string}
@@ -283,11 +527,11 @@ module.exports = {
   VERSION: VERSION
 };
 
-},{"../errors":6,"../lib/convert-methods-to-error":7,"../lib/deferred":8,"../lib/error":10,"../lib/methods":11,"../lib/throw-if-no-callback":12,"./errors":1,"./fraudnet":2,"./kount":4}],4:[function(_dereq_,module,exports){
+},{"../lib/braintree-error":7,"../lib/convert-methods-to-error":9,"../lib/errors":12,"../lib/methods":13,"../lib/promise":16,"../lib/wrap-promise":17,"./errors":2,"./fraudnet":3,"./kount":5}],5:[function(_dereq_,module,exports){
 'use strict';
-/* eslint-disable camelcase */
 
 var sjcl = _dereq_('./vendor/sjcl');
+var camelCaseToSnakeCase = _dereq_('../lib/camel-case-to-snake-case');
 
 var QA_URL = 'https://assets.qa.braintreepayments.com/data';
 var IFRAME_ID = 'braintreeDataFrame';
@@ -324,10 +568,10 @@ Kount.prototype._removeIframe = function () {
 };
 
 Kount.prototype._getDeviceData = function () {
-  return {
-    device_session_id: this._deviceSessionId,
-    fraud_merchant_id: this._currentEnvironment.id
-  };
+  return camelCaseToSnakeCase({
+    deviceSessionId: this._deviceSessionId,
+    fraudMerchantId: this._currentEnvironment.id
+  });
 };
 
 Kount.prototype._generateDeviceSessionId = function () {
@@ -386,7 +630,7 @@ module.exports = {
   environmentUrls: environmentUrls
 };
 
-},{"./vendor/sjcl":5}],5:[function(_dereq_,module,exports){
+},{"../lib/camel-case-to-snake-case":8,"./vendor/sjcl":6}],6:[function(_dereq_,module,exports){
 "use strict";var sjcl={cipher:{},hash:{},keyexchange:{},mode:{},misc:{},codec:{},exception:{corrupt:function(a){this.toString=function(){return"CORRUPT: "+this.message};this.message=a},invalid:function(a){this.toString=function(){return"INVALID: "+this.message};this.message=a},bug:function(a){this.toString=function(){return"BUG: "+this.message};this.message=a},notReady:function(a){this.toString=function(){return"NOT READY: "+this.message};this.message=a}}};
 sjcl.cipher.aes=function(a){this.l[0][0][0]||this.G();var b,c,d,e,f=this.l[0][4],g=this.l[1];b=a.length;var k=1;if(4!==b&&6!==b&&8!==b)throw new sjcl.exception.invalid("invalid aes key size");this.b=[d=a.slice(0),e=[]];for(a=b;a<4*b+28;a++){c=d[a-1];if(0===a%b||8===b&&4===a%b)c=f[c>>>24]<<24^f[c>>16&255]<<16^f[c>>8&255]<<8^f[c&255],0===a%b&&(c=c<<8^c>>>24^k<<24,k=k<<1^283*(k>>7));d[a]=d[a-b]^c}for(b=0;a;b++,a--)c=d[b&3?a:a-4],e[b]=4>=a||4>b?c:g[0][f[c>>>24]]^g[1][f[c>>16&255]]^g[2][f[c>>8&255]]^g[3][f[c&
 255]]};
@@ -418,82 +662,7 @@ function B(a,b){return function(){b.apply(a,arguments)}}sjcl.random=new sjcl.prn
 a:try{var D,E,F,G;if(G="undefined"!==typeof module&&module.exports){var H;try{H=_dereq_("crypto")}catch(a){H=null}G=E=H}if(G&&E.randomBytes)D=E.randomBytes(128),D=new Uint32Array((new Uint8Array(D)).buffer),sjcl.random.addEntropy(D,1024,"crypto['randomBytes']");else if("undefined"!==typeof window&&"undefined"!==typeof Uint32Array){F=new Uint32Array(32);if(window.crypto&&window.crypto.getRandomValues)window.crypto.getRandomValues(F);else if(window.msCrypto&&window.msCrypto.getRandomValues)window.msCrypto.getRandomValues(F);
 else break a;sjcl.random.addEntropy(F,1024,"crypto['getRandomValues']")}}catch(a){"undefined"!==typeof window&&window.console&&(console.log("There was an error collecting entropy from the browser:"),console.log(a))}"undefined"!==typeof module&&module.exports&&(module.exports=sjcl);"function"===typeof define&&define([],function(){return sjcl});
 
-},{"crypto":undefined}],6:[function(_dereq_,module,exports){
-'use strict';
-
-var BraintreeError = _dereq_('./lib/error');
-
-module.exports = {
-  CALLBACK_REQUIRED: {
-    type: BraintreeError.types.MERCHANT,
-    code: 'CALLBACK_REQUIRED'
-  },
-  INSTANTIATION_OPTION_REQUIRED: {
-    type: BraintreeError.types.MERCHANT,
-    code: 'INSTANTIATION_OPTION_REQUIRED'
-  },
-  INCOMPATIBLE_VERSIONS: {
-    type: BraintreeError.types.MERCHANT,
-    code: 'INCOMPATIBLE_VERSIONS'
-  },
-  METHOD_CALLED_AFTER_TEARDOWN: {
-    type: BraintreeError.types.MERCHANT,
-    code: 'METHOD_CALLED_AFTER_TEARDOWN'
-  },
-  BRAINTREE_API_ACCESS_RESTRICTED: {
-    type: BraintreeError.types.MERCHANT,
-    code: 'BRAINTREE_API_ACCESS_RESTRICTED',
-    message: 'Your access is restricted and cannot use this part of the Braintree API.'
-  }
-};
-
-},{"./lib/error":10}],7:[function(_dereq_,module,exports){
-'use strict';
-
-var BraintreeError = _dereq_('./error');
-var sharedErrors = _dereq_('../errors');
-
-module.exports = function (instance, methodNames) {
-  methodNames.forEach(function (methodName) {
-    instance[methodName] = function () {
-      throw new BraintreeError({
-        type: sharedErrors.METHOD_CALLED_AFTER_TEARDOWN.type,
-        code: sharedErrors.METHOD_CALLED_AFTER_TEARDOWN.code,
-        message: methodName + ' cannot be called after teardown.'
-      });
-    };
-  });
-};
-
-},{"../errors":6,"./error":10}],8:[function(_dereq_,module,exports){
-'use strict';
-
-module.exports = function (fn) {
-  return function () {
-    // IE9 doesn't support passing arguments to setTimeout so we have to emulate it.
-    var args = arguments;
-
-    setTimeout(function () {
-      fn.apply(null, args);
-    }, 1);
-  };
-};
-
-},{}],9:[function(_dereq_,module,exports){
-'use strict';
-
-function enumerate(values, prefix) {
-  prefix = prefix == null ? '' : prefix;
-
-  return values.reduce(function (enumeration, value) {
-    enumeration[value] = prefix + value;
-    return enumeration;
-  }, {});
-}
-
-module.exports = enumerate;
-
-},{}],10:[function(_dereq_,module,exports){
+},{"crypto":undefined}],7:[function(_dereq_,module,exports){
 'use strict';
 
 var enumerate = _dereq_('./enumerate');
@@ -570,7 +739,106 @@ BraintreeError.types = enumerate([
 
 module.exports = BraintreeError;
 
-},{"./enumerate":9}],11:[function(_dereq_,module,exports){
+},{"./enumerate":11}],8:[function(_dereq_,module,exports){
+'use strict';
+
+// Taken from https://github.com/sindresorhus/decamelize/blob/95980ab6fb44c40eaca7792bdf93aff7c210c805/index.js
+function transformKey(key) {
+  return key.replace(/([a-z\d])([A-Z])/g, '$1_$2')
+    .replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1_$2')
+    .toLowerCase();
+}
+
+module.exports = function (obj) {
+  return Object.keys(obj).reduce(function (newObj, key) {
+    var transformedKey = transformKey(key);
+
+    newObj[transformedKey] = obj[key];
+
+    return newObj;
+  }, {});
+};
+
+},{}],9:[function(_dereq_,module,exports){
+'use strict';
+
+var BraintreeError = _dereq_('./braintree-error');
+var sharedErrors = _dereq_('./errors');
+
+module.exports = function (instance, methodNames) {
+  methodNames.forEach(function (methodName) {
+    instance[methodName] = function () {
+      throw new BraintreeError({
+        type: sharedErrors.METHOD_CALLED_AFTER_TEARDOWN.type,
+        code: sharedErrors.METHOD_CALLED_AFTER_TEARDOWN.code,
+        message: methodName + ' cannot be called after teardown.'
+      });
+    };
+  });
+};
+
+},{"./braintree-error":7,"./errors":12}],10:[function(_dereq_,module,exports){
+'use strict';
+
+module.exports = function (fn) {
+  return function () {
+    // IE9 doesn't support passing arguments to setTimeout so we have to emulate it.
+    var args = arguments;
+
+    setTimeout(function () {
+      fn.apply(null, args);
+    }, 1);
+  };
+};
+
+},{}],11:[function(_dereq_,module,exports){
+'use strict';
+
+function enumerate(values, prefix) {
+  prefix = prefix == null ? '' : prefix;
+
+  return values.reduce(function (enumeration, value) {
+    enumeration[value] = prefix + value;
+    return enumeration;
+  }, {});
+}
+
+module.exports = enumerate;
+
+},{}],12:[function(_dereq_,module,exports){
+'use strict';
+
+var BraintreeError = _dereq_('./braintree-error');
+
+module.exports = {
+  CALLBACK_REQUIRED: {
+    type: BraintreeError.types.MERCHANT,
+    code: 'CALLBACK_REQUIRED'
+  },
+  INSTANTIATION_OPTION_REQUIRED: {
+    type: BraintreeError.types.MERCHANT,
+    code: 'INSTANTIATION_OPTION_REQUIRED'
+  },
+  INVALID_OPTION: {
+    type: BraintreeError.types.MERCHANT,
+    code: 'INVALID_OPTION'
+  },
+  INCOMPATIBLE_VERSIONS: {
+    type: BraintreeError.types.MERCHANT,
+    code: 'INCOMPATIBLE_VERSIONS'
+  },
+  METHOD_CALLED_AFTER_TEARDOWN: {
+    type: BraintreeError.types.MERCHANT,
+    code: 'METHOD_CALLED_AFTER_TEARDOWN'
+  },
+  BRAINTREE_API_ACCESS_RESTRICTED: {
+    type: BraintreeError.types.MERCHANT,
+    code: 'BRAINTREE_API_ACCESS_RESTRICTED',
+    message: 'Your access is restricted and cannot use this part of the Braintree API.'
+  }
+};
+
+},{"./braintree-error":7}],13:[function(_dereq_,module,exports){
 'use strict';
 
 module.exports = function (obj) {
@@ -579,21 +847,70 @@ module.exports = function (obj) {
   });
 };
 
-},{}],12:[function(_dereq_,module,exports){
+},{}],14:[function(_dereq_,module,exports){
 'use strict';
 
-var BraintreeError = _dereq_('./error');
-var sharedErrors = _dereq_('../errors');
+function once(fn) {
+  var called = false;
 
-module.exports = function (callback, functionName) {
-  if (typeof callback !== 'function') {
-    throw new BraintreeError({
-      type: sharedErrors.CALLBACK_REQUIRED.type,
-      code: sharedErrors.CALLBACK_REQUIRED.code,
-      message: functionName + ' must include a callback function.'
-    });
+  return function () {
+    if (!called) {
+      called = true;
+      fn.apply(null, arguments);
+    }
+  };
+}
+
+module.exports = once;
+
+},{}],15:[function(_dereq_,module,exports){
+'use strict';
+
+module.exports = function (promise, callback) { // eslint-disable-line consistent-return
+  if (callback) {
+    promise
+      .then(function (data) {
+        callback(null, data);
+      })
+      .catch(function (err) {
+        callback(err);
+      });
+  } else {
+    return promise;
   }
 };
 
-},{"../errors":6,"./error":10}]},{},[3])(3)
+},{}],16:[function(_dereq_,module,exports){
+(function (global){
+'use strict';
+
+var Promise = global.Promise || _dereq_('promise-polyfill');
+
+module.exports = Promise;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"promise-polyfill":1}],17:[function(_dereq_,module,exports){
+'use strict';
+
+var deferred = _dereq_('./deferred');
+var once = _dereq_('./once');
+var promiseOrCallback = _dereq_('./promise-or-callback');
+
+function wrapPromise(fn) {
+  return function () {
+    var callback;
+    var args = Array.prototype.slice.call(arguments);
+    var lastArg = args[args.length - 1];
+
+    if (typeof lastArg === 'function') {
+      callback = args.pop();
+      callback = once(deferred(callback));
+    }
+    return promiseOrCallback(fn.apply(this, args), callback); // eslint-disable-line no-invalid-this
+  };
+}
+
+module.exports = wrapPromise;
+
+},{"./deferred":10,"./once":14,"./promise-or-callback":15}]},{},[4])(4)
 });
