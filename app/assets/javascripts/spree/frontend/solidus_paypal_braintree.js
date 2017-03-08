@@ -53,7 +53,7 @@ window.SolidusPaypalBraintree = {
   },
 
   setupApplePay: function(braintreeClient, merchantId, readyCallback) {
-    if(window.ApplePaySession) {
+    if(window.ApplePaySession && location.protocol == "https:") {
       var promise = ApplePaySession.canMakePaymentsWithActiveCard(merchantId);
       promise.then(function (canMakePayments) {
         if (canMakePayments) {
