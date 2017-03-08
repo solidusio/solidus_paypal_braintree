@@ -1,5 +1,3 @@
-//= require braintree/3.9.0/paypal
-
 /**
  * Constructor for PayPal button object
  * @constructor

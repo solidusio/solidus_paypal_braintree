@@ -28,13 +28,19 @@
       phone: '<%= address.phone %>',
       recipientName: '<%= "#{address.firstname} #{address.lastname}" %>'
     }
-    var button = new PaypalButton(document.querySelector("#paypal-button"));
 
-    button.initialize({
-      flow: 'vault',
-      enableShippingAddress: true,
-      shippingAddressOverride: address,
-      shippingAddressEditable: false
+    $.when(
+      $.getScript("https://js.braintreegateway.com/web/3.9.0/js/client.min.js"),
+      $.getScript("https://js.braintreegateway.com/web/3.9.0/js/paypal.min.js"),
+      $.getScript("https://js.braintreegateway.com/web/3.9.0/js/data-collector.min.js")
+    ).done(function() {
+      var button = new PaypalButton(document.querySelector("#paypal-button"));
+      button.initialize({
+        flow: 'vault',
+        enableShippingAddress: true,
+        shippingAddressOverride: address,
+        shippingAddressEditable: false
+      });
     });
   </script>
 <% end %>

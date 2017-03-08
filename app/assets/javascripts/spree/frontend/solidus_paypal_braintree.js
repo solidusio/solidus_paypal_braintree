@@ -1,7 +1,3 @@
-//= require braintree/3.9.0/client
-//= require braintree/3.9.0/data-collector
-//= require spree/braintree_hosted_form.js
-
 window.SolidusPaypalBraintree = {
   APPLE_PAY_API_VERSION: 1,
 
