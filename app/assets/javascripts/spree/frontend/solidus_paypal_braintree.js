@@ -1,3 +1,5 @@
+//= require spree/braintree_hosted_form
+
 window.SolidusPaypalBraintree = {
   APPLE_PAY_API_VERSION: 1,
 
