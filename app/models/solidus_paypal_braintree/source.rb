@@ -2,6 +2,7 @@ module SolidusPaypalBraintree
   class Source < ApplicationRecord
     PAYPAL = "PayPalAccount"
     APPLE_PAY = "ApplePayCard"
+    CREDIT_CARD = "CreditCard"
 
     belongs_to :user, class_name: "Spree::User"
     belongs_to :payment_method, class_name: 'Spree::PaymentMethod'
@@ -10,8 +11,9 @@ module SolidusPaypalBraintree
     belongs_to :customer, class_name: "SolidusPaypalBraintree::Customer"
 
     scope :with_payment_profile, -> { joins(:customer) }
+    scope :credit_card, -> { where(payment_type: CREDIT_CARD) }
 
-    delegate :last_4, :card_type, to: :braintree_payment_method
+    delegate :last_4, :card_type, to: :braintree_payment_method, allow_nil: true
 
     # we are not currenctly supporting an "imported" flag
     def imported
@@ -44,6 +46,10 @@ module SolidusPaypalBraintree
 
     def paypal?
       payment_type == PAYPAL
+    end
+
+    def credit_card?
+      payment_type == CREDIT_CARD
     end
 
     private

@@ -1,6 +1,3 @@
-//= require braintree/3.5.0/client.js
-//= require braintree/3.5.0/hosted-fields.js
-
 function BraintreeHostedForm($paymentForm, $hostedFields, paymentMethodId) {
   this.paymentForm = $paymentForm;
   this.hostedFields = $hostedFields;

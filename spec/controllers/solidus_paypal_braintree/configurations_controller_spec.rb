@@ -36,7 +36,7 @@ describe SolidusPaypalBraintree::ConfigurationsController, type: :controller do
       }
     end
 
-    subject { post :update, configurations_params }
+    subject { post :update, params: configurations_params }
 
     context "with valid parameters" do
       it "updates the configuration" do

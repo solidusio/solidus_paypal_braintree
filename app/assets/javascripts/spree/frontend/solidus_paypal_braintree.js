@@ -1,6 +1,4 @@
-//= require braintree/3.5.0/client
-//= require braintree/3.5.0/data-collector
-//= require spree/braintree_hosted_form.js
+//= require spree/braintree_hosted_form
 
 window.SolidusPaypalBraintree = {
   APPLE_PAY_API_VERSION: 1,
@@ -53,7 +51,7 @@ window.SolidusPaypalBraintree = {
   },
 
   setupApplePay: function(braintreeClient, merchantId, readyCallback) {
-    if(window.ApplePaySession) {
+    if(window.ApplePaySession && location.protocol == "https:") {
       var promise = ApplePaySession.canMakePaymentsWithActiveCard(merchantId);
       promise.then(function (canMakePayments) {
         if (canMakePayments) {

@@ -7,7 +7,7 @@ RSpec.describe SolidusPaypalBraintree::CheckoutsController, type: :controller do
   include_context 'order ready for payment'
 
   describe 'PATCH update', vcr: { cassette_name: 'checkout/update' } do
-    subject(:patch_update) { patch :update, params }
+    subject(:patch_update) { patch :update, params: params }
 
     let(:params) do
       {
