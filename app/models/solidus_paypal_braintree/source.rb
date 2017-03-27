@@ -55,7 +55,7 @@ module SolidusPaypalBraintree
     private
 
     def braintree_payment_method
-      return unless braintree_client
+      return unless braintree_client && credit_card?
       @braintree_payment_method ||= braintree_client.payment_method.find(token)
     end
 
