@@ -34,7 +34,7 @@ shared_context "checkout setup" do
   end
 end
 
-describe 'entering credit card details', type: :feature, js: true, skip: "Frequent failures on Travis" do
+describe 'entering credit card details', type: :feature, js: true do
   context "with valid credit card data", vcr: { cassette_name: 'checkout/valid_credit_card' } do
     include_context "checkout setup"
 
@@ -48,7 +48,11 @@ describe 'entering credit card details', type: :feature, js: true, skip: "Freque
       within_frame("braintree-hosted-field-cvv") do
         fill_in("cvv", with: "123")
       end
+
       click_button("Save and Continue")
+      within("#order_details") do
+        expect(page).to have_content("CONFIRM")
+      end
       click_button("Place Order")
       expect(page).to have_content("Your order has been processed successfully")
     end
@@ -89,6 +93,9 @@ describe 'entering credit card details', type: :feature, js: true, skip: "Freque
           fill_in("cvv", with: "123")
         end
         click_button("Save and Continue")
+        within("#order_details") do
+          expect(page).to have_content("CONFIRM")
+        end
         click_button("Place Order")
         expect(page).to have_content("Your order has been processed successfully")
       end
