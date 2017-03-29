@@ -184,6 +184,9 @@ Style/StringLiterals:
   Enabled: false
   StyleGuide: http://relaxed.ruby.style/#stylestringliterals
 
+Style/SymbolArray:
+  Enabled: false
+
 Style/SymbolProc:
   Enabled: false
 
@@ -236,3 +239,7 @@ Metrics/PerceivedComplexity:
 
 Bundler/OrderedGems:
   Enabled: false
+
+AmbiguousBlockAssociation:
+  Exclude:
+    - "spec/**/*.rb"

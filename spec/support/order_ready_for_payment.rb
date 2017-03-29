@@ -22,7 +22,7 @@ shared_context 'order ready for payment' do
       user: user
     )
 
-    order.update_totals
+    order.update!
     expect(order.state).to eq "cart"
 
     # push through cart, address and delivery
