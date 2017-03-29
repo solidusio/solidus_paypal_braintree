@@ -1,4 +1,5 @@
 # encoding: UTF-8
+
 $:.push File.expand_path('../lib', __FILE__)
 require 'solidus_paypal_braintree/version'
 
