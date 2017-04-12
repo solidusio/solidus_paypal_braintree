@@ -10,8 +10,8 @@ module SolidusPaypalBraintree
 
     belongs_to :customer, class_name: "SolidusPaypalBraintree::Customer"
 
-    scope :with_payment_profile, -> { joins(:customer) }
-    scope :credit_card, -> { where(payment_type: CREDIT_CARD) }
+    scope(:with_payment_profile, -> { joins(:customer) })
+    scope(:credit_card, -> { where(payment_type: CREDIT_CARD) })
 
     delegate :last_4, :card_type, to: :braintree_payment_method, allow_nil: true
 
