@@ -86,6 +86,7 @@ describe SolidusPaypalBraintree::TransactionImport do
     let(:payment_method) { create_gateway }
     let(:country) { create :country, iso: 'US', states_required: true }
     let(:transaction_address) { nil }
+    let(:end_state) { 'confirm' }
 
     let(:transaction) do
       SolidusPaypalBraintree::Transaction.new nonce: 'fake-valid-nonce',
@@ -104,30 +105,46 @@ describe SolidusPaypalBraintree::TransactionImport do
         and_return("ABCD1234")
     end
 
-    subject { described_class.new(order, transaction).import! }
+    subject { described_class.new(order, transaction).import!(end_state) }
 
     context "passes validation", vcr: { cassette_name: 'transaction/import/valid' } do
-      it 'advances order to confirm state' do
-        subject
-        expect(order.state).to eq 'confirm'
+      context "order end state is confirm" do
+        it 'advances order to confirm state' do
+          subject
+          expect(order.state).to eq 'confirm'
+        end
+
+        it 'has a payment for the cost of line items + shipment' do
+          subject
+          expect(order.payments.first.amount).to eq 15
+        end
+
+        it 'is complete and capturable', aggregate_failures: true,
+          vcr: { cassette_name: 'transaction/import/valid/capture' } do
+          subject
+          order.complete
+
+          expect(order).to be_complete
+          expect(order.payments.first).to be_pending
+
+          order.payments.first.capture!
+          # need to reload, as capture will update the order
+          expect(order.reload).to be_paid
+        end
       end
 
-      it 'has a payment for the cost of line items + shipment' do
-        subject
-        expect(order.payments.first.amount).to eq 15
-      end
+      context "order end state is delivery" do
+        let(:end_state) { 'delivery' }
 
-      it 'is complete and capturable', aggregate_failures: true,
-        vcr: { cassette_name: 'transaction/import/valid/capture' } do
-        subject
-        order.complete
+        it "advances the order to delivery" do
+          subject
+          expect(order.state).to eq 'delivery'
+        end
 
-        expect(order).to be_complete
-        expect(order.payments.first).to be_pending
-
-        order.payments.first.capture!
-        # need to reload, as capture will update the order
-        expect(order.reload).to be_paid
+        it "has a payment for the cost of line items" do
+          subject
+          expect(order.payments.first.amount).to eq 10
+        end
       end
 
       context 'transaction has address' do

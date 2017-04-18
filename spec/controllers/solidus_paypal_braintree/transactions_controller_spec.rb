@@ -3,13 +3,27 @@ require 'spec_helper'
 RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller do
   routes { SolidusPaypalBraintree::Engine.routes }
 
-  include_context "order ready for payment"
+  let!(:country) { create :country }
+  let!(:state) { create :state, abbr: 'WA', country: country }
+  let(:user) { create :user }
+  let(:line_item) { create :line_item, price: 50 }
+  let(:address) { create :address, country: country }
+  let(:order) do
+    Spree::Order.create!(
+      line_items: [line_item],
+      email: 'test@example.com',
+      bill_address: address,
+      ship_address: address,
+      user: user
+    )
+  end
 
   let(:payment_method) { create_gateway }
 
   before do
     allow(controller).to receive(:spree_current_user) { user }
     allow(controller).to receive(:current_order) { order }
+    create :shipping_method, cost: 5
   end
 
   cassette_options = { cassette_name: "transactions_controller/create" }
@@ -56,6 +70,22 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
       it "imports the payment" do
         expect { post_create }.to change { order.payments.count }.by(1)
         expect(order.payments.first.amount).to eq 55
+      end
+
+      context "no end state is provided" do
+        it "advances the order to confirm" do
+          post_create
+          expect(order).to be_confirm
+        end
+      end
+
+      context "end state provided is delivery" do
+        let(:params) { super().merge(state: 'delivery') }
+
+        it "advances the order to delivery" do
+          post_create
+          expect(order).to be_delivery
+        end
       end
 
       context "and an address is provided" do

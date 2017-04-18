@@ -34,7 +34,7 @@ module SolidusPaypalBraintree
       order.user
     end
 
-    def import!
+    def import!(end_state)
       if valid?
         order.email = user.try!(:email) || transaction.email
 
@@ -43,20 +43,14 @@ module SolidusPaypalBraintree
           # work around a bug in most solidus versions
           # about tax zone cachine between address changes
           order.instance_variable_set("@tax_zone", nil)
-          order.next
         end
 
-        if order.checkout_steps.index("payment") > (order.checkout_steps.index(order.state) || 0)
-          advance_order "payment"
-        end
-
-        order.payments.new source: source,
+        payment = order.payments.new source: source,
           payment_method: transaction.payment_method,
           amount: order.total
 
         order.save!
-
-        advance_order
+        advance_order(payment, end_state)
       else
         raise InvalidImportError,
           "Validation failed: #{errors.full_messages.join(', ')}"
@@ -69,10 +63,29 @@ module SolidusPaypalBraintree
       end
     end
 
+    def state_before_current?(state)
+      steps = order.checkout_steps
+      steps.index(state) < (steps.index(order.state) || 0)
+    end
+
     protected
 
-    def advance_order(state = "confirm")
-      order.next! until order.state == state
+    def advance_order(payment, end_state)
+      return if state_before_current?(end_state)
+
+      until order.state == end_state
+        order.next!
+        update_payment_total(payment) if order.payment?
+      end
+    end
+
+    def update_payment_total(payment)
+      payment_total = order.payments.where(state: %w[checkout pending]).sum(:amount)
+      remaining_total = order.outstanding_balance - payment_total
+
+      if remaining_total > 0
+        payment.update!(amount: payment.amount + remaining_total)
+      end
     end
   end
 end
