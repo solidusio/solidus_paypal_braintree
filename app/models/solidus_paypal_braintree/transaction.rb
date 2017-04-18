@@ -1,5 +1,4 @@
 require 'active_model'
-require 'solidus_paypal_braintree/transaction_address'
 
 module SolidusPaypalBraintree
   class Transaction
