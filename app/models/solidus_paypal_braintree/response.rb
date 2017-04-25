@@ -34,8 +34,18 @@ module SolidusPaypalBraintree
       end
 
       def build_failure(result)
-        msg = result.errors.map { |e| "#{e.message} (#{e.code})" }.join(" ")
-        new(false, msg)
+        new(false, error_message(result))
+      end
+
+      def error_message(result)
+        if result.errors.any?
+          result.errors.map { |e| "#{e.message} (#{e.code})" }.join(" ")
+        else
+          [result.transaction.status,
+           result.transaction.gateway_rejection_reason,
+           result.transaction.processor_settlement_response_code,
+           result.transaction.processor_settlement_response_text].compact.join(" ")
+        end
       end
     end
   end

@@ -1,17 +1,20 @@
 require 'spec_helper'
 
 RSpec.describe SolidusPaypalBraintree::Response do
-  let(:error_result) do
-    error = instance_double(
+  let(:failed_transaction) { nil }
+  let(:error) do
+    instance_double(
       'Braintree::ValidationError',
       code: '12345',
       message: "Cannot refund a transaction unless it is settled."
     )
-
+  end
+  let(:error_result) do
     instance_double(
       'Braintree::ErrorResult',
       success?: false,
-      errors: [error]
+      errors: [error],
+      transaction: failed_transaction
     )
   end
 
@@ -61,7 +64,40 @@ RSpec.describe SolidusPaypalBraintree::Response do
 
     context "with an error response" do
       subject { error_response.message }
-      it { is_expected.to eq "Cannot refund a transaction unless it is settled. (12345)" }
+
+      context "with a Braintree error" do
+        it { is_expected.to eq "Cannot refund a transaction unless it is settled. (12345)" }
+      end
+
+      context "with a processor error" do
+        let(:error) { nil }
+        let(:failed_transaction) do
+          instance_double(
+            'Braintree::Transaction',
+            status: "settlement_declined",
+            gateway_rejection_reason: nil,
+            processor_settlement_response_code: "4001",
+            processor_settlement_response_text: "Settlement Declined"
+          )
+        end
+
+        it { is_expected.to eq "settlement_declined 4001 Settlement Declined" }
+      end
+
+      context "with a gateway error" do
+        let(:error) { nil }
+        let(:failed_transaction) do
+          instance_double(
+            'Braintree::Transaction',
+            status: "gateway_rejected",
+            gateway_rejection_reason: "cvv",
+            processor_settlement_response_code: nil,
+            processor_settlement_response_text: nil
+          )
+        end
+
+        it { is_expected.to eq "gateway_rejected cvv" }
+      end
     end
   end
 
