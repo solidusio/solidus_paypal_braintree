@@ -94,6 +94,9 @@ RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
   config.use_transactional_fixtures = false
 
+  config.order = :random
+  config.example_status_persistence_file_path = "tmp/failed_examples.txt"
+
   config.fail_fast = ENV['FAIL_FAST'] || false
 
   config.include FactoryGirl::Syntax::Methods
