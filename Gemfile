@@ -13,6 +13,10 @@ end
 # Provides basic authentication functionality for testing parts of your engine
 gem 'solidus_auth_devise', '~> 1.0'
 
+# Asset compilation speed
+gem 'execjs-fastnode'
+gem 'sassc-rails', platforms: :mri
+
 group :development, :test do
   gem "pry-rails"
   gem 'selenium-webdriver', require: false
