@@ -6,19 +6,7 @@ $(function() {
    * submit button. */
   function braintreeError (err) {
     alert(err.name + ": " + err.message);
-
-    /* If we're using jquery-ujs on the frontend, it will automatically disable
-     * the submit button, but do so in a setTimeout here:
-     * https://github.com/rails/jquery-rails/blob/master/vendor/assets/javascripts/jquery_ujs.js#L517
-     * The only way we can re-enable it is by delaying longer than that timeout
-     * or stopping propagation so their submit handler doesn't run. */
-    if ($.rails) {
-      setTimeout(function () {
-        $.rails.enableFormElement($submitButton);
-      }, 100);
-    }
-    /* This reverses Spree.disableSaveOnClick() */
-    $submitButton.attr("disabled", false).addClass("primary").removeClass("disabled");
+    enableSubmit();
   }
 
   function enableSubmit() {
@@ -30,10 +18,11 @@ $(function() {
     if ($.rails) {
       setTimeout(function () {
         $.rails.enableFormElement($submitButton);
+        $submitButton.attr("disabled", false).removeClass("disabled").addClass("primary");
       }, 100);
+    } else {
+      $submitButton.attr("disabled", false).removeClass("disabled").addClass("primary");
     }
-    /* This reverses Spree.disableSaveOnClick() */
-    $submitButton.attr("disabled", false).removeClass("disabled").addClass("primary");
   }
 
   function disableSubmit() {
