@@ -42,7 +42,7 @@ Capybara.register_driver :poltergeist do |app|
   Capybara::Poltergeist::Driver.new(app, {
     phantomjs_logger: Rails.logger,
     phantomjs_options: ['--ssl-protocol=any'],
-    timeout: 1.minute
+    timeout: 2.minutes
   })
 end
 Capybara.register_driver :chrome do |app|
