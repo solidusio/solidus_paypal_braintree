@@ -18,6 +18,8 @@ gem 'execjs-fastnode'
 gem 'sassc-rails', platforms: :mri
 
 group :development, :test do
+  gem 'listen'
+  gem 'launchy'
   gem "pry-rails"
   gem 'selenium-webdriver', require: false
   gem 'chromedriver-helper', require: false
