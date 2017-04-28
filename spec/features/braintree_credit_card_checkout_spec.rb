@@ -63,6 +63,7 @@ describe 'entering credit card details', type: :feature, js: true do
 
     # Attempt to submit an empty form once
     before(:each) do
+      expect(page).to have_selector("iframe[type='number']")
       message = accept_prompt do
         click_button "Save and Continue"
       end
@@ -73,10 +74,17 @@ describe 'entering credit card details', type: :feature, js: true do
     # Same error should be produced when submitting an empty form again
     context "user tries to resubmit an empty form", vcr: { cassette_name: "checkout/invalid_credit_card" } do
       it "displays an alert with a meaningful error message" do
-        message = accept_prompt do
-          click_button "Save and Continue"
+        expect(page).to have_selector("input[type='submit']:enabled")
+
+        # Ensure there are no timing issues with the javascript
+        aggregate_failures do
+          5.times do
+            message = accept_prompt do
+              click_button "Save and Continue"
+            end
+            expect(message).to eq "BraintreeError: All fields are empty. Cannot tokenize empty card fields."
+          end
         end
-        expect(message).to eq "BraintreeError: All fields are empty. Cannot tokenize empty card fields."
       end
     end
 

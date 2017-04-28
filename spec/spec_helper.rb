@@ -42,7 +42,7 @@ Capybara.register_driver :poltergeist do |app|
   Capybara::Poltergeist::Driver.new(app, {
     phantomjs_logger: Rails.logger,
     phantomjs_options: ['--ssl-protocol=any'],
-    timeout: 1.minute
+    timeout: 2.minutes
   })
 end
 Capybara.register_driver :chrome do |app|
@@ -93,6 +93,9 @@ RSpec.configure do |config|
   config.filter_run focus: true
   config.run_all_when_everything_filtered = true
   config.use_transactional_fixtures = false
+
+  config.order = :random
+  config.example_status_persistence_file_path = "tmp/failed_examples.txt"
 
   config.fail_fast = ENV['FAIL_FAST'] || false
 
