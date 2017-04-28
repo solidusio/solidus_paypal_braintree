@@ -14,6 +14,7 @@ module SolidusPaypalBraintree
     scope(:credit_card, -> { where(payment_type: CREDIT_CARD) })
 
     delegate :last_4, :card_type, to: :braintree_payment_method, allow_nil: true
+    alias_method :last_digits, :last_4
 
     # we are not currenctly supporting an "imported" flag
     def imported
