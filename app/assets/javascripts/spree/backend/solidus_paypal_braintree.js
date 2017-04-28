@@ -30,12 +30,12 @@ $(function() {
         return instance;
       }
 
-      if (isNew && hostedFieldsInstance == null) {
+      if (isNew && hostedFieldsInstance === null) {
         braintreeForm = new BraintreeHostedForm($paymentForm, $this, id);
         braintreeForm.initializeHostedFields().
           then(setHostedFieldsInstance).
           then(braintreeForm.addFormHook(onError)).
-          fail(onError)
+          fail(onError);
       }
     });
   });
