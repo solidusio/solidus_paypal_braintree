@@ -3,7 +3,7 @@ shared_context 'order ready for payment' do
 
   let(:user) { create :user }
   let(:line_item) { create :line_item, price: 50 }
-  let(:address) { create :address, country: country }
+  let(:address) { create :address, zipcode: "90210", country: country }
 
   before do
     create :shipping_method, cost: 5
