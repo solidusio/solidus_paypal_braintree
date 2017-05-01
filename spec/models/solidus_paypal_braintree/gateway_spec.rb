@@ -114,13 +114,29 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       braintree.testing.settle(sale_id).transaction.id
     end
 
+    let(:currency) { 'USD' }
+    let(:gateway_options) do
+      {
+        currency: currency,
+        shipping_address: {
+          name: "Bruce Wayne",
+          address1: "42 Spruce Lane",
+          address2: "Apt 312",
+          city: "Gotham",
+          state: "CA",
+          zip: "90210",
+          country: "US"
+        }
+      }
+    end
+
     describe "#method_type" do
       subject { gateway.method_type }
       it { is_expected.to eq "paypal_braintree" }
     end
 
     describe '#purchase', vcr: { cassette_name: 'gateway/purchase' } do
-      subject(:purchase) { gateway.purchase(1000, source, {}) }
+      subject(:purchase) { gateway.purchase(1000, source, gateway_options) }
 
       include_examples "successful response"
 
@@ -131,8 +147,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     end
 
     describe "#authorize" do
-      subject(:authorize) { gateway.authorize(1000, source, { currency: currency }) }
-      let(:currency) { 'USD' }
+      subject(:authorize) { gateway.authorize(1000, source, gateway_options) }
 
       context 'successful authorization', vcr: { cassette_name: 'gateway/authorize' } do
         include_examples "successful response"
@@ -174,6 +189,25 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
               }
           })).and_call_original
           authorize
+        end
+
+        context "PayPal transaction", vcr: { cassette_name: 'gateway/authorize/paypal/address' } do
+          it 'includes the shipping address in the request' do
+            expect_any_instance_of(Braintree::TransactionGateway).
+              to receive(:sale).
+              with(hash_including({
+                shipping: {
+                  first_name: "Bruce",
+                  last_name: "Wayne",
+                  street_address: "42 Spruce Lane Apt 312",
+                  locality: "Gotham",
+                  postal_code: "90210",
+                  region: "CA",
+                  country_code_alpha2: "US"
+                }
+              })).and_call_original
+            authorize
+          end
         end
       end
     end
