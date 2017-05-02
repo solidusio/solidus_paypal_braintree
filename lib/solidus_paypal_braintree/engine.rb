@@ -31,16 +31,16 @@ module SolidusPaypalBraintree
 
     if frontend_available?
       config.assets.precompile += [
-        'spree/frontend/solidus_paypal_braintree',
-        'spree/frontend/paypal_button',
-        'spree/checkout/braintree'
+        'spree/frontend/solidus_paypal_braintree.js',
+        'spree/frontend/paypal_button.js',
+        'spree/checkout/braintree.js'
       ]
       paths["app/controllers"] << "lib/controllers/frontend"
       paths["app/views"] << "lib/views/frontend"
     end
 
     if backend_available?
-      config.assets.precompile += ["spree/backend/solidus_paypal_braintree"]
+      config.assets.precompile += ["spree/backend/solidus_paypal_braintree.js"]
       paths["app/controllers"] << "lib/controllers/backend"
       paths["app/views"] << "lib/views/backend"
     end
