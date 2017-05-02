@@ -14,29 +14,34 @@ $(function() {
   // SolidusPaypalBraintree payment methods have been configured.
   if (!$paymentForm.length || !$hostedFields.length) { return; }
 
-  $hostedFields.each(function() {
-    var $this = $(this),
-        $new = $("[name=card]", $this);
+  $.when(
+    $.getScript("https://js.braintreegateway.com/web/3.9.0/js/client.min.js"),
+    $.getScript("https://js.braintreegateway.com/web/3.9.0/js/hosted-fields.min.js")
+  ).done(function() {
+    $hostedFields.each(function() {
+      var $this = $(this),
+          $new = $("[name=card]", $this);
 
-    var id = $this.data("id");
+      var id = $this.data("id");
 
-    var hostedFieldsInstance;
+      var hostedFieldsInstance;
 
-    $new.on("change", function() {
-      var isNew = $(this).val() === "new";
+      $new.on("change", function() {
+        var isNew = $(this).val() === "new";
 
-      function setHostedFieldsInstance(instance) {
-        hostedFieldsInstance = instance;
-        return instance;
-      }
+        function setHostedFieldsInstance(instance) {
+          hostedFieldsInstance = instance;
+          return instance;
+        }
 
-      if (isNew && hostedFieldsInstance === null) {
-        braintreeForm = new BraintreeHostedForm($paymentForm, $this, id);
-        braintreeForm.initializeHostedFields().
-          then(setHostedFieldsInstance).
-          then(braintreeForm.addFormHook(onError)).
-          fail(onError);
-      }
+        if (isNew && hostedFieldsInstance === null) {
+          braintreeForm = new BraintreeHostedForm($paymentForm, $container, id);
+          braintreeForm.initializeHostedFields().
+            then(setHostedFieldsInstance).
+            then(braintreeForm.addFormHook(onError)).
+            fail(onError);
+        }
+      });
     });
   });
 });
