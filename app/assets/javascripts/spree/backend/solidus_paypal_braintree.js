@@ -2,12 +2,36 @@
 
 $(function() {
   var $paymentForm = $("#new_payment"),
-      $hostedFields = $("[data-braintree-hosted-fields]");
+      $hostedFields = $("[data-braintree-hosted-fields]"),
+      hostedFieldsInstance = null;
 
   function onError (err) {
     var msg = err.name + ": " + err.message;
     show_flash("error", msg);
     console.error(err);
+  }
+
+  function showForm(id) {
+    $("#card_form" + id).show();
+  }
+
+  function hideForm(id) {
+    $("#card_form" + id).hide();
+  }
+
+  function initFields($container, id) {
+    function setHostedFieldsInstance(instance) {
+      hostedFieldsInstance = instance;
+      return instance;
+    }
+
+    if (hostedFieldsInstance === null) {
+      braintreeForm = new BraintreeHostedForm($paymentForm, $container, id);
+      braintreeForm.initializeHostedFields().
+        then(setHostedFieldsInstance).
+        then(braintreeForm.addFormHook(onError)).
+        fail(onError);
+    }
   }
 
   // exit early if we're not looking at the New Payment form, or if no
@@ -20,28 +44,24 @@ $(function() {
   ).done(function() {
     $hostedFields.each(function() {
       var $this = $(this),
-          $new = $("[name=card]", $this);
+          $radios = $("[name=card]", $this),
+          id = $this.data("id");
 
-      var id = $this.data("id");
-
-      var hostedFieldsInstance;
-
-      $new.on("change", function() {
-        var isNew = $(this).val() === "new";
-
-        function setHostedFieldsInstance(instance) {
-          hostedFieldsInstance = instance;
-          return instance;
-        }
-
-        if (isNew && hostedFieldsInstance === null) {
-          braintreeForm = new BraintreeHostedForm($paymentForm, $container, id);
-          braintreeForm.initializeHostedFields().
-            then(setHostedFieldsInstance).
-            then(braintreeForm.addFormHook(onError)).
-            fail(onError);
-        }
-      });
+      // If we have previous cards, init fields on change of radio button
+      if ($radios.length) {
+        $radios.on("change", function() {
+          if ($(this).val() == 'new') {
+            showForm(id);
+            initFields($this, id);
+          } else {
+            hideForm(id);
+          }
+        });
+      } else {
+        // If we don't have previous cards, init fields immediately
+        initFields($this, id);
+        showForm(id);
+      }
     });
   });
 });
