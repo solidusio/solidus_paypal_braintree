@@ -1,7 +1,4 @@
 class SolidusPaypalBraintree::CheckoutsController < Spree::CheckoutController
-  PERMITTED_ORDER_PARAMS = [
-  ].freeze
-
   PERMITTED_PAYMENT_PARAMS = [
     :payment_method_id,
     source_attributes: [
@@ -18,10 +15,6 @@ class SolidusPaypalBraintree::CheckoutsController < Spree::CheckoutController
     else
       render plain: "not-ok"
     end
-  end
-
-  def order_params
-    params.require(:order).permit(PERMITTED_ORDER_PARAMS)
   end
 
   def payment_params
