@@ -138,4 +138,20 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
       it { is_expected.to be false }
     end
   end
+
+  describe "#credit_card?" do
+    subject { described_class.new(payment_type: type).credit_card? }
+
+    context "when the payment type is CreditCard" do
+      let(:type) { "CreditCard" }
+
+      it { is_expected.to be true }
+    end
+
+    context "when the payment type is not PayPal" do
+      let(:type) { "MonopolyMoney" }
+
+      it { is_expected.to be false }
+    end
+  end
 end
