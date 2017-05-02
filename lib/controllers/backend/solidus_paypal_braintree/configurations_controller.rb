@@ -1,6 +1,6 @@
 module SolidusPaypalBraintree
   class ConfigurationsController < Spree::Admin::BaseController
-    helper RoutesHelper
+    helper Spree::Core::Engine.routes.url_helpers
 
     def list
       authorize! :list, SolidusPaypalBraintree::Configuration
