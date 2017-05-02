@@ -6,7 +6,7 @@ RSpec.describe SolidusPaypalBraintree::CheckoutsController, type: :controller do
 
   include_context 'order ready for payment'
 
-  describe 'PATCH update', vcr: { cassette_name: 'checkout/update' } do
+  describe 'PATCH update' do
     subject(:patch_update) { patch :update, params: params }
 
     let(:params) do
@@ -41,23 +41,56 @@ RSpec.describe SolidusPaypalBraintree::CheckoutsController, type: :controller do
       allow(controller).to receive(:current_order) { order }
     end
 
-    it 'create a payment' do
-      expect { patch_update }.
-        to change { order.payments.count }.
-        from(0).
-        to(1)
+    context "when a payment is created successfully", vcr: { cassette_name: 'checkout/update' } do
+      it 'creates a payment' do
+        expect { patch_update }.
+          to change { order.payments.count }.
+          from(0).
+          to(1)
+      end
+
+      it 'creates a payment source' do
+        expect { patch_update }.
+          to change { SolidusPaypalBraintree::Source.count }.
+          from(0).
+          to(1)
+      end
+
+      it 'assigns @order' do
+        patch_update
+        expect(assigns(:order)).to eq order
+      end
+
+      it "is successful" do
+        expect(patch_update).to be_success
+      end
+
+      it "renders 'ok'" do
+        expect(patch_update.body).to eql("ok")
+      end
     end
 
-    it 'creates a payment source' do
-      expect { patch_update }.
-        to change { SolidusPaypalBraintree::Source.count }.
-        from(0).
-        to(1)
-    end
+    context "when a payment is not created successfully" do
+      before do
+        allow_any_instance_of(Spree::Payment).to receive(:save).and_return(false)
+      end
 
-    it 'assigns @order' do
-      patch_update
-      expect(assigns(:order)).to eq order
+      # No idea why this is the case, but I'm just adding the tests here
+      it "is successful" do
+        expect(patch_update).to be_success
+      end
+
+      it "renders 'not-ok'" do
+        expect(patch_update.body).to eq('not-ok')
+      end
+
+      it "does not change the number of payments in the system" do
+        expect{ patch_update }.to_not change{ Spree::Payment.count }
+      end
+
+      it "does not change the number of sources in the system" do
+        expect{ patch_update }.to_not change{ SolidusPaypalBraintree::Source.count }
+      end
     end
   end
 end
