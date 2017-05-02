@@ -14,4 +14,12 @@ the installer will append this file to the app vendored assets here: 'vendor/ass
   color: $color-txt-text;
   height: 30px;
   padding: 7px 10px;
+
+  &.braintree-hosted-fields-invalid {
+    border-color: $color-error;
+  }
+
+  &.braintree-hosted-fields-valid {
+    border-color: $color-success;
+  }
 }
