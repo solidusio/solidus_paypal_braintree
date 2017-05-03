@@ -59,7 +59,7 @@ describe 'entering credit card details', type: :feature, js: true do
       expect(page).to have_content("Your order has been processed successfully")
     end
 
-    it "sets the payment type of source to CreditCard", :pending do
+    it "sets the payment type of source to CreditCard" do
       expect(SolidusPaypalBraintree::Source.last.payment_type).to eq('CreditCard')
     end
   end
