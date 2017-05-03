@@ -116,7 +116,7 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
       it { is_expected.to be true }
     end
 
-    context "when the payment type is not PayPal" do
+    context "when the payment type is not Apple Pay" do
       let(:type) { "DogeCoin" }
 
       it { is_expected.to be false }
@@ -136,6 +136,72 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
       let(:type) { "MonopolyMoney" }
 
       it { is_expected.to be false }
+    end
+  end
+
+  describe "#credit_card?" do
+    subject { described_class.new(payment_type: type).credit_card? }
+
+    context "when the payment type is CreditCard" do
+      let(:type) { "CreditCard" }
+
+      it { is_expected.to be true }
+    end
+
+    context "when the payment type is not CreditCard" do
+      let(:type) { "MonopolyMoney" }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe "#last_4", vcr: { cassette_name: "source/last4" } do
+    let(:method) { new_gateway.tap(&:save!) }
+    let(:instance) { described_class.create!(payment_type: "CreditCard", payment_method: method) }
+    let(:braintree_client) { method.braintree }
+
+    subject { instance.last_4 }
+
+    before do
+      customer = braintree_client.customer.create
+      expect(customer.customer.id).to be
+
+      method = braintree_client.payment_method.create({
+        payment_method_nonce: "fake-valid-country-of-issuance-usa-nonce", customer_id: customer.customer.id
+      })
+      expect(method.payment_method.token).to be
+
+      instance.update_attributes!(token: method.payment_method.token)
+    end
+
+    it "delegates to the braintree payment method" do
+      method = braintree_client.payment_method.find(instance.token)
+      expect(subject).to eql(method.last_4)
+    end
+  end
+
+  describe "#card_type", vcr: { cassette_name: "source/card_type" } do
+    let(:method) { new_gateway.tap(&:save!) }
+    let(:instance) { described_class.create!(payment_type: "CreditCard", payment_method: method) }
+    let(:braintree_client) { method.braintree }
+
+    subject { instance.card_type }
+
+    before do
+      customer = braintree_client.customer.create
+      expect(customer.customer.id).to be
+
+      method = braintree_client.payment_method.create({
+        payment_method_nonce: "fake-valid-country-of-issuance-usa-nonce", customer_id: customer.customer.id
+      })
+      expect(method.payment_method.token).to be
+
+      instance.update_attributes!(token: method.payment_method.token)
+    end
+
+    it "delegates to the braintree payment method" do
+      method = braintree_client.payment_method.find(instance.token)
+      expect(subject).to eql(method.card_type)
     end
   end
 end

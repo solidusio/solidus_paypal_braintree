@@ -1,5 +1,10 @@
 # Run Coverage report
 require 'simplecov'
+
+if ENV["CI"]
+  SimpleCov.minimum_coverage(100)
+end
+
 SimpleCov.start do
   add_filter 'spec/dummy'
   add_group 'Controllers', 'app/controllers'
