@@ -18,6 +18,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       payment_type: payment_type
     )
   end
+
   let(:payment_type) { SolidusPaypalBraintree::Source::PAYPAL }
 
   describe "saving preference hashes as strings" do
@@ -115,6 +116,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     end
 
     let(:currency) { 'USD' }
+
     let(:gateway_options) do
       {
         currency: currency,
@@ -123,6 +125,15 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
           address1: "42 Spruce Lane",
           address2: "Apt 312",
           city: "Gotham",
+          state: "CA",
+          zip: "90210",
+          country: "US"
+        },
+        billing_address: {
+          name: "Dick Grayson",
+          address1: "15 Robin Walk",
+          address2: "Apt 123",
+          city: "Blüdhaven",
           state: "CA",
           zip: "90210",
           country: "US"
@@ -208,6 +219,27 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
               })).and_call_original
             authorize
           end
+        end
+      end
+
+      context "CreditCard transaction", vcr: { cassette_name: 'gateway/authorize/credit_card/address' } do
+        let(:payment_type) { SolidusPaypalBraintree::Source::CREDIT_CARD }
+
+        it 'includes the billing address in the request' do
+          expect_any_instance_of(Braintree::TransactionGateway).
+          to receive(:sale).
+          with(hash_including({
+            billing: {
+              first_name: "Dick",
+              last_name: "Grayson",
+              street_address: "15 Robin Walk Apt 123",
+              locality: "Blüdhaven",
+              postal_code: "90210",
+              region: "CA",
+              country_code_alpha2: "US"
+            }
+          })).and_call_original
+          authorize
         end
       end
     end
