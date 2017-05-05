@@ -4,7 +4,7 @@ module SolidusPaypalBraintree
     APPLE_PAY = "ApplePayCard"
     CREDIT_CARD = "CreditCard"
 
-    belongs_to :user, class_name: "Spree::User"
+    belongs_to :user, class_name: Spree::UserClassHandle.new
     belongs_to :payment_method, class_name: 'Spree::PaymentMethod'
     has_many :payments, as: :source, class_name: "Spree::Payment"
 
