@@ -4,7 +4,7 @@ require 'support/order_ready_for_payment'
 
 RSpec.describe SolidusPaypalBraintree::Gateway do
   let(:gateway) do
-    new_gateway
+    new_gateway.tap(&:save)
   end
 
   let(:braintree) { gateway.braintree }
@@ -15,7 +15,8 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     SolidusPaypalBraintree::Source.new(
       nonce: 'fake-valid-nonce',
       user: user,
-      payment_type: payment_type
+      payment_type: payment_type,
+      payment_method: gateway
     )
   end
 
