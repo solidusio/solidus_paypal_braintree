@@ -55,7 +55,7 @@ describe SolidusPaypalBraintree::TransactionImport do
     end
 
     context 'order has a user' do
-      let(:user) { Spree::User.new }
+      let(:user) { Spree.user_class.new }
       let(:order) { Spree::Order.new user: user }
 
       it 'associates user to the source' do
@@ -70,7 +70,7 @@ describe SolidusPaypalBraintree::TransactionImport do
     it { is_expected.to be_nil }
 
     context 'when order has a user' do
-      let(:user) { Spree::User.new }
+      let(:user) { Spree.user_class.new }
       let(:order) { Spree::Order.new user: user }
 
       it { is_expected.to eq user }
