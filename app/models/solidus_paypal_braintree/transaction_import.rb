@@ -27,6 +27,7 @@ module SolidusPaypalBraintree
     def source
       SolidusPaypalBraintree::Source.new nonce: transaction.nonce,
         payment_type: transaction.payment_type,
+        payment_method: transaction.payment_method,
         user: user
     end
 

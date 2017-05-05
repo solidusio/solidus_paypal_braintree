@@ -54,6 +54,10 @@ describe SolidusPaypalBraintree::TransactionImport do
       expect(subject.payment_type).to eq 'ApplePayCard'
     end
 
+    it 'takes the payment method from the transaction' do
+      expect(subject.payment_method).to eq braintree_gateway
+    end
+
     context 'order has a user' do
       let(:user) { Spree.user_class.new }
       let(:order) { Spree::Order.new user: user }
