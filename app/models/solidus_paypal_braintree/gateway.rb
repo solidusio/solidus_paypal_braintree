@@ -265,6 +265,10 @@ module SolidusPaypalBraintree
         params[:shipping] = braintree_shipping_address(options)
       end
 
+      if source.credit_card?
+        params[:billing] = braintree_billing_address(options)
+      end
+
       if source.customer.present?
         params[:customer_id] = source.customer.braintree_customer_id
       end
@@ -273,7 +277,14 @@ module SolidusPaypalBraintree
     end
 
     def braintree_shipping_address(options)
-      address = options[:shipping_address]
+      braintree_address_attributes(options[:shipping_address])
+    end
+
+    def braintree_billing_address(options)
+      braintree_address_attributes(options[:billing_address])
+    end
+
+    def braintree_address_attributes(address)
       first, last = address[:name].split(" ", 2)
       {
         first_name: first,
