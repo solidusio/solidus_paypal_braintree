@@ -6,4 +6,5 @@
 //
 //= require ./constants
 //= require ./client
+//= require ./hosted_form
 

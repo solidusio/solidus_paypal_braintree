@@ -1,4 +1,5 @@
-//= require spree/braintree_hosted_form.js
+//= require solidus_paypal_braintree/constants
+//= require solidus_paypal_braintree/hosted_form
 
 $(function() {
   var $paymentForm = $("#new_payment"),
@@ -31,8 +32,8 @@ $(function() {
       }
 
       if (isNew && hostedFieldsInstance == null) {
-        braintreeForm = new BraintreeHostedForm($paymentForm, $this, id);
-        braintreeForm.initializeHostedFields().
+        braintreeForm = new SolidusPaypalBraintree.HostedForm($paymentForm, $this, id);
+        braintreeForm.initialize().
           then(setHostedFieldsInstance).
           then(braintreeForm.addFormHook(onError)).
           fail(onError)

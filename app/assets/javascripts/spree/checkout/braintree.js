@@ -1,4 +1,4 @@
-//= require spree/braintree_hosted_form
+//= require solidus_paypal_braintree/frontend
 
 $(function() {
   /* This provides a default error handler for Braintree. Since we prevent
@@ -45,7 +45,7 @@ $(function() {
     var $this = $(this);
     var id = $this.data("id");
 
-    var braintreeForm = new BraintreeHostedForm($paymentForm, $this, id);
+    var braintreeForm = new SolidusPaypalBraintree.HostedForm($paymentForm, $this, id);
     return braintreeForm.initializeHostedFields().
       then(braintreeForm.addFormHook(braintreeError)).
       fail(braintreeError);
