@@ -2,15 +2,15 @@
 <% id = payment_method.id %>
 
 <% content_for :head do %>
-  <script src="https://js.braintreegateway.com/web/3.9.0/js/client.min.js"></script>
-  <script src="https://js.braintreegateway.com/web/3.9.0/js/data-collector.min.js"></script>
+  <script src="https://js.braintreegateway.com/web/3.14.0/js/client.min.js"></script>
+  <script src="https://js.braintreegateway.com/web/3.14.0/js/data-collector.min.js"></script>
 
   <% if current_store.braintree_configuration.paypal? %>
-    <script src="https://js.braintreegateway.com/web/3.9.0/js/paypal.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/3.14.0/js/paypal.min.js"></script>
   <% end %>
 
   <% if current_store.braintree_configuration.credit_card? %>
-    <script src="https://js.braintreegateway.com/web/3.9.0/js/hosted-fields.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/3.14.0/js/hosted-fields.min.js"></script>
   <% end %>
 
   <%= javascript_include_tag "spree/checkout/braintree" %>

@@ -151,9 +151,9 @@ PaypalButton.prototype.addressParams = function(payload) {
 $(document).ready(function() {
   if (document.getElementById("empty-cart")) {
     $.when(
-      $.getScript("https://js.braintreegateway.com/web/3.9.0/js/client.min.js"),
-      $.getScript("https://js.braintreegateway.com/web/3.9.0/js/paypal.min.js"),
-      $.getScript("https://js.braintreegateway.com/web/3.9.0/js/data-collector.min.js")
+      $.getScript("https://js.braintreegateway.com/web/3.14.0/js/client.min.js"),
+      $.getScript("https://js.braintreegateway.com/web/3.14.0/js/paypal.min.js"),
+      $.getScript("https://js.braintreegateway.com/web/3.14.0/js/data-collector.min.js")
     ).done(function() {
       $('<script/>').attr({
         'data-merchant' : "braintree",
