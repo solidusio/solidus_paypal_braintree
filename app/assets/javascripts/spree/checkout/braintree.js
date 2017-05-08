@@ -41,20 +41,15 @@ $(function() {
 
   $checkoutForm.submit(disableSubmit);
 
-  $.when(
-    $.getScript("https://js.braintreegateway.com/web/3.9.0/js/client.min.js"),
-    $.getScript("https://js.braintreegateway.com/web/3.9.0/js/hosted-fields.min.js")
-  ).done(function() {
-    var fieldPromises = $hostedFields.map(function() {
-      var $this = $(this);
-      var id = $this.data("id");
+  var fieldPromises = $hostedFields.map(function() {
+    var $this = $(this);
+    var id = $this.data("id");
 
-      var braintreeForm = new BraintreeHostedForm($paymentForm, $this, id);
-      return braintreeForm.initializeHostedFields().
-        then(braintreeForm.addFormHook(braintreeError)).
-        fail(braintreeError);
-    });
-
-    $.when.apply($, fieldPromises).done(enableSubmit);
+    var braintreeForm = new BraintreeHostedForm($paymentForm, $this, id);
+    return braintreeForm.initializeHostedFields().
+      then(braintreeForm.addFormHook(braintreeError)).
+      fail(braintreeError);
   });
+
+  $.when.apply($, fieldPromises).done(enableSubmit);
 });
