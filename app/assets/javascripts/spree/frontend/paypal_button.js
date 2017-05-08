@@ -153,10 +153,7 @@ $(document).ready(function() {
     $.when(
       $.getScript("https://js.braintreegateway.com/web/3.9.0/js/client.min.js"),
       $.getScript("https://js.braintreegateway.com/web/3.9.0/js/paypal.min.js"),
-      $.getScript("https://js.braintreegateway.com/web/3.9.0/js/data-collector.min.js"),
-      $.Deferred(function( deferred ){
-        $( deferred.resolve );
-      })
+      $.getScript("https://js.braintreegateway.com/web/3.9.0/js/data-collector.min.js")
     ).done(function() {
       $('<script/>').attr({
         'data-merchant' : "braintree",
