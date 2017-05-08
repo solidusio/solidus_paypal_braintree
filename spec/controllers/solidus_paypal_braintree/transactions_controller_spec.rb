@@ -36,7 +36,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
       {
         transaction: {
           nonce: "fake-valid-nonce",
-          payment_type: "MonopolyMoney",
+          payment_type: SolidusPaypalBraintree::Source::PAYPAL,
           phone: "1112223333",
           email: "batman@example.com",
           address_attributes: {
