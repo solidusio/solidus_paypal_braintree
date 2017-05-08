@@ -1,16 +1,16 @@
-function BraintreeHostedForm($paymentForm, $hostedFields, paymentMethodId) {
+SolidusPaypalBraintree.HostedForm = function($paymentForm, $hostedFields, paymentMethodId) {
   this.paymentForm = $paymentForm;
   this.hostedFields = $hostedFields;
   this.paymentMethodId = paymentMethodId;
 }
 
-BraintreeHostedForm.prototype.initializeHostedFields = function() {
+SolidusPaypalBraintree.HostedForm.prototype.initializeHostedFields = function() {
   return this.getToken().
     then(this.createClient.bind(this)).
     then(this.createHostedFields());
 };
 
-BraintreeHostedForm.prototype.promisify = function (fn, args, self) {
+SolidusPaypalBraintree.HostedForm.prototype.promisify = function (fn, args, self) {
   var d = $.Deferred();
 
   fn.apply(self || this, (args || []).concat(function (err, data) {
@@ -21,7 +21,7 @@ BraintreeHostedForm.prototype.promisify = function (fn, args, self) {
   return d.promise();
 };
 
-BraintreeHostedForm.prototype.getToken = function () {
+SolidusPaypalBraintree.HostedForm.prototype.getToken = function () {
   var opts = {
     url: "/solidus_paypal_braintree/client_token",
     method: "POST",
@@ -37,12 +37,12 @@ BraintreeHostedForm.prototype.getToken = function () {
   return Spree.ajax(opts).then(onSuccess);
 };
 
-BraintreeHostedForm.prototype.createClient = function (token) {
+SolidusPaypalBraintree.HostedForm.prototype.createClient = function (token) {
   var opts = { authorization: token };
   return this.promisify(braintree.client.create, [opts]);
 };
 
-BraintreeHostedForm.prototype.createHostedFields = function () {
+SolidusPaypalBraintree.HostedForm.prototype.createHostedFields = function () {
   var self = this;
   var id = this.paymentMethodId;
 
@@ -69,7 +69,7 @@ BraintreeHostedForm.prototype.createHostedFields = function () {
   };
 };
 
-BraintreeHostedForm.prototype.addFormHook = function (errorCallback) {
+SolidusPaypalBraintree.HostedForm.prototype.addFormHook = function (errorCallback) {
   var self = this;
   var shouldSubmit = false;
 
