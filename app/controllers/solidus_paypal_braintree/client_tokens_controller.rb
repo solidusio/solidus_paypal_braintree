@@ -12,9 +12,9 @@ module SolidusPaypalBraintree
 
     def load_gateway
       if params[:payment_method_id]
-        @gateway = ::SolidusPaypalBraintree::Gateway.find_by!(id: params[:payment_method_id])
+        @gateway = ::SolidusPaypalBraintree::Gateway.available_to_store(current_store).find_by!(id: params[:payment_method_id])
       else
-        @gateway = ::SolidusPaypalBraintree::Gateway.find_by!(active: true)
+        @gateway = ::SolidusPaypalBraintree::Gateway.available_to_store(current_store).find_by!(active: true)
       end
     end
   end
