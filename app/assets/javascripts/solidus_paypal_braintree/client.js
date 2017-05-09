@@ -6,8 +6,8 @@ SolidusPaypalBraintree.Client = function(authToken, clientReadyCallback) {
   }
 };
 
-SolidusPaypalBraintree.Client.fetchToken = function(tokenCallback) {
-  return Spree.ajax({
+SolidusPaypalBraintree.Client.fetchToken = function(paymentMethodId, tokenCallback) {
+  var payload = {
     dataType: 'json',
     type: 'POST',
     url: Spree.pathFor('solidus_paypal_braintree/client_token'),
@@ -17,7 +17,15 @@ SolidusPaypalBraintree.Client.fetchToken = function(tokenCallback) {
     error: function(xhr) {
       console.error("Error fetching braintree token");
     }
-  })
+  }
+
+  if (paymentMethodId) {
+    payload.data = {
+      payment_method_id: paymentMethodId
+    };
+  }
+
+  return Spree.ajax(payload);
 }
 
 

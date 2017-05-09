@@ -20,7 +20,7 @@ PaypalButton.prototype.initialize = function(options) {
 
   /* This sets the payment method id returned by fetchToken on the PaypalButton
    * instance so that we can use it to build the transaction params later. */
-  SolidusPaypalBraintree.Client.fetchToken(function(token, paymentMethodId) {
+  SolidusPaypalBraintree.Client.fetchToken(null, function(token, paymentMethodId) {
     self.paymentMethodId = paymentMethodId;
 
     var solidusClient = new SolidusPaypalBraintree.Client(token)
