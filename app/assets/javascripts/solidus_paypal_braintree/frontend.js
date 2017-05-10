@@ -5,6 +5,7 @@
 // the compiled file.
 //
 //= require ./constants
+//= require ./promise
 //= require ./client
 //= require ./hosted_form
 
