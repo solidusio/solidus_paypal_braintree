@@ -28,12 +28,12 @@ $(function() {
       shouldSubmit = true;
 
       $("#payment_method_nonce", braintreeForm.hostedFields).val(payload.nonce);
-      braintreeForm.paymentForm.submit();
+      $paymentForm.submit();
     }
 
     return function(hostedFields) {
-      braintreeForm.paymentForm.on("submit", function(e) {
-        if (braintreeForm.hostedFields.is(":visible") && !shouldSubmit) {
+      $paymentForm.on("submit", function(e) {
+        if ($hostedFields.is(":visible") && !shouldSubmit) {
           e.preventDefault();
 
           hostedFields.tokenize(function(err, payload) {
@@ -55,7 +55,7 @@ $(function() {
     }
 
     if (hostedFieldsInstance === null) {
-      braintreeForm = new SolidusPaypalBraintree.HostedForm($paymentForm, $container, id);
+      braintreeForm = new SolidusPaypalBraintree.HostedForm(id);
       braintreeForm.initialize().
         then(setHostedFieldsInstance).
         then(braintreeForm.createHostedFields.bind(braintreeForm)).

@@ -1,6 +1,4 @@
-SolidusPaypalBraintree.HostedForm = function($paymentForm, $hostedFields, paymentMethodId) {
-  this.paymentForm = $paymentForm;
-  this.hostedFields = $hostedFields;
+SolidusPaypalBraintree.HostedForm = function(paymentMethodId) {
   this.paymentMethodId = paymentMethodId;
   this.client = null;
 };
