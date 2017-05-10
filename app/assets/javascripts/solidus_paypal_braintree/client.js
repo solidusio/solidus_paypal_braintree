@@ -1,5 +1,7 @@
 SolidusPaypalBraintree.Client = function(authToken, clientReadyCallback) {
   this.authToken = authToken;
+  this.clientReadyCallback = clientReadyCallback;
+  this._braintreeInstance = null;
 
   if(!this.authToken) {
     throw new Error("authToken is null or undefined and must be present");
@@ -12,7 +14,9 @@ SolidusPaypalBraintree.Client.fetchToken = function(paymentMethodId, tokenCallba
     type: 'POST',
     url: Spree.pathFor('solidus_paypal_braintree/client_token'),
     success: function(response) {
-      tokenCallback(response.client_token, response.payment_method_id);
+      if(tokenCallback) {
+        tokenCallback(response.client_token, response.payment_method_id);
+      }
     },
     error: function(xhr) {
       console.error("Error fetching braintree token");
@@ -28,39 +32,43 @@ SolidusPaypalBraintree.Client.fetchToken = function(paymentMethodId, tokenCallba
   return Spree.ajax(payload);
 }
 
-
-SolidusPaypalBraintree.Client.prototype.initialize = function(clientReadyCallback) {
-  braintree.client.create({
-    authorization: this.authToken
-  }, function (clientErr, clientInstance) {
-    if (clientErr) {
-      console.error('Error creating client:', clientErr);
-      return;
-    }
-
-    clientReadyCallback(clientInstance);
-  });
+SolidusPaypalBraintree.Client.prototype.initialize = function() {
+  return this._createBraintreeInstance().
+    then(this._invokeReadyCallback.bind(this));
 }
 
-SolidusPaypalBraintree.Client.prototype.initializeWithDataCollector = function(clientReadyCallback) {
-  braintree.client.create({
+SolidusPaypalBraintree.Client.prototype.initializeWithDataCollector = function() {
+  return this._createBraintreeInstance().
+    then(this._createDataCollector.bind(this)).
+    then(this._invokeReadyCallback.bind(this));
+}
+
+SolidusPaypalBraintree.Client.prototype.getBraintreeInstance = function() {
+  return this._braintreeInstance;
+}
+
+SolidusPaypalBraintree.Client.prototype._createBraintreeInstance = function() {
+  return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.client.create, [{
     authorization: this.authToken
-  }, function (clientErr, clientInstance) {
-    braintree.dataCollector.create({
-      client: clientInstance,
-      paypal: true
-    }, function (err, dataCollectorInstance) {
-      if (err) {
-        console.error('Error creating data collector:', err);
-        return;
-      }
-    });
-    if (clientErr) {
-      console.error('Error creating client:', clientErr);
-      return;
-    }
-    clientReadyCallback(clientInstance);
-  });
+  }]).then(function (clientInstance) {
+    this._braintreeInstance = clientInstance;
+    return clientInstance;
+  }.bind(this))
+};
+
+SolidusPaypalBraintree.Client.prototype._invokeReadyCallback = function() {
+  if(this.clientReadyCallback) {
+    this.clientReadyCallback(this._braintreeInstance);
+  }
+
+  return arguments;
+}
+
+SolidusPaypalBraintree.Client.prototype._createDataCollector = function() {
+  return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.dataCollector.create, [{
+    client: this._braintreeInstance,
+    paypal: true
+  }]);
 }
 
 SolidusPaypalBraintree.Client.prototype.setupApplePay = function(braintreeClient, merchantId, readyCallback) {
@@ -128,7 +136,7 @@ SolidusPaypalBraintree.Client.prototype.initializeApplePaySession = function(con
       var contact = event.payment.shippingContact;
 
       Spree.ajax({
-        data: this.buildTransaction(payload, config, contact),
+        data: this._buildTransaction(payload, config, contact),
         dataType: 'json',
         type: 'POST',
         url: Spree.pathFor('solidus_paypal_braintree/transactions'),
@@ -157,20 +165,20 @@ SolidusPaypalBraintree.Client.prototype.initializeApplePaySession = function(con
   session.begin();
 },
 
-SolidusPaypalBraintree.Client.prototype.buildTransaction = function(payload, config, shippingContact) {
+SolidusPaypalBraintree.Client.prototype._buildTransaction = function(payload, config, shippingContact) {
   return {
     transaction: {
       nonce: payload.nonce,
       phone: shippingContact.phoneNumber,
       email: config.currentUserEmail || shippingContact.emailAddress,
       payment_type: payload.type,
-      address_attributes: this.buildAddress(shippingContact)
+      address_attributes: this._buildAddress(shippingContact)
     },
     payment_method_id: config.paymentMethodId
   };
 },
 
-SolidusPaypalBraintree.Client.prototype.buildAddress = function(shippingContact) {
+SolidusPaypalBraintree.Client.prototype._buildAddress = function(shippingContact) {
   var addressHash = {
     country_name:   shippingContact.country,
     country_code:   shippingContact.countryCode,

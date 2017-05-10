@@ -23,18 +23,17 @@ PaypalButton.prototype.initialize = function(options) {
   SolidusPaypalBraintree.Client.fetchToken(null, function(token, paymentMethodId) {
     self.paymentMethodId = paymentMethodId;
 
-    var solidusClient = new SolidusPaypalBraintree.Client(token)
-    solidusClient.initializeWithDataCollector(function(client) {
+    var solidusClient = new SolidusPaypalBraintree.Client(token, function(client) {
       self.createPaypalInstance(client, function(paypal) {
-
         self.initializePaypalSession({
           paypalInstance: paypal,
           paypalButton: self.element,
           paypalOptions: options
         }, self.tokenizeCallback.bind(self));
       });
-
     });
+
+    solidusClient.initializeWithDataCollector();
   });
 };
 
