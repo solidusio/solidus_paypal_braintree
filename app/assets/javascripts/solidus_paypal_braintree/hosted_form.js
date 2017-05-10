@@ -2,97 +2,42 @@ SolidusPaypalBraintree.HostedForm = function($paymentForm, $hostedFields, paymen
   this.paymentForm = $paymentForm;
   this.hostedFields = $hostedFields;
   this.paymentMethodId = paymentMethodId;
+  this.client = null;
 }
 
-SolidusPaypalBraintree.HostedForm.prototype.initializeHostedFields = function() {
-  return this.getToken().
-    then(this.createClient.bind(this)).
-    then(this.createHostedFields())
+SolidusPaypalBraintree.HostedForm.prototype.initialize = function() {
+  return SolidusPaypalBraintree.Client.fetchToken(this.paymentMethodId).
+    then(this._setClient.bind(this))
 }
 
-SolidusPaypalBraintree.HostedForm.prototype.promisify = function (fn, args, self) {
-  var d = $.Deferred();
-
-  fn.apply(self || this, (args || []).concat(function (err, data) {
-    err && d.reject(err);
-    d.resolve(data);
-  }));
-
-  return d.promise();
+SolidusPaypalBraintree.HostedForm.prototype._setClient = function(clientData) {
+  this.client = new SolidusPaypalBraintree.Client(clientData.client_token);
+  return this.client.initialize();
 }
 
-SolidusPaypalBraintree.HostedForm.prototype.getToken = function () {
-  var opts = {
-    url: "/solidus_paypal_braintree/client_token",
-    method: "POST",
-    data: {
-      payment_method_id: this.paymentMethodId
-    },
-  };
-
-  function onSuccess(data) {
-    return data.client_token;
-  }
-
-  return Spree.ajax(opts).then(onSuccess);
-}
-
-SolidusPaypalBraintree.HostedForm.prototype.createClient = function (token) {
-  var opts = { authorization: token };
-  return this.promisify(braintree.client.create, [opts]);
-}
 
 SolidusPaypalBraintree.HostedForm.prototype.createHostedFields = function () {
-  var self = this;
-  var id = this.paymentMethodId;
+  if (!this.client) {
+    throw new Error("Client not initialized, please call initialize first!");
+  }
 
-  return function(client) {
-    var opts = {
-      client: client,
+  var opts = {
+    client: this.client.getBraintreeInstance(),
 
-      fields: {
-        number: {
-          selector: "#card_number" + id
-        },
+    fields: {
+      number: {
+        selector: "#card_number" + this.paymentMethodId
+      },
 
-        cvv: {
-          selector: "#card_code" + id
-        },
+      cvv: {
+        selector: "#card_code" + this.paymentMethodId
+      },
 
-        expirationDate: {
-          selector: "#card_expiry" + id
-        }
+      expirationDate: {
+        selector: "#card_expiry" + this.paymentMethodId
       }
-    };
+    }
+  };
 
-    return self.promisify(braintree.hostedFields.create, [opts]);
-  }
-}
-
-SolidusPaypalBraintree.HostedForm.prototype.addFormHook = function (errorCallback) {
-  var self = this;
-  var shouldSubmit = false;
-
-  function submit(payload) {
-    shouldSubmit = true;
-
-    $("#payment_method_nonce", self.hostedFields).val(payload.nonce);
-    self.paymentForm.submit();
-  }
-
-  return function(hostedFields) {
-    self.paymentForm.on("submit", function(e) {
-      if (self.hostedFields.is(":visible") && !shouldSubmit) {
-        e.preventDefault()
-
-        hostedFields.tokenize(function(err, payload) {
-          if (err) {
-            errorCallback(err);
-          } else {
-            submit(payload);
-          }
-        })
-      }
-    });
-  }
+  return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.hostedFields.create, [opts]);
 }
