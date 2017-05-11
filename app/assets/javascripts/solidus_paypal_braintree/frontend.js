@@ -9,4 +9,3 @@
 //= require ./client
 //= require ./hosted_form
 //= require ./paypal_button
-
