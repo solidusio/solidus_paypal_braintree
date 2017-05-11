@@ -1,44 +1,18 @@
-SolidusPaypalBraintree.Client = function(authToken, clientReadyCallback) {
-  this.authToken = authToken;
+SolidusPaypalBraintree.Client = function(paymentMethodId, clientReadyCallback) {
+  this.paymentMethodId = paymentMethodId;
   this.clientReadyCallback = clientReadyCallback;
   this._braintreeInstance = null;
-
-  if(!this.authToken) {
-    throw new Error("authToken is null or undefined and must be present");
-  }
 };
 
-SolidusPaypalBraintree.Client.fetchToken = function(paymentMethodId, tokenCallback) {
-  var payload = {
-    dataType: 'json',
-    type: 'POST',
-    url: Spree.pathFor('solidus_paypal_braintree/client_token'),
-    success: function(response) {
-      if(tokenCallback) {
-        tokenCallback(response.client_token, response.payment_method_id);
-      }
-    },
-    error: function(xhr) {
-      console.error("Error fetching braintree token");
-    }
-  }
-
-  if (paymentMethodId) {
-    payload.data = {
-      payment_method_id: paymentMethodId
-    };
-  }
-
-  return Spree.ajax(payload);
-}
-
-SolidusPaypalBraintree.Client.prototype.initialize = function() {
-  return this._createBraintreeInstance().
+SolidusPaypalBraintree.Client.prototype.initialize = function(paymentMethodId) {
+  return this._fetchToken().
+    then(this._createBraintreeInstance.bind(this)).
     then(this._invokeReadyCallback.bind(this));
 }
 
 SolidusPaypalBraintree.Client.prototype.initializeWithDataCollector = function() {
-  return this._createBraintreeInstance().
+  return this._fetchToken().
+    then(this._createBraintreeInstance.bind(this)).
     then(this._createDataCollector.bind(this)).
     then(this._invokeReadyCallback.bind(this));
 }
@@ -47,9 +21,30 @@ SolidusPaypalBraintree.Client.prototype.getBraintreeInstance = function() {
   return this._braintreeInstance;
 }
 
-SolidusPaypalBraintree.Client.prototype._createBraintreeInstance = function() {
+SolidusPaypalBraintree.Client.prototype._fetchToken = function() {
+  var payload = {
+    dataType: 'json',
+    type: 'POST',
+    url: Spree.pathFor('solidus_paypal_braintree/client_token'),
+    error: function(xhr) {
+      console.error("Error fetching braintree token");
+    }
+  }
+
+  if (this.paymentMethodId) {
+    payload.data = {
+      payment_method_id: this.paymentMethodId
+    };
+  }
+
+  return Spree.ajax(payload);
+}
+
+SolidusPaypalBraintree.Client.prototype._createBraintreeInstance = function(tokenResponse) {
+  this.paymentMethodId = tokenResponse.payment_method_id;
+
   return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.client.create, [{
-    authorization: this.authToken
+    authorization: tokenResponse.client_token
   }]).then(function (clientInstance) {
     this._braintreeInstance = clientInstance;
     return clientInstance;

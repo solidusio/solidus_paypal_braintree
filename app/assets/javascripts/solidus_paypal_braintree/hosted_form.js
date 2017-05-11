@@ -4,12 +4,7 @@ SolidusPaypalBraintree.HostedForm = function(paymentMethodId) {
 };
 
 SolidusPaypalBraintree.HostedForm.prototype.initialize = function() {
-  return SolidusPaypalBraintree.Client.fetchToken(this.paymentMethodId).
-    then(this._setClient.bind(this));
-};
-
-SolidusPaypalBraintree.HostedForm.prototype._setClient = function(clientData) {
-  this.client = new SolidusPaypalBraintree.Client(clientData.client_token);
+  this.client = new SolidusPaypalBraintree.Client(this.paymentMethodId);
   return this.client.initialize();
 };
 
