@@ -16,22 +16,26 @@ SolidusPaypalBraintree.PaypalButton = function(element) {
  * See {@link https://braintree.github.io/braintree-web/3.9.0/PayPal.html#tokenize}
  */
 SolidusPaypalBraintree.PaypalButton.prototype.initialize = function(options) {
-  var self = this;
-
-  /* This sets the payment method id returned by fetchToken on the PaypalButton
+  /* This sets the payment method id returned by the client on the PaypalButton
    * instance so that we can use it to build the transaction params later. */
-  var solidusClient = new SolidusPaypalBraintree.Client(null, function(token, paymentMethodId) {
-    self.paymentMethodId = solidusClient.paymentMethodId;
-    self.createPaypalInstance(solidusClient.getBraintreeInstance(), function(paypal) {
-      self.initializePaypalSession({
+  var readyCallback = function(token, paymentMethodId) {
+    this.paymentMethodId = solidusClient.paymentMethodId;
+    this.createPaypalInstance(solidusClient.getBraintreeInstance(), function(paypal) {
+      this.initializePaypalSession({
         paypalInstance: paypal,
-        paypalButton: self.element,
+        paypalButton: this.element,
         paypalOptions: options
-      }, self.tokenizeCallback.bind(self));
-    });
-  });
+      }, this.tokenizeCallback.bind(this));
+    }.bind(this));
+  }.bind(this);
 
-  solidusClient.initializeWithDataCollector();
+  var clientConfig = {
+    readyCallback: readyCallback,
+    useDataCollector: true
+  };
+
+  var solidusClient = new SolidusPaypalBraintree.Client(clientConfig);
+  solidusClient.initialize();
 };
 
 SolidusPaypalBraintree.PaypalButton.prototype.createPaypalInstance = function(braintreeClient, readyCallback) {
