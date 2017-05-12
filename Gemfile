@@ -5,6 +5,8 @@ gem 'solidus', github: 'solidusio/solidus', branch: branch
 
 if branch == "master" || branch >= "v2.0"
   gem "rails-controller-testing", group: :test
+  # Temporary until bundler fixes bundlers infinite resolution issues
+  gem "rails", "~> 5.0.3", group: :test
 else
   gem "rails", "~> 4.2"
   gem "rails_test_params_backport", group: :test

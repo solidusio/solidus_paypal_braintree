@@ -240,6 +240,9 @@ Metrics/PerceivedComplexity:
 Bundler/OrderedGems:
   Enabled: false
 
+Bundler/DuplicatedGem:
+  Enabled: false
+
 AmbiguousBlockAssociation:
   Exclude:
     - "spec/**/*.rb"
