@@ -5,7 +5,7 @@ $(function() {
    * submission if tokenization fails, we need to manually re-enable the
    * submit button. */
   function braintreeError (err) {
-    alert(err.name + ": " + err.message);
+    SolidusPaypalBraintree.braintreeErrorHandle(err);
     enableSubmit();
   }
 
