@@ -1,20 +1,20 @@
-SolidusPaypalBraintree.Client = function(paymentMethodId, clientReadyCallback) {
-  this.paymentMethodId = paymentMethodId;
-  this.clientReadyCallback = clientReadyCallback;
+SolidusPaypalBraintree.Client = function(config) {
+  this.paymentMethodId = config.paymentMethodId;
+  this.readyCallback = config.readyCallback;
+  this.useDataCollector = config.useDataCollector;
+
   this._braintreeInstance = null;
 };
 
-SolidusPaypalBraintree.Client.prototype.initialize = function(paymentMethodId) {
-  return this._fetchToken().
-    then(this._createBraintreeInstance.bind(this)).
-    then(this._invokeReadyCallback.bind(this));
-}
+SolidusPaypalBraintree.Client.prototype.initialize = function() {
+  var initializationPromise = this._fetchToken().
+    then(this._createBraintreeInstance.bind(this))
 
-SolidusPaypalBraintree.Client.prototype.initializeWithDataCollector = function() {
-  return this._fetchToken().
-    then(this._createBraintreeInstance.bind(this)).
-    then(this._createDataCollector.bind(this)).
-    then(this._invokeReadyCallback.bind(this));
+  if(this.useDataCollector) {
+    initializationPromise = initializationPromise.then(this._createDataCollector.bind(this));
+  }
+
+  return initializationPromise.then(this._invokeReadyCallback.bind(this));
 }
 
 SolidusPaypalBraintree.Client.prototype.getBraintreeInstance = function() {
@@ -52,8 +52,8 @@ SolidusPaypalBraintree.Client.prototype._createBraintreeInstance = function(toke
 };
 
 SolidusPaypalBraintree.Client.prototype._invokeReadyCallback = function() {
-  if(this.clientReadyCallback) {
-    this.clientReadyCallback(this._braintreeInstance);
+  if(this.readyCallback) {
+    this.readyCallback(this._braintreeInstance);
   }
 
   return arguments;
