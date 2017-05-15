@@ -8,6 +8,7 @@ en:
     token: Token
     payment_type:
       apple_pay_card: Apple Pay
+      credit_card: Credit Card
       pay_pal_account: PayPal
     configurations:
       title: Braintree Configurations
