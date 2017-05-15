@@ -105,6 +105,14 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
         expect(subject).to eq "Apple Pay"
       end
     end
+
+    context "when the payment type is Credit Card" do
+      let(:type) { "CreditCard" }
+
+      it "returns the translated payment type" do
+        expect(subject).to eq "Credit Card"
+      end
+    end
   end
 
   describe "#apple_pay?" do
