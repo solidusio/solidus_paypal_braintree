@@ -2,8 +2,11 @@ SolidusPaypalBraintree.Client = function(config) {
   this.paymentMethodId = config.paymentMethodId;
   this.readyCallback = config.readyCallback;
   this.useDataCollector = config.useDataCollector;
+  this.usePaypal = config.usePaypal;
 
   this._braintreeInstance = null;
+  this._dataCollectorInstance = null;
+  this._paypalInstance = null;
 };
 
 SolidusPaypalBraintree.Client.prototype.initialize = function() {
@@ -14,12 +17,25 @@ SolidusPaypalBraintree.Client.prototype.initialize = function() {
     initializationPromise = initializationPromise.then(this._createDataCollector.bind(this));
   }
 
+  if(this.usePaypal) {
+    initializationPromise = initializationPromise.then(this._createPaypal.bind(this));
+  }
+
   return initializationPromise.then(this._invokeReadyCallback.bind(this));
 }
 
 SolidusPaypalBraintree.Client.prototype.getBraintreeInstance = function() {
   return this._braintreeInstance;
 }
+
+SolidusPaypalBraintree.Client.prototype.getPaypalInstance = function() {
+  return this._paypalInstance;
+}
+
+SolidusPaypalBraintree.Client.prototype.getDataCollectorInstance = function() {
+  return this._dataCollectorInstance;
+}
+
 
 SolidusPaypalBraintree.Client.prototype._fetchToken = function() {
   var payload = {
@@ -48,7 +64,7 @@ SolidusPaypalBraintree.Client.prototype._createBraintreeInstance = function(toke
   }]).then(function (clientInstance) {
     this._braintreeInstance = clientInstance;
     return clientInstance;
-  }.bind(this))
+  }.bind(this));
 };
 
 SolidusPaypalBraintree.Client.prototype._invokeReadyCallback = function() {
@@ -56,14 +72,26 @@ SolidusPaypalBraintree.Client.prototype._invokeReadyCallback = function() {
     this.readyCallback(this._braintreeInstance);
   }
 
-  return arguments;
+  return this;
 }
 
 SolidusPaypalBraintree.Client.prototype._createDataCollector = function() {
   return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.dataCollector.create, [{
     client: this._braintreeInstance,
-    paypal: true
-  }]);
+    paypal: !!this.usePaypal
+  }]).then(function (dataCollectorInstance) {
+    this._dataCollectorInstance = dataCollectorInstance;
+    return dataCollectorInstance;
+  }.bind(this));
+}
+
+SolidusPaypalBraintree.Client.prototype._createPaypal = function() {
+  return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.paypal.create, [{
+    client: this._braintreeInstance
+  }]).then(function (paypalInstance) {
+    this._paypalInstance = paypalInstance;
+    return paypalInstance;
+  }.bind(this));
 }
 
 SolidusPaypalBraintree.Client.prototype.setupApplePay = function(braintreeClient, merchantId, readyCallback) {

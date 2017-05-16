@@ -20,36 +20,22 @@ SolidusPaypalBraintree.PaypalButton.prototype.initialize = function(options) {
    * instance so that we can use it to build the transaction params later. */
   var readyCallback = function(token, paymentMethodId) {
     this.paymentMethodId = solidusClient.paymentMethodId;
-    this.createPaypalInstance(solidusClient.getBraintreeInstance(), function(paypal) {
-      this.initializePaypalSession({
-        paypalInstance: paypal,
-        paypalButton: this.element,
-        paypalOptions: options
-      }, this.tokenizeCallback.bind(this));
-    }.bind(this));
+    this.initializePaypalSession({
+      paypalInstance: solidusClient.getPaypalInstance(),
+      paypalButton: this.element,
+      paypalOptions: options
+    }, this.tokenizeCallback.bind(this));
   }.bind(this);
 
   var clientConfig = {
     readyCallback: readyCallback,
-    useDataCollector: true
+    useDataCollector: true,
+    usePaypal: true
   };
 
   var solidusClient = new SolidusPaypalBraintree.Client(clientConfig);
   solidusClient.initialize();
 };
-
-SolidusPaypalBraintree.PaypalButton.prototype.createPaypalInstance = function(braintreeClient, readyCallback) {
-  braintree.paypal.create({
-    client: braintreeClient
-  }, function (paypalErr, paypalInstance) {
-    if (paypalErr) {
-      console.error("Error creating PayPal:", paypalErr);
-      return;
-    }
-    readyCallback(paypalInstance);
-  });
-};
-
 /* Initializes and begins the Paypal session
  *
  * @param config Configuration settings for the session
