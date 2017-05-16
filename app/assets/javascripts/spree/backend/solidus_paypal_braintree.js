@@ -32,7 +32,7 @@ $(function() {
       }
 
       if (isNew && hostedFieldsInstance == null) {
-        braintreeForm = new SolidusPaypalBraintree.HostedForm(id);
+        braintreeForm = new SolidusPaypalBraintree.createHostedForm(id);
         braintreeForm.initialize().
           then(setHostedFieldsInstance).
           then(braintreeForm.addFormHook(onError)).
