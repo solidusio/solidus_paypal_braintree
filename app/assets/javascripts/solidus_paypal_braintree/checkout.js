@@ -65,7 +65,7 @@ $(function() {
       var $this = $(this);
       var id = $this.data("id");
 
-      var braintreeForm = new SolidusPaypalBraintree.HostedForm(id);
+      var braintreeForm = new SolidusPaypalBraintree.createHostedForm(id);
 
       var formInitializationSuccess = function(formObject) {
         addFormHook(formObject, field);

@@ -14,6 +14,19 @@ SolidusPaypalBraintree = {
       $contentContainer.prepend($flash);
 
       $flash.show().delay(5000).fadeOut(500);
-    }
+    },
+
+    hostedFormClass: function() {
+      return SolidusPaypalBraintree.HostedForm;
+    },
+  },
+
+  createHostedForm: function() {
+    return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.hostedFormClass(), arguments);
+  },
+
+  _factory: function(klass, args) {
+    var normalizedArgs = Array.prototype.slice.call(args);
+    return new (Function.prototype.bind.apply(klass, [null].concat(normalizedArgs)));
   }
 };
