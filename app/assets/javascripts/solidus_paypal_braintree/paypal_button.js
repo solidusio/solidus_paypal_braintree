@@ -1,10 +1,17 @@
+//= require solidus_paypal_braintree/constants
 /**
  * Constructor for PayPal button object
  * @constructor
  * @param {object} element - The DOM element of your PayPal button
  */
-SolidusPaypalBraintree.PaypalButton = function(element) {
-  this.element = element;
+SolidusPaypalBraintree.PaypalButton = function(element, paypalOptions) {
+  this._element = element;
+  this._paypalOptions = paypalOptions || {};
+  this._client = null;
+
+  if(!this._element) {
+    throw new Error("Element for the paypal button must be present on the page");
+  }
 }
 
 /**
@@ -15,42 +22,20 @@ SolidusPaypalBraintree.PaypalButton = function(element) {
  *
  * See {@link https://braintree.github.io/braintree-web/3.9.0/PayPal.html#tokenize}
  */
-SolidusPaypalBraintree.PaypalButton.prototype.initialize = function(options) {
-  /* This sets the payment method id returned by the client on the PaypalButton
-   * instance so that we can use it to build the transaction params later. */
-  var readyCallback = function(token, paymentMethodId) {
-    this.paymentMethodId = solidusClient.paymentMethodId;
-    this.initializePaypalSession({
-      paypalInstance: solidusClient.getPaypalInstance(),
-      paypalButton: this.element,
-      paypalOptions: options
-    }, this.tokenizeCallback.bind(this));
-  }.bind(this);
+SolidusPaypalBraintree.PaypalButton.prototype.initialize = function() {
+  this._client = new SolidusPaypalBraintree.Client({useDataCollector: true, usePaypal: true});
 
-  var clientConfig = {
-    readyCallback: readyCallback,
-    useDataCollector: true,
-    usePaypal: true
-  };
-
-  var solidusClient = new SolidusPaypalBraintree.Client(clientConfig);
-  solidusClient.initialize();
+  return this._client.initialize().then(this.initializeCallback.bind(this));
 };
-/* Initializes and begins the Paypal session
- *
- * @param config Configuration settings for the session
- * @param config.paypalInstance {object} The Paypal instance returned by Braintree
- * @param config.paypalButton {object} The button DOM element
- * @param config.paypalOptions {object} Configuration options for Paypal
- * @param config.error {tokenizeErrorCallback} Callback function for tokenize errors
- * @param {tokenizeCallback} callback Callback function for tokenization
- */
-SolidusPaypalBraintree.PaypalButton.prototype.initializePaypalSession = function(config, callback) {
-    config.paypalButton.removeAttribute('disabled');
-    config.paypalButton.addEventListener('click', function(event) {
-      config.paypalInstance.tokenize(config.paypalOptions, callback);
-    }, false);
-  },
+
+SolidusPaypalBraintree.PaypalButton.prototype.initializeCallback = function() {
+  this._paymentMethodId = this._client.paymentMethodId;
+
+  this._element.removeAttribute('disabled');
+  this._element.addEventListener('click', function(event) {
+    this._client.getPaypalInstance().tokenize(this._paypalOptions, this._tokenizeCallback.bind(this));
+  }.bind(this), false);
+};
 
 /**
  * Default callback function for when tokenization completes
@@ -58,34 +43,26 @@ SolidusPaypalBraintree.PaypalButton.prototype.initializePaypalSession = function
  * @param {object|null} tokenizeErr - The error returned by Braintree on failure
  * @param {object} payload - The payload returned by Braintree on success
  */
-SolidusPaypalBraintree.PaypalButton.prototype.tokenizeCallback = function(tokenizeErr, payload) {
+SolidusPaypalBraintree.PaypalButton.prototype._tokenizeCallback = function(tokenizeErr, payload) {
   if (tokenizeErr) {
-    console.error('Error tokenizing:', tokenizeErr);
-  } else {
-    var params = this.transactionParams(payload);
-
-    Spree.ajax({
-      url: Spree.pathFor("solidus_paypal_braintree/transactions"),
-      type: 'POST',
-      dataType: 'json',
-      data: params,
-      success: function(response) {
-        window.location.href = response.redirectUrl;
-      },
-      error: function(xhr) {
-        console.error("Error submitting transaction")
-      },
-    });
+    SolidusPaypalBraintree.config.braintreeErrorHandle(tokenizeErr);
+    return;
   }
-};
 
-/**
- * Assigns a new callback function for when tokenization completes
- *
- * @callback callback - The callback function to assign
- */
-SolidusPaypalBraintree.PaypalButton.prototype.setTokenizeCallback = function(callback) {
-  this.tokenizeCallback = callback;
+  var params = this._transactionParams(payload);
+
+  return Spree.ajax({
+    url: Spree.pathFor("solidus_paypal_braintree/transactions"),
+    type: 'POST',
+    dataType: 'json',
+    data: params,
+    success: function(response) {
+      window.location.href = response.redirectUrl;
+    },
+    error: function(xhr) {
+      console.error("Error submitting transaction")
+    },
+  });
 };
 
 /**
@@ -94,15 +71,15 @@ SolidusPaypalBraintree.PaypalButton.prototype.setTokenizeCallback = function(cal
  *
  * @param {object} payload - The payload returned by Braintree after tokenization
  */
-SolidusPaypalBraintree.PaypalButton.prototype.transactionParams = function(payload) {
+SolidusPaypalBraintree.PaypalButton.prototype._transactionParams = function(payload) {
   return {
-    "payment_method_id" : this.paymentMethodId,
+    "payment_method_id" : this._paymentMethodId,
     "transaction" : {
       "email" : payload.details.email,
       "phone" : payload.details.phone,
       "nonce" : payload.nonce,
       "payment_type" : payload.type,
-      "address_attributes" : this.addressParams(payload)
+      "address_attributes" : this._addressParams(payload)
     }
   }
 };
@@ -113,7 +90,7 @@ SolidusPaypalBraintree.PaypalButton.prototype.transactionParams = function(paylo
  *
  * @param {object} payload - The payload returned by Braintree after tokenization
  */
-SolidusPaypalBraintree.PaypalButton.prototype.addressParams = function(payload) {
+SolidusPaypalBraintree.PaypalButton.prototype._addressParams = function(payload) {
   if (payload.details.shippingAddress.recipientName) {
     var first_name = payload.details.shippingAddress.recipientName.split(" ")[0];
     var last_name = payload.details.shippingAddress.recipientName.split(" ")[1];

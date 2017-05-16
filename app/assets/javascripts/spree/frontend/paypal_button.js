@@ -1,3 +1,5 @@
+// require solidus_paypal_braintree/paypal_button
+
 $(document).ready(function() {
   if (document.getElementById("empty-cart")) {
     $.when(
@@ -16,11 +18,12 @@ $(document).ready(function() {
         'data-button_disabled' : "true"
       }).
       load(function() {
-        var button = new SolidusPaypalBraintree.PaypalButton(document.querySelector("#paypal-button"));
-        button.initialize({
+        var paypalOptions = {
           flow: 'vault',
-          enableShippingAddress: true,
-        });
+          enableShippingAddress: true
+        }
+        var button = new SolidusPaypalBraintree.PaypalButton(document.querySelector("#paypal-button"), paypalOptions);
+        return button.initialize();
       }).
       insertAfter("#content").
       attr('src', 'https://www.paypalobjects.com/api/button.js?')
