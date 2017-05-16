@@ -41,7 +41,7 @@ SolidusPaypalBraintree.Client.prototype._fetchToken = function() {
   var payload = {
     dataType: 'json',
     type: 'POST',
-    url: Spree.pathFor('solidus_paypal_braintree/client_token'),
+    url: SolidusPaypalBraintree.config.paths.clientTokens,
     error: function(xhr) {
       console.error("Error fetching braintree token");
     }
@@ -162,7 +162,7 @@ SolidusPaypalBraintree.Client.prototype.initializeApplePaySession = function(con
         data: this._buildTransaction(payload, config, contact),
         dataType: 'json',
         type: 'POST',
-        url: Spree.pathFor('solidus_paypal_braintree/transactions'),
+        url: SolidusPaypalBraintree.config.paths.transactions,
         success: function(response) {
           session.completePayment(ApplePaySession.STATUS_SUCCESS);
           window.location.replace(response.redirectUrl);
