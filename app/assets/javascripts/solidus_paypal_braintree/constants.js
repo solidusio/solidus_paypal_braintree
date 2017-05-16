@@ -19,10 +19,18 @@ SolidusPaypalBraintree = {
     hostedFormClass: function() {
       return SolidusPaypalBraintree.HostedForm;
     },
+
+    clientClass: function() {
+      return SolidusPaypalBraintree.Client;
+    }
   },
 
   createHostedForm: function() {
     return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.hostedFormClass(), arguments);
+  },
+
+  createClient: function() {
+    return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.clientClass(), arguments);
   },
 
   _factory: function(klass, args) {
