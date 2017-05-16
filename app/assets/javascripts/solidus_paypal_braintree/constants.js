@@ -16,29 +16,31 @@ SolidusPaypalBraintree = {
       $flash.show().delay(5000).fadeOut(500);
     },
 
-    hostedFormClass: function() {
-      return SolidusPaypalBraintree.HostedForm;
-    },
+    classes: {
+      hostedForm: function() {
+        return SolidusPaypalBraintree.HostedForm;
+      },
 
-    clientClass: function() {
-      return SolidusPaypalBraintree.Client;
-    },
+      client: function() {
+        return SolidusPaypalBraintree.Client;
+      },
 
-    paypalButtonClass: function() {
-      return SolidusPaypalBraintree.PaypalButton;
+      paypalButton: function() {
+        return SolidusPaypalBraintree.PaypalButton;
+      }
     }
   },
 
   createHostedForm: function() {
-    return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.hostedFormClass(), arguments);
+    return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.classes.hostedForm(), arguments);
   },
 
   createClient: function() {
-    return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.clientClass(), arguments);
+    return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.classes.client(), arguments);
   },
 
   createPaypalButton: function() {
-    return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.paypalButtonClass(), arguments);
+    return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.classes.paypalButton(), arguments);
   },
 
   _factory: function(klass, args) {
