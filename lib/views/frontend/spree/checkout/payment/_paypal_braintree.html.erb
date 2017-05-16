@@ -47,7 +47,7 @@
       shippingAddressEditable: false
     }
 
-    var button = new SolidusPaypalBraintree.PaypalButton(document.querySelector("#paypal-button"), paypalOptions);
+    var button = new SolidusPaypalBraintree.createPaypalButton(document.querySelector("#paypal-button"), paypalOptions);
     button.initialize();
   </script>
 <% end %>
