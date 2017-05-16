@@ -22,6 +22,10 @@ SolidusPaypalBraintree = {
 
     clientClass: function() {
       return SolidusPaypalBraintree.Client;
+    },
+
+    paypalButtonClass: function() {
+      return SolidusPaypalBraintree.PaypalButton;
     }
   },
 
@@ -31,6 +35,10 @@ SolidusPaypalBraintree = {
 
   createClient: function() {
     return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.clientClass(), arguments);
+  },
+
+  createPaypalButton: function() {
+    return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.paypalButtonClass(), arguments);
   },
 
   _factory: function(klass, args) {

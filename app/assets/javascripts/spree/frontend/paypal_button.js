@@ -22,7 +22,7 @@ $(document).ready(function() {
           flow: 'vault',
           enableShippingAddress: true
         }
-        var button = new SolidusPaypalBraintree.PaypalButton(document.querySelector("#paypal-button"), paypalOptions);
+        var button = new SolidusPaypalBraintree.createPaypalButton(document.querySelector("#paypal-button"), paypalOptions);
         return button.initialize();
       }).
       insertAfter("#content").
