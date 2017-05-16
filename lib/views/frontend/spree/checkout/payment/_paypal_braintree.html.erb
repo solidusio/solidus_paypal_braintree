@@ -40,13 +40,15 @@
       recipientName: '<%= "#{address.firstname} #{address.lastname}" %>'
     }
 
-    var button = new SolidusPaypalBraintree.PaypalButton(document.querySelector("#paypal-button"));
-    button.initialize({
+    var paypalOptions = {
       flow: 'vault',
       enableShippingAddress: true,
       shippingAddressOverride: address,
       shippingAddressEditable: false
-    });
+    }
+
+    var button = new SolidusPaypalBraintree.PaypalButton(document.querySelector("#paypal-button"), paypalOptions);
+    button.initialize();
   </script>
 <% end %>
 
