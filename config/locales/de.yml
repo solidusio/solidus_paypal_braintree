@@ -1,0 +1,16 @@
+de:
+  spree:
+    admin:
+      tab:
+        braintree: Braintree
+  solidus_paypal_braintree:
+    nonce: Nonce
+    token: Token
+    payment_type:
+      apple_pay_card: Apple Pay
+      pay_pal_account: PayPal
+    configurations:
+      title: Braintree Einstellungen
+      tab: Braintree
+      update_success: Einstellungen gespeichert.
+      update_error: Es ist ein Fehler beim Speichern der Einstellungen aufgetreten.
