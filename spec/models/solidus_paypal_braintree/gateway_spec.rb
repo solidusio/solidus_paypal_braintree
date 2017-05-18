@@ -364,10 +364,19 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       let(:other_payment_method) { FactoryGirl.create(:payment_method) }
 
       let(:source_without_profile) do
-        SolidusPaypalBraintree::Source.create!(payment_method_id: gateway.id, user_id: user.id)
+        SolidusPaypalBraintree::Source.create!(
+          payment_method_id: gateway.id,
+          payment_type: payment_type,
+          user_id: user.id
+        )
       end
+
       let(:source_with_profile) do
-        SolidusPaypalBraintree::Source.create!(payment_method_id: gateway.id, user_id: user.id).tap do |source|
+        SolidusPaypalBraintree::Source.create!(
+          payment_method_id: gateway.id,
+          payment_type: payment_type,
+          user_id: user.id
+        ).tap do |source|
           source.create_customer!(user: user)
           source.save!
         end
@@ -429,11 +438,19 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
           let(:user) { FactoryGirl.create(:user) }
 
           let!(:source_without_profile) do
-            SolidusPaypalBraintree::Source.create!(payment_method_id: gateway.id, user_id: user.id)
+            SolidusPaypalBraintree::Source.create!(
+              payment_method_id: gateway.id,
+              payment_type: payment_type,
+              user_id: user.id
+            )
           end
 
           let!(:source_with_profile) do
-            SolidusPaypalBraintree::Source.create!(payment_method_id: gateway.id, user_id: user.id).tap do |source|
+            SolidusPaypalBraintree::Source.create!(
+              payment_method_id: gateway.id,
+              payment_type: payment_type,
+              user_id: user.id
+            ).tap do |source|
               source.create_customer!(user: user)
               source.save!
             end

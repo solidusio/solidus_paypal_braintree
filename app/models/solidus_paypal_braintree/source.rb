@@ -10,6 +10,8 @@ module SolidusPaypalBraintree
 
     belongs_to :customer, class_name: "SolidusPaypalBraintree::Customer"
 
+    validates :payment_type, inclusion: [PAYPAL, APPLE_PAY, CREDIT_CARD]
+
     scope(:with_payment_profile, -> { joins(:customer) })
     scope(:credit_card, -> { where(payment_type: CREDIT_CARD) })
 
