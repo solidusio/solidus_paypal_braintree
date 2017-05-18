@@ -1,3 +1,50 @@
+/**
+ * Braintree client interface
+ * @external "braintree.Client"
+ * @see {@link https://braintree.github.io/braintree-web/current/Client.html|Braintree Client Docs}
+**/
+
+/**
+ * Braintree paypal interface
+ * @external "braintree.PayPal"
+ * @see {@link https://braintree.github.io/braintree-web/current/PayPal.html|Braintree Paypal Docs}
+**/
+
+/**
+ * Braintree dataCollector interface
+ * @external "braintree.DataCollector"
+ * @see {@link https://braintree.github.io/braintree-web/current/DataCollector.html|Braintree DataCollector Docs}
+**/
+
+/**
+ * jQuery.Deferred interface
+ *
+ * We use this for our promises because ES6 promises are non standard, and because jquery 1/2
+ * promises do not play nicely with them.
+ * @external "jQuery.Deferred"
+ * @see {@link https://api.jquery.com/category/deferred-object/|jQuery Deferred Documentation}
+**/
+
+/**
+ * Represents a wrapper around the braintree js library.
+ *
+ * This class is responsible for fetching tokens from a solidus store and using them
+ * to manage a braintree client. It takes a number of options as capabilities for the client
+ * depending on if you want to use use the data collector or paypal.
+ *
+ * We use this class mostly to hide the token operations for users.
+ *
+ * After creating the class, a call should be made to initialize before using it.
+ * @see initialize
+ *
+ * @constructor
+ * @param {Object} config Initalization options for the client
+ * @param {Boolean} config.useDataCollector Use data collector capabilities for the braintree client
+ * @param {Boolean} config.usePapyal Use Paypal capabilities for the braintree client
+ * @param {requestCallback} config.readyCallback A callback to be invoked when the client is ready to go.
+ * @param {Number} config.paymentMethodId A number indicating a specific payment method to be preferrred.
+ *
+**/
 SolidusPaypalBraintree.Client = function(config) {
   this.paymentMethodId = config.paymentMethodId;
   this.readyCallback = config.readyCallback;
@@ -9,6 +56,10 @@ SolidusPaypalBraintree.Client = function(config) {
   this._paypalInstance = null;
 };
 
+/**
+ * Fetches a client token from the backend and initializes the braintree client.
+ * @returns {external:"jQuery.Deferred"} Promise to be invoked after initialization is complete
+**/
 SolidusPaypalBraintree.Client.prototype.initialize = function() {
   var initializationPromise = this._fetchToken().
     then(this._createBraintreeInstance.bind(this))
@@ -24,14 +75,27 @@ SolidusPaypalBraintree.Client.prototype.initialize = function() {
   return initializationPromise.then(this._invokeReadyCallback.bind(this));
 }
 
+/**
+ * Returns the braintree client instance
+ * @returns {external:"braintree.Client"} The braintree client that was initialized by this class
+**/
 SolidusPaypalBraintree.Client.prototype.getBraintreeInstance = function() {
   return this._braintreeInstance;
 }
+
+/**
+ * Returns the braintree paypal instance
+ * @returns {external:"braintree.PayPal"} The braintree paypal that was initialized by this class
+**/
 
 SolidusPaypalBraintree.Client.prototype.getPaypalInstance = function() {
   return this._paypalInstance;
 }
 
+/**
+ * Returns the braintree dataCollector instance
+ * @returns {external:"braintree.DataCollector"} The braintree dataCollector that was initialized by this class
+**/
 SolidusPaypalBraintree.Client.prototype.getDataCollectorInstance = function() {
   return this._dataCollectorInstance;
 }
@@ -94,6 +158,14 @@ SolidusPaypalBraintree.Client.prototype._createPaypal = function() {
   }.bind(this));
 }
 
+/**
+ * Returns the braintree dataCollector instance
+ *
+ * @param {external:"braintree.Client"} braintreeClient the braintree instance used for applepay
+ * @param {String} merchantId The merchant ID received when the merchant enrolled in Apple Pay
+ * @param {requestCallback} readyCallback The function to invoke once applePay is ready.
+**/
+
 SolidusPaypalBraintree.Client.prototype.setupApplePay = function(braintreeClient, merchantId, readyCallback) {
   if(window.ApplePaySession && location.protocol == "https:") {
     var promise = ApplePaySession.canMakePaymentsWithActiveCard(merchantId);
@@ -113,15 +185,17 @@ SolidusPaypalBraintree.Client.prototype.setupApplePay = function(braintreeClient
   };
 }
 
-/* Initializes and begins the ApplePay session
+/**
+ * Initializes and begins the ApplePay session
  *
- * @param config Configuration settings for the session
- * @param config.applePayInstance {object} The instance returned from applePay.create
- * @param config.storeName {String} The name of the store
- * @param config.paymentRequest {object} The payment request to submit
- * @param config.currentUserEmail {String|undefined} The active user's email
- * @param config.paymentMethodId {Integer} The SolidusPaypalBraintree::Gateway id
- */
+ * @param {Object} config Configuration settings for the session
+ * @param {Object} config.applePayInstance The instance returned from applePay.create
+ * @param {String} config.storeName The name of the store
+ * @param {Object} config.paymentRequest The payment request to submit
+ * @param {String} [config.currentUserEmail] The active user's email
+ * @param {Integer} config.paymentMethodId The SolidusPaypalBraintree::Gateway Id from the backend
+**/
+
 SolidusPaypalBraintree.Client.prototype.initializeApplePaySession = function(config, sessionCallback) {
   var requiredFields = ['postalAddress', 'phone'];
 
