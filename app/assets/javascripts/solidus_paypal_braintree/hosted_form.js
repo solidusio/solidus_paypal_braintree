@@ -5,10 +5,11 @@ SolidusPaypalBraintree.HostedForm = function(paymentMethodId) {
 
 SolidusPaypalBraintree.HostedForm.prototype.initialize = function() {
   this.client = SolidusPaypalBraintree.createClient({paymentMethodId: this.paymentMethodId});
-  return this.client.initialize();
+  return this.client.initialize().
+    then(this._createHostedFields.bind(this));
 }
 
-SolidusPaypalBraintree.HostedForm.prototype.createHostedFields = function () {
+SolidusPaypalBraintree.HostedForm.prototype._createHostedFields = function () {
   if (!this.client) {
     throw new Error("Client not initialized, please call initialize first!");
   }
