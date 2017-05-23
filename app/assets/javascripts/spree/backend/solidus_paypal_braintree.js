@@ -58,7 +58,6 @@ $(function() {
       braintreeForm = new SolidusPaypalBraintree.createHostedForm(id);
       braintreeForm.initialize().
         then(setHostedFieldsInstance).
-        then(braintreeForm.createHostedFields.bind(braintreeForm)).
         then(addFormHook(braintreeForm, onError)).
         fail(onError);
     }

@@ -71,9 +71,7 @@ $(function() {
         addFormHook(formObject, field);
       }
 
-      return braintreeForm.initialize().
-        then(braintreeForm.createHostedFields.bind(braintreeForm)).
-        then(formInitializationSuccess, braintreeError)
+      return braintreeForm.initialize().then(formInitializationSuccess, braintreeError);
     });
 
     $.when.apply($, fieldPromises).done(enableSubmit);
