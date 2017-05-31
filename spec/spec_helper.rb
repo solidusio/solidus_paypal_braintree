@@ -66,6 +66,10 @@ end
 require 'braintree'
 
 Braintree::Configuration.logger = Rails.logger
+Braintree::Configuration.environment = 'sandbox'
+Braintree::Configuration.merchant_id = 'c3tdcv4w39jyh2wf'
+Braintree::Configuration.public_key  = '3kryhpdxmnrffpwz'
+Braintree::Configuration.private_key = '2354de947ac480acf3c6ee95a2cae25e'
 
 module BraintreeHelpers
   def new_gateway(opts = {})
