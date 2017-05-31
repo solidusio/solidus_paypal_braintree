@@ -38,7 +38,7 @@ describe 'entering credit card details', type: :feature, js: true do
   context "with valid credit card data", vcr: { cassette_name: 'checkout/valid_credit_card' } do
     include_context "checkout setup"
 
-    it "checks out successfully" do
+    before do
       within_frame("braintree-hosted-field-number") do
         fill_in("credit-card-number", with: "4111111111111111")
       end
@@ -48,13 +48,19 @@ describe 'entering credit card details', type: :feature, js: true do
       within_frame("braintree-hosted-field-cvv") do
         fill_in("cvv", with: "123")
       end
-
       click_button("Save and Continue")
       within("#order_details") do
         expect(page).to have_content("CONFIRM")
       end
       click_button("Place Order")
+    end
+
+    it "checks out successfully" do
       expect(page).to have_content("Your order has been processed successfully")
+    end
+
+    it "sets the payment type of source to CreditCard" do
+      expect(SolidusPaypalBraintree::Source.last.payment_type).to eq('CreditCard')
     end
   end
 
