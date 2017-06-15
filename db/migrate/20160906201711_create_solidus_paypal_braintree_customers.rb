@@ -1,4 +1,4 @@
-class CreateSolidusPaypalBraintreeCustomers < ActiveRecord::Migration
+class CreateSolidusPaypalBraintreeCustomers < SolidusSupport::Migration[4.2]
   def change
     create_table :solidus_paypal_braintree_customers do |t|
       t.references :user
