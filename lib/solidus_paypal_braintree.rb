@@ -1,4 +1,5 @@
 require 'solidus_core'
+require 'solidus_support'
 require 'solidus_paypal_braintree/engine'
 require 'solidus_paypal_braintree/country_mapper'
 

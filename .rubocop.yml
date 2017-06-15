@@ -214,6 +214,7 @@ Metrics/BlockNesting:
 
 Metrics/BlockLength:
   Exclude:
+    - 'solidus_paypal_braintree.gemspec'
     - 'spec/**/*.rb'
 
 Metrics/ClassLength:

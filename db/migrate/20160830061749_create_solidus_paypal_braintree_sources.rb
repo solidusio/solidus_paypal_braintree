@@ -1,4 +1,4 @@
-class CreateSolidusPaypalBraintreeSources < ActiveRecord::Migration
+class CreateSolidusPaypalBraintreeSources < SolidusSupport::Migration[4.2]
   def change
     create_table :solidus_paypal_braintree_sources do |t|
       t.string :nonce
