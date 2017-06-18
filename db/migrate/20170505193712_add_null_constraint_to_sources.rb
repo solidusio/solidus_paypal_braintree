@@ -1,4 +1,4 @@
-class AddNullConstraintToSources < ActiveRecord::Migration
+class AddNullConstraintToSources < SolidusSupport::Migration[4.2]
   def up
     payments = Spree::Payment.arel_table
     sources = SolidusPaypalBraintree::Source.arel_table

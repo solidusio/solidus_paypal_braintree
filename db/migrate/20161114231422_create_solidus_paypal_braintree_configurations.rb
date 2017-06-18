@@ -1,4 +1,4 @@
-class CreateSolidusPaypalBraintreeConfigurations < ActiveRecord::Migration
+class CreateSolidusPaypalBraintreeConfigurations < SolidusSupport::Migration[4.2]
   def change
     create_table :solidus_paypal_braintree_configurations do |t|
       t.boolean :paypal,    null: false, default: false
