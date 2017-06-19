@@ -31,7 +31,7 @@ http_interactions:
       Accept:
       - application/xml
       User-Agent:
-      - Braintree Ruby Gem 2.74.0
+      - Braintree Ruby Gem 2.76.0
       X-Apiversion:
       - '4'
       Authorization:
@@ -44,7 +44,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Fri, 28 Apr 2017 20:33:08 GMT
+      - Tue, 20 Jun 2017 02:49:13 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
@@ -65,51 +65,19 @@ http_interactions:
       Content-Encoding:
       - gzip
       Etag:
-      - W/"d86e90e96f2176f6340b21dfefd393c2"
+      - W/"79085b8b3ad3d3abf38573a7846f32d5"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - 7d1bc2ae-cede-4653-8018-b9861f2065e1
+      - 3ce5d6bb-4861-46a5-ad71-782bca7e43a7
       X-Runtime:
-      - '0.813205'
+      - '0.450200'
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        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
+        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
     http_version: 
-  recorded_at: Fri, 28 Apr 2017 20:33:08 GMT
+  recorded_at: Tue, 20 Jun 2017 02:49:13 GMT
 recorded_with: VCR 3.0.3
