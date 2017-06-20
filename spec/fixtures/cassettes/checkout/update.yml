@@ -8,7 +8,7 @@ http_interactions:
       string: |
         <?xml version="1.0" encoding="UTF-8"?>
         <customer>
-          <payment-method-nonce>fake-paypal-future-nonce</payment-method-nonce>
+          <payment-method-nonce>fake-paypal-billing-agreement-nonce</payment-method-nonce>
         </customer>
     headers:
       Accept-Encoding:
@@ -16,7 +16,7 @@ http_interactions:
       Accept:
       - application/xml
       User-Agent:
-      - Braintree Ruby Gem 2.72.0
+      - Braintree Ruby Gem 2.76.0
       X-Apiversion:
       - '4'
       Authorization:
@@ -29,7 +29,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Fri, 03 Feb 2017 22:32:31 GMT
+      - Mon, 19 Jun 2017 23:22:58 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
@@ -50,13 +50,13 @@ http_interactions:
       Content-Encoding:
       - gzip
       Etag:
-      - W/"756227c2770005f5570d050f53efc0a0"
+      - W/"29f06d587c0191f395537cb729e3831e"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - f6593d10-f361-4f36-81ec-554c784754de
+      - 35f80422-4505-4c0d-b162-bc7c53097437
       X-Runtime:
-      - '0.854604'
+      - '0.476372'
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
