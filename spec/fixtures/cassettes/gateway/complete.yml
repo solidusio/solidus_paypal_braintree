@@ -29,7 +29,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Tue, 20 Jun 2017 02:48:58 GMT
+      - Wed, 21 Jun 2017 00:04:09 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
@@ -50,21 +50,40 @@ http_interactions:
       Content-Encoding:
       - gzip
       Etag:
-      - W/"db36c2475fbbc14d190210f394647bba"
+      - W/"031be56b25da646cc71aa891825f34d2"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - e94345b9-c632-47da-b3ab-bc5aba393a16
+      - ef582900-7f8f-4ee5-9117-a3ca54ba098b
       X-Runtime:
-      - '0.331578'
+      - '0.389438'
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        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
+        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
+        AwAA//8DAG/6ESQ7DAAA
     http_version: 
-  recorded_at: Tue, 20 Jun 2017 02:48:58 GMT
+  recorded_at: Wed, 21 Jun 2017 00:04:09 GMT
 - request:
     method: post
     uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/transactions
@@ -80,7 +99,7 @@ http_interactions:
             <store-in-vault-on-success type="boolean">true</store-in-vault-on-success>
             <submit-for-settlement type="boolean">true</submit-for-settlement>
           </options>
-          <payment-method-token>2x4hcj</payment-method-token>
+          <payment-method-token>g2y95t</payment-method-token>
           <shipping>
             <first-name>John</first-name>
             <last-name>Doe</last-name>
@@ -90,7 +109,7 @@ http_interactions:
             <region>AL</region>
             <country-code-alpha2>US</country-code-alpha2>
           </shipping>
-          <customer-id>102124166</customer-id>
+          <customer-id>225876564</customer-id>
           <type>sale</type>
         </transaction>
     headers:
@@ -112,7 +131,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Tue, 20 Jun 2017 02:48:59 GMT
+      - Wed, 21 Jun 2017 00:04:10 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
@@ -133,19 +152,52 @@ http_interactions:
       Content-Encoding:
       - gzip
       Etag:
-      - W/"32997399a329767d2b9d5a9f4ae3486a"
+      - W/"9974c15eecf60a9b47ae4a46a83d1d14"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - fce166f7-4f14-4e03-a3a2-505d9995ad28
+      - 0813ec57-e7b1-49b8-be65-fc382f358ddf
       X-Runtime:
-      - '0.512981'
+      - '0.432845'
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        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
+        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
     http_version: 
-  recorded_at: Tue, 20 Jun 2017 02:49:00 GMT
+  recorded_at: Wed, 21 Jun 2017 00:04:10 GMT
 recorded_with: VCR 3.0.3

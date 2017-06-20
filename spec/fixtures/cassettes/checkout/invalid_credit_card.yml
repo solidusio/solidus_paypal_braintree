@@ -8,7 +8,7 @@ http_interactions:
       string: |
         <?xml version="1.0" encoding="UTF-8"?>
         <client-token>
-          <version>2</version>
+          <version type="integer">2</version>
         </client-token>
     headers:
       Accept-Encoding:
@@ -29,7 +29,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Tue, 20 Jun 2017 02:48:27 GMT
+      - Wed, 21 Jun 2017 00:04:39 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
@@ -50,19 +50,46 @@ http_interactions:
       Content-Encoding:
       - gzip
       Etag:
-      - W/"66431de82475f1fb007aaf6e543bad0d"
+      - W/"a5ee2cca0faef8bd1b768b10d0439b2c"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - eee558ac-737c-4bb2-ab56-64731148cd22
+      - 9d073594-cbfe-4941-bfca-a17bcf9366c8
       X-Runtime:
-      - '0.263649'
+      - '0.143862'
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        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
+        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
     http_version: 
-  recorded_at: Tue, 20 Jun 2017 02:48:27 GMT
+  recorded_at: Wed, 21 Jun 2017 00:04:39 GMT
 recorded_with: VCR 3.0.3
