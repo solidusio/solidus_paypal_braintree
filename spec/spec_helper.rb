@@ -54,6 +54,8 @@ Capybara.register_driver :chrome do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome)
 end
 
+require 'capybara-screenshot/rspec'
+
 VCR.configure do |c|
   c.cassette_library_dir = "spec/fixtures/cassettes"
   c.hook_into :webmock
