@@ -8,7 +8,6 @@ $(function() {
   function onError (err) {
     var msg = err.name + ": " + err.message;
     show_flash("error", msg);
-    console.error(err);
   }
 
   function showForm(id) {
