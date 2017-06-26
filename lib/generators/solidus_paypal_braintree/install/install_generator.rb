@@ -4,7 +4,7 @@ module SolidusPaypalBraintree
       class_option :auto_run_migrations, type: :boolean, default: false
 
       def add_javascripts
-        append_file 'vendor/assets/javascripts/spree/frontend/all.js', "//= require spree/frontend/solidus_paypal_braintree\n"
+        append_file 'vendor/assets/javascripts/spree/frontend/all.js', "//= require solidus_paypal_braintree/frontend\n"
         append_file 'vendor/assets/javascripts/spree/frontend/all.js', "//= require spree/frontend/paypal_button\n"
         append_file 'vendor/assets/javascripts/spree/backend/all.js', "//= require spree/backend/solidus_paypal_braintree\n"
       end
