@@ -11,7 +11,7 @@ Installation
 Add solidus_paypal_braintree to your Gemfile:
 
 ```ruby
-gem 'solidus_paypal_braintree'
+gem 'solidus_paypal_braintree', github: 'solidusio/solidus_paypal_braintree', branch: :master
 ```
 
 Bundle your dependencies and run the installation generator:
