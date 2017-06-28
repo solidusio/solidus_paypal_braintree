@@ -63,28 +63,39 @@ describe 'creating a new payment', type: :feature, js: true do
   context "with invalid credit card data" do
     include_context "checkout setup"
 
-    # Attempt to submit an empty form once
+    # Attempt to submit an invalid form once
     before(:each) do
       visit "/admin/orders/#{order.number}/payments/new"
       choose('Braintree')
       expect(page).to have_selector("#payment_method_#{braintree.id}", visible: true)
       expect(page).to have_selector("iframe#braintree-hosted-field-number")
       expect(page).to have_selector("iframe[type='number']")
+
+      within_frame("braintree-hosted-field-number") do
+        fill_in("credit-card-number", with: "1111111111111111")
+      end
+      within_frame("braintree-hosted-field-expirationDate") do
+        fill_in("expiration", with: "02/2020")
+      end
+      within_frame("braintree-hosted-field-cvv") do
+        fill_in("cvv", with: "123")
+      end
+
       click_button "Update"
-      expect(page).to have_text "BraintreeError: All fields are empty. Cannot tokenize empty card fields."
+      expect(page).to have_text "BraintreeError: Some payment input fields are invalid. Cannot tokenize invalid card fields."
     end
 
     # Same error should be produced when submitting an empty form again
-    context "user tries to resubmit an empty form", vcr: { cassette_name: "admin/invalid_credit_card" } do
-      it "displays an alert with a meaningful error message" do
+    context "user tries to resubmit another invalid form", vcr: { cassette_name: "admin/invalid_credit_card" } do
+      it "displays a meaningful error message" do
         click_button "Update"
-        expect(page).to have_text "BraintreeError: All fields are empty. Cannot tokenize empty card fields."
+        expect(page).to have_text "BraintreeError: Some payment input fields are invalid. Cannot tokenize invalid card fields."
       end
     end
 
     # User should be able to checkout after submit fails once
     context "user enters valid data", vcr: { cassette_name: "admin/resubmit_credit_card" } do
-      it "allows them to resubmit and complete the purchase" do
+      it "creates the payment successfully" do
         within_frame("braintree-hosted-field-number") do
           fill_in("credit-card-number", with: "4111111111111111")
         end
