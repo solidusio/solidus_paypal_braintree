@@ -2,24 +2,27 @@
 Placeholder manifest file.
 the installer will append this file to the app vendored assets here: 'vendor/assets/stylesheets/spree/backend/all.css'
 */
-@import "spree/backend/globals/functions";
-@import 'spree/backend/globals/deprecation';
-@import "spree/backend/globals/variables_override";
-@import "spree/backend/globals/variables";
-@import "spree/backend/bootstrap_custom";
+
+// Set Bootstrap variables if they're not already defined
+// e.g if we're on Solidus < v1.4
+$input-border-color: #cee1f4 !default;
+$border-radius: 3px !default;
+$input-color: #5498DA !default;
+$brand-danger: #C60F13 !default;
+$brand-success: #9FC820 !default;
 
 .braintree-hosted-fields .input {
-  border: 1px solid $color-txt-brd;
+  border: 1px solid $input-border-color;
   border-radius: $border-radius;
-  color: $color-txt-text;
+  color: $input-color;
   height: 30px;
   padding: 7px 10px;
 
   &.braintree-hosted-fields-invalid {
-    border-color: $color-error;
+    border-color: $brand-danger;
   }
 
   &.braintree-hosted-fields-valid {
-    border-color: $color-success;
+    border-color: $brand-success;
   }
 }
