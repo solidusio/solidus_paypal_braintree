@@ -1,4 +1,4 @@
-// require solidus_paypal_braintree/paypal_button
+//= require solidus_paypal_braintree/paypal_button
 
 $(document).ready(function() {
   if (document.getElementById("empty-cart")) {
