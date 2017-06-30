@@ -5,6 +5,7 @@ shared_context "checkout setup" do
   let(:braintree) { new_gateway(active: true) }
   let!(:gateway) { create :payment_method }
   let!(:order) { create(:completed_order_with_totals, number: 'R9999999') }
+  let(:pending_case_insensitive) { /pending/i }
 
   before(:each) do
     braintree.save!
@@ -50,7 +51,7 @@ describe 'creating a new payment', type: :feature, js: true do
 
       within('table#payments .payment') do
         expect(page).to have_content('Braintree')
-        expect(page).to have_content('pending')
+        expect(page).to have_content(pending_case_insensitive)
       end
 
       click_icon(:capture)
@@ -109,7 +110,7 @@ describe 'creating a new payment', type: :feature, js: true do
 
         within('table#payments .payment') do
           expect(page).to have_content('Braintree')
-          expect(page).to have_content('pending')
+          expect(page).to have_content(pending_case_insensitive)
         end
 
         click_icon(:capture)
