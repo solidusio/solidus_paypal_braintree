@@ -49,7 +49,7 @@ describe 'creating a new payment', type: :feature, js: true do
 
       click_button("Update")
 
-      within('table#payments .payment') do
+      within('table#payments') do
         expect(page).to have_content('Braintree')
         expect(page).to have_content(pending_case_insensitive)
       end
@@ -108,7 +108,7 @@ describe 'creating a new payment', type: :feature, js: true do
         end
         click_button("Update")
 
-        within('table#payments .payment') do
+        within('table#payments') do
           expect(page).to have_content('Braintree')
           expect(page).to have_content(pending_case_insensitive)
         end
