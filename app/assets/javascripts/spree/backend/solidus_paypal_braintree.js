@@ -44,7 +44,7 @@ $(function() {
     $hostedFields.each(function() {
       var $this = $(this),
           $radios = $("[name=card]", $this),
-          id = $this.data("id");
+          id = $this.data("payment-method-id");
 
       // If we have previous cards, init fields on change of radio button
       if ($radios.length) {

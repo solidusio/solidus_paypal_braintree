@@ -1,6 +1,8 @@
 <% id = payment_method.id %>
+<% radio_buttons_use_name = Gem::Version.new(Spree.solidus_version) < Gem::Version.new('1.3') %>
+<% radio_button_id = radio_buttons_use_name ? 'braintree' : payment_method.id %>
 
-<fieldset class="no-border-bottom braintree-hosted-fields" data-braintree-hosted-fields data-id="<%= id %>">
+<fieldset class="no-border-bottom braintree-hosted-fields" data-braintree-hosted-fields data-id="<%= radio_button_id %>" data-payment-method-id="<%= id %>">
   <div class="field" data-hook="previous_cards">
     <% if previous_cards.any? %>
       <% previous_cards.each do |card| %>
