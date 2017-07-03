@@ -34,20 +34,35 @@ to `Account -> My User` and clicking `View Authorizations` in the **API Keys,
 Tokenization Keys, Encryption Keys** section.
 
 ### Create a new payment method
-1. Visit `/admin/payment_methods/new`.
-2. Set `provider` to SolidusPaypalBraintree::Gateway
-3. Enter the three required preferences: `merchant_id`, `public_key`, `private_key`. Other optional preferences are discussed below.
-4. Click `Update` to save
+Payment methods can accept preferences either directly entered in admin, or from a static source in code. For most projects we recommend using a static source, so that sensitive account credentials are not stored in the database.
+
+1. Set static preferences in an initializer
+```ruby
+# config/initializers/spree.rb
+Spree::Config.configure do |config|
+  config.static_model_preferences.add(
+    SolidusPaypalBraintree::Gateway,
+    'braintree_credentials', {
+      environment: Rails.env.production? ? 'production' : 'sandbox',
+      merchant_id: ENV['BRAINTREE_MERCHANT_ID'],
+      public_key: ENV['BRAINTREE_PUBLIC_KEY'],
+      private_key: ENV['BRAINTREE_PRIVATE_KEY']
+    }
+  )
+end
+```
+Other optional preferences are discussed below.
+2. Visit `/admin/payment_methods/new`
+3. Set `provider` to SolidusPaypalBraintree::Gateway
+4. Click "Save"
+5. Choose `braintree_credentials` from the `Preference Source` select
+6. Click `Update` to save
 
 Alternatively, create a payment method from the Rails console with:
 ```ruby
 SolidusPaypalBraintree::Gateway.new(
   name: "Braintree",
-  preferences: {
-    public_key:  '[your public key]',
-    private_key: '[your private key]',
-    merchant_id: '[your merchant ID]'
-  }
+  preference_source: "braintree_credentials"
 ).save
 ```
 
