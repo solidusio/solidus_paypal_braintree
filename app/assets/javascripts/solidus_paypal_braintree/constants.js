@@ -1,5 +1,5 @@
 SolidusPaypalBraintree = {
-  APPLY_PAY_API_VERSION: 1,
+  APPLE_PAY_API_VERSION: 1,
 
   config: {
     paths: {
