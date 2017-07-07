@@ -89,6 +89,8 @@ Apple Pay
 ---------
 
 ### Setup
+_This section is out of date, and will be rewritten soon._
+
 Braintree has some [excellent documentation](https://developers.braintreepayments.com/guides/apple-pay/configuration/javascript/v3) on what you'll need to do to get Apple Pay up and running.
 
 In order to make everything a little simpler, this extension includes some client-side code to get you started. Specifically, it provides some wrappers to help with the initialization of an Apple Pay session. The following is a relatively bare-bones implementation:

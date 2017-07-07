@@ -33,7 +33,8 @@ module SolidusPaypalBraintree
       config.assets.precompile += [
         'solidus_paypal_braintree/checkout.js',
         'solidus_paypal_braintree/frontend.js',
-        'spree/frontend/paypal_button.js'
+        'spree/frontend/paypal_button.js',
+        'spree/frontend/apple_pay_button.js'
       ]
       paths["app/controllers"] << "lib/controllers/frontend"
       paths["app/views"] << "lib/views/frontend"

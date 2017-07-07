@@ -11,6 +11,12 @@
 **/
 
 /**
+ * Braintree paypal interface
+ * @external "braintree.ApplePay"
+ * @see {@link https://braintree.github.io/braintree-web/current/ApplePay.html|Braintree Apple Pay Docs}
+**/
+
+/**
  * Braintree dataCollector interface
  * @external "braintree.DataCollector"
  * @see {@link https://braintree.github.io/braintree-web/current/DataCollector.html|Braintree DataCollector Docs}
@@ -50,6 +56,7 @@ SolidusPaypalBraintree.Client = function(config) {
   this.readyCallback = config.readyCallback;
   this.useDataCollector = config.useDataCollector;
   this.usePaypal = config.usePaypal;
+  this.useApplepay = config.useApplepay;
 
   this._braintreeInstance = null;
   this._dataCollectorInstance = null;
@@ -72,6 +79,10 @@ SolidusPaypalBraintree.Client.prototype.initialize = function() {
     initializationPromise = initializationPromise.then(this._createPaypal.bind(this));
   }
 
+  if(this.useApplepay) {
+    initializationPromise = initializationPromise.then(this._createApplepay.bind(this));
+  }
+
   return initializationPromise.then(this._invokeReadyCallback.bind(this));
 }
 
@@ -87,9 +98,16 @@ SolidusPaypalBraintree.Client.prototype.getBraintreeInstance = function() {
  * Returns the braintree paypal instance
  * @returns {external:"braintree.PayPal"} The braintree paypal that was initialized by this class
 **/
-
 SolidusPaypalBraintree.Client.prototype.getPaypalInstance = function() {
   return this._paypalInstance;
+}
+
+/**
+ * Returns the braintree Apple Pay instance
+ * @returns {external:"braintree.ApplePay"} The Braintree Apple Pay that was initialized by this class
+**/
+SolidusPaypalBraintree.Client.prototype.getApplepayInstance = function() {
+  return this._applepayInstance;
 }
 
 /**
@@ -158,31 +176,13 @@ SolidusPaypalBraintree.Client.prototype._createPaypal = function() {
   }.bind(this));
 }
 
-/**
- * Returns the braintree dataCollector instance
- *
- * @param {external:"braintree.Client"} braintreeClient the braintree instance used for applepay
- * @param {String} merchantId The merchant ID received when the merchant enrolled in Apple Pay
- * @param {requestCallback} readyCallback The function to invoke once applePay is ready.
-**/
-
-SolidusPaypalBraintree.Client.prototype.setupApplePay = function(braintreeClient, merchantId, readyCallback) {
-  if(window.ApplePaySession && location.protocol == "https:") {
-    var promise = ApplePaySession.canMakePaymentsWithActiveCard(merchantId);
-    promise.then(function (canMakePayments) {
-      if (canMakePayments) {
-        braintree.applePay.create({
-          client: braintreeClient
-        }, function (applePayErr, applePayInstance) {
-          if (applePayErr) {
-            console.error("Error creating ApplePay:", applePayErr);
-            return;
-          }
-          readyCallback(applePayInstance);
-        });
-      }
-    });
-  };
+SolidusPaypalBraintree.Client.prototype._createApplepay = function() {
+  return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.applePay.create, [{
+    client: this._braintreeInstance
+  }]).then(function (applePayInstance) {
+    this._applepayInstance = applePayInstance;
+    return applePayInstance;
+  }.bind(this));
 }
 
 /**
@@ -196,6 +196,7 @@ SolidusPaypalBraintree.Client.prototype.setupApplePay = function(braintreeClient
  * @param {Integer} config.paymentMethodId The SolidusPaypalBraintree::Gateway Id from the backend
 **/
 
+// TODO: Move this to apple_pay_button.js
 SolidusPaypalBraintree.Client.prototype.initializeApplePaySession = function(config, sessionCallback) {
   var requiredFields = ['postalAddress', 'phone'];
 
@@ -233,7 +234,7 @@ SolidusPaypalBraintree.Client.prototype.initializeApplePaySession = function(con
       var contact = event.payment.shippingContact;
 
       Spree.ajax({
-        data: this._buildTransaction(payload, config, contact),
+        data: SolidusPaypalBraintree.Client.buildTransaction(payload, config, contact),
         dataType: 'json',
         type: 'POST',
         url: SolidusPaypalBraintree.config.paths.transactions,
@@ -262,20 +263,20 @@ SolidusPaypalBraintree.Client.prototype.initializeApplePaySession = function(con
   session.begin();
 },
 
-SolidusPaypalBraintree.Client.prototype._buildTransaction = function(payload, config, shippingContact) {
+SolidusPaypalBraintree.Client.buildTransaction = function(payload, config, shippingContact) {
   return {
     transaction: {
       nonce: payload.nonce,
       phone: shippingContact.phoneNumber,
       email: config.currentUserEmail || shippingContact.emailAddress,
       payment_type: payload.type,
-      address_attributes: this._buildAddress(shippingContact)
+      address_attributes: this.buildAddress(shippingContact)
     },
     payment_method_id: config.paymentMethodId
   };
 },
 
-SolidusPaypalBraintree.Client.prototype._buildAddress = function(shippingContact) {
+SolidusPaypalBraintree.Client.buildAddress = function(shippingContact) {
   var addressHash = {
     country_name:   shippingContact.country,
     country_code:   shippingContact.countryCode,
