@@ -25,7 +25,7 @@ SolidusPaypalBraintree.ApplepayButton = function(element, applepayOptions) {
 SolidusPaypalBraintree.ApplepayButton.prototype.initialize = function() {
   this._client = new SolidusPaypalBraintree.createClient(
     {
-      useDataCollector: false, // TODO: I'm not sure whether this is a Paypal-only thing or not.
+      useDataCollector: false,
       useApplepay: true,
       paymentMethodId: this._applepayOptions.paymentMethodId
     }
@@ -40,41 +40,8 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initializeCallback = function() 
   this._element.removeAttribute('disabled');
   this._element.style.display="block";
   this._element.addEventListener('click', function(event) {
-    this.beginApplepayCheckout();
+    this.initializeApplePaySession();
   }.bind(this), false);
-};
-
-SolidusPaypalBraintree.ApplepayButton.prototype.beginApplepayCheckout = function() {
-
-  // countryCode
-  // currencyCode
-  // merchantCapabilities
-  // supportedNetworks
-  // ... are added by the Braintree gateway, but can be overridden
-  // See https://developer.apple.com/documentation/applepayjs/applepaypaymentrequest
-  var paymentRequest = this._applePayInstance.createPaymentRequest({
-    total: {
-      label: this._applepayOptions.storeName,
-      amount: this._applepayOptions.amount
-    },
-    shippingContact: this._applepayOptions.shippingContact
-    // lineItems
-    // billingContact
-    // shippingContact
-    // applicationData
-  });
-
-  // TODO: rename currentUserEmail, as we're using the order email, which might be for a guest checkout without a current user
-  this.initializeApplePaySession({
-    applePayInstance: this._applePayInstance,
-    storeName: this._applepayOptions.storeName,
-    currentUserEmail: this._applepayOptions.orderEmail,
-    paymentMethodId: this._paymentMethodId,
-    paymentRequest: paymentRequest
-  }, function(session) {
-    // TODO: Apple Pay allows changing the shipping contact info and shipping method. If the user does this, we should update the order.
-    // Add in your logic for onshippingcontactselected and onshippingmethodselected.
-  });
 };
 
 /**
@@ -87,19 +54,47 @@ SolidusPaypalBraintree.ApplepayButton.prototype.beginApplepayCheckout = function
  * @param {String} [config.currentUserEmail] The active user's email
  * @param {Integer} config.paymentMethodId The SolidusPaypalBraintree::Gateway Id from the backend
 **/
-SolidusPaypalBraintree.ApplepayButton.prototype.initializeApplePaySession = function(config, sessionCallback) {
+SolidusPaypalBraintree.ApplepayButton.prototype.initializeApplePaySession = function() {
+  // TODO: rename currentUserEmail, as we're using the order email, which might be for a guest checkout without a current user
+  var config = {
+    storeName: this._applepayOptions.storeName,
+    currentUserEmail: this._applepayOptions.orderEmail,
+    paymentMethodId: this._paymentMethodId,
+  };
+
+  // countryCode
+  // currencyCode
+  // merchantCapabilities
+  // supportedNetworks
+  // ... are added by the Braintree gateway, but can be overridden
+  // See https://developer.apple.com/documentation/applepayjs/applepaypaymentrequest
+  var paymentRequestHash = {
+    total: {
+      label: this._applepayOptions.storeName,
+      amount: this._applepayOptions.amount
+    },
+    shippingContact: this._applepayOptions.shippingContact
+    // lineItems
+    // billingContact
+    // shippingContact
+    // applicationData
+  };
+
   var requiredFields = ['postalAddress', 'phone'];
 
   if (!config.currentUserEmail) {
     requiredFields.push('email');
   }
 
-  config.paymentRequest['requiredShippingContactFields'] = requiredFields
-  var paymentRequest = config.applePayInstance.createPaymentRequest(config.paymentRequest);
+  paymentRequestHash['requiredShippingContactFields'] = requiredFields
+
+  var applePayInstance = this._applePayInstance;
+  var paymentRequest = applePayInstance.createPaymentRequest(paymentRequestHash);
 
   var session = new ApplePaySession(SolidusPaypalBraintree.APPLE_PAY_API_VERSION, paymentRequest);
+
   session.onvalidatemerchant = function (event) {
-    config.applePayInstance.performValidation({
+    applePayInstance.performValidation({
       validationURL: event.validationURL,
       displayName: config.storeName,
     }, function (validationErr, merchantSession) {
@@ -113,7 +108,7 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initializeApplePaySession = func
   };
 
   session.onpaymentauthorized = function (event) {
-    config.applePayInstance.tokenize({
+    applePayInstance.tokenize({
       token: event.payment.token
     }, function (tokenizeErr, payload) {
       if (tokenizeErr) {
@@ -148,8 +143,6 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initializeApplePaySession = func
 
     });
   };
-
-  sessionCallback(session);
 
   session.begin();
 },
