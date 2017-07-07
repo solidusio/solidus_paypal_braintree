@@ -65,7 +65,7 @@ SolidusPaypalBraintree.ApplepayButton.prototype.beginApplepayCheckout = function
   });
 
   // TODO: rename currentUserEmail, as we're using the order email, which might be for a guest checkout without a current user
-  this._client.initializeApplePaySession({
+  this.initializeApplePaySession({
     applePayInstance: this._applePayInstance,
     storeName: this._applepayOptions.storeName,
     currentUserEmail: this._applepayOptions.orderEmail,
@@ -78,22 +78,100 @@ SolidusPaypalBraintree.ApplepayButton.prototype.beginApplepayCheckout = function
 };
 
 /**
+ * Initializes and begins the ApplePay session
+ *
+ * @param {Object} config Configuration settings for the session
+ * @param {Object} config.applePayInstance The instance returned from applePay.create
+ * @param {String} config.storeName The name of the store
+ * @param {Object} config.paymentRequest The payment request to submit
+ * @param {String} [config.currentUserEmail] The active user's email
+ * @param {Integer} config.paymentMethodId The SolidusPaypalBraintree::Gateway Id from the backend
+**/
+SolidusPaypalBraintree.ApplepayButton.prototype.initializeApplePaySession = function(config, sessionCallback) {
+  var requiredFields = ['postalAddress', 'phone'];
+
+  if (!config.currentUserEmail) {
+    requiredFields.push('email');
+  }
+
+  config.paymentRequest['requiredShippingContactFields'] = requiredFields
+  var paymentRequest = config.applePayInstance.createPaymentRequest(config.paymentRequest);
+
+  var session = new ApplePaySession(SolidusPaypalBraintree.APPLE_PAY_API_VERSION, paymentRequest);
+  session.onvalidatemerchant = function (event) {
+    config.applePayInstance.performValidation({
+      validationURL: event.validationURL,
+      displayName: config.storeName,
+    }, function (validationErr, merchantSession) {
+      if (validationErr) {
+        console.error('Error validating Apple Pay:', validationErr);
+        session.abort();
+        return;
+      };
+      session.completeMerchantValidation(merchantSession);
+    });
+  };
+
+  session.onpaymentauthorized = function (event) {
+    config.applePayInstance.tokenize({
+      token: event.payment.token
+    }, function (tokenizeErr, payload) {
+      if (tokenizeErr) {
+        console.error('Error tokenizing Apple Pay:', tokenizeErr);
+        session.completePayment(ApplePaySession.STATUS_FAILURE);
+      }
+
+      var contact = event.payment.shippingContact;
+      var params = SolidusPaypalBraintree.ApplepayButton.transactionParams(payload, config, contact);
+
+      Spree.ajax({
+        data: params,
+        dataType: 'json',
+        type: 'POST',
+        url: SolidusPaypalBraintree.config.paths.transactions,
+        success: function(response) {
+          session.completePayment(ApplePaySession.STATUS_SUCCESS);
+          window.location.replace(response.redirectUrl);
+        },
+        error: function(xhr) {
+          if (xhr.status === 422) {
+            var errors = xhr.responseJSON.errors
+
+            if (errors && errors["Address"]) {
+              session.completePayment(ApplePaySession.STATUS_INVALID_SHIPPING_POSTAL_ADDRESS);
+            } else {
+              session.completePayment(ApplePaySession.STATUS_FAILURE);
+            }
+          }
+        }
+      });
+
+    });
+  };
+
+  sessionCallback(session);
+
+  session.begin();
+},
+
+
+/**
  * Builds the transaction parameters to submit to Solidus for the given
  * payload returned by Braintree
  *
  * @param {object} payload - The payload returned by Braintree after tokenization
  */
-SolidusPaypalBraintree.ApplepayButton.prototype._transactionParams = function(payload) {
+SolidusPaypalBraintree.ApplepayButton.transactionParams = function(payload, config, shippingContact) {
   return {
-    "payment_method_id" : this._paymentMethodId,
-    "transaction" : {
-      "email" : payload.details.email,
-      "phone" : payload.details.phone,
-      "nonce" : payload.nonce,
-      "payment_type" : payload.type,
-      "address_attributes" : this._addressParams(payload)
+    payment_method_id: config.paymentMethodId,
+    transaction: {
+      email: config.currentUserEmail || shippingContact.emailAddress,
+      nonce: payload.nonce,
+      payment_type: payload.type,
+      phone: shippingContact.phoneNumber,
+      address_attributes: this.addressParams(shippingContact)
     }
-  }
+  };
 };
 
 /**
@@ -102,24 +180,21 @@ SolidusPaypalBraintree.ApplepayButton.prototype._transactionParams = function(pa
  *
  * @param {object} payload - The payload returned by Braintree after tokenization
  */
-SolidusPaypalBraintree.ApplepayButton.prototype._addressParams = function(payload) {
-  if (payload.details.shippingAddress.recipientName) {
-    var first_name = payload.details.shippingAddress.recipientName.split(" ")[0];
-    var last_name = payload.details.shippingAddress.recipientName.split(" ")[1];
-  }
-  if (first_name == null || last_name == null) {
-    var first_name = payload.details.firstName;
-    var last_name = payload.details.lastName;
+SolidusPaypalBraintree.ApplepayButton.addressParams = function(shippingContact) {
+  var addressHash = {
+    country_name:   shippingContact.country,
+    country_code:   shippingContact.countryCode,
+    first_name:     shippingContact.givenName,
+    last_name:      shippingContact.familyName,
+    state_code:     shippingContact.administrativeArea,
+    city:           shippingContact.locality,
+    zip:            shippingContact.postalCode,
+    address_line_1: shippingContact.addressLines[0]
+  };
+
+  if(shippingContact.addressLines.length > 1) {
+    addressHash.address_line_2 = shippingContact.addressLines[1];
   }
 
-  return {
-    "first_name" : first_name,
-    "last_name" : last_name,
-    "address_line_1" : payload.details.shippingAddress.line1,
-    "address_line_2" : payload.details.shippingAddress.line2,
-    "city" : payload.details.shippingAddress.city,
-    "state_code" : payload.details.shippingAddress.state,
-    "zip" : payload.details.shippingAddress.postalCode,
-    "country_code" : payload.details.shippingAddress.countryCode
-  }
+  return addressHash;
 };
