@@ -32,10 +32,11 @@ module SolidusPaypalBraintree
     preference(:merchant_currency_map, :hash, default: {})
     preference(:paypal_payee_email_map, :hash, default: {})
 
-    def method_type
+    def partial_name
       "paypal_braintree"
     end
-
+    alias_method :method_type, :partial_name
+    
     def payment_source_class
       Source
     end
