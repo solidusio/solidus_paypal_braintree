@@ -23,7 +23,7 @@ http_interactions:
       message: Not Found
     headers:
       Date:
-      - Wed, 21 Jun 2017 00:19:15 GMT
+      - Mon, 10 Jul 2017 01:41:57 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
@@ -44,15 +44,15 @@ http_interactions:
       Cache-Control:
       - no-cache
       X-Request-Id:
-      - 30003b81-e565-44a6-bd1c-56fb428025a4
+      - 03047427-5bfb-4b01-abae-7f1070daf0d8
       X-Runtime:
-      - '0.045965'
+      - '0.026020'
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        H4sIAIO7SVkAAwAAAP//AwAAAAAAAAAAAA==
+        H4sIAGXbYlkAAwAAAP//AwAAAAAAAAAAAA==
     http_version: 
-  recorded_at: Wed, 21 Jun 2017 00:19:15 GMT
+  recorded_at: Mon, 10 Jul 2017 01:41:57 GMT
 recorded_with: VCR 3.0.3
