@@ -51,10 +51,10 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initializeCallback = function() 
  * Initializes and begins the ApplePay session
 **/
 SolidusPaypalBraintree.ApplepayButton.prototype.initializeApplePaySession = function() {
-  var paymentMethodId = this._paymentMethodId;
   var applePayInstance = this._applePayInstance;
   var paymentRequest = applePayInstance.createPaymentRequest(this._paymentRequestHash());
   var session = new ApplePaySession(SolidusPaypalBraintree.APPLE_PAY_API_VERSION, paymentRequest);
+  var applePayButton = this;
 
   session.onvalidatemerchant = function (event) {
     var storeName = paymentRequest.total.label;
@@ -80,11 +80,8 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initializeApplePaySession = func
         session.completePayment(ApplePaySession.STATUS_FAILURE);
       }
 
-      var contact = event.payment.shippingContact;
-      var params = SolidusPaypalBraintree.ApplepayButton.transactionParams(payload, paymentMethodId, contact);
-
       Spree.ajax({
-        data: params,
+        data: applePayButton.transactionParams(payload, event.payment.shippingContact),
         dataType: 'json',
         type: 'POST',
         url: SolidusPaypalBraintree.config.paths.transactions,
@@ -134,9 +131,9 @@ SolidusPaypalBraintree.ApplepayButton.prototype._paymentRequestHash = function()
  *
  * @param {object} payload - The payload returned by Braintree after tokenization
  */
-SolidusPaypalBraintree.ApplepayButton.transactionParams = function(payload, paymentMethodId, shippingContact) {
+SolidusPaypalBraintree.ApplepayButton.prototype.transactionParams = function(payload, shippingContact) {
   return {
-    payment_method_id: paymentMethodId,
+    payment_method_id: this._applepayOptions.paymentMethodId,
     transaction: {
       email: shippingContact.emailAddress,
       nonce: payload.nonce,
@@ -153,7 +150,7 @@ SolidusPaypalBraintree.ApplepayButton.transactionParams = function(payload, paym
  *
  * @param {object} payload - The payload returned by Braintree after tokenization
  */
-SolidusPaypalBraintree.ApplepayButton.addressParams = function(shippingContact) {
+SolidusPaypalBraintree.ApplepayButton.prototype.addressParams = function(shippingContact) {
   var addressHash = {
     country_name:   shippingContact.country,
     country_code:   shippingContact.countryCode,
