@@ -43,6 +43,7 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initializeCallback = function() 
   this._element.style.display="block";
   this._element.addEventListener('click', function(event) {
     this.initializeApplePaySession();
+    event.preventDefault();
   }.bind(this), false);
 };
 
