@@ -12,7 +12,7 @@ SolidusPaypalBraintree.ApplepayButton = function(element, applepayOptions) {
   if(!this._element) {
     throw new Error("Element for the Apple Pay button must be present on the page");
   }
-}
+};
 
 /**
  * Creates the Apple Pay session using the provided options and enables the button
@@ -87,7 +87,7 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initializeApplePaySession = func
     requiredFields.push('email');
   }
 
-  paymentRequestHash['requiredShippingContactFields'] = requiredFields
+  paymentRequestHash.requiredShippingContactFields = requiredFields;
 
   var applePayInstance = this._applePayInstance;
   var paymentRequest = applePayInstance.createPaymentRequest(paymentRequestHash);
@@ -103,7 +103,7 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initializeApplePaySession = func
         console.error('Error validating Apple Pay:', validationErr);
         session.abort();
         return;
-      };
+      }
       session.completeMerchantValidation(merchantSession);
     });
   };
@@ -131,9 +131,9 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initializeApplePaySession = func
         },
         error: function(xhr) {
           if (xhr.status === 422) {
-            var errors = xhr.responseJSON.errors
+            var errors = xhr.responseJSON.errors;
 
-            if (errors && errors["Address"]) {
+            if (errors && errors.Address) {
               session.completePayment(ApplePaySession.STATUS_INVALID_SHIPPING_POSTAL_ADDRESS);
             } else {
               session.completePayment(ApplePaySession.STATUS_FAILURE);

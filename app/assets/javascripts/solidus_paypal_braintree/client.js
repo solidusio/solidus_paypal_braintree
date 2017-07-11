@@ -69,7 +69,7 @@ SolidusPaypalBraintree.Client = function(config) {
 **/
 SolidusPaypalBraintree.Client.prototype.initialize = function() {
   var initializationPromise = this._fetchToken().
-    then(this._createBraintreeInstance.bind(this))
+    then(this._createBraintreeInstance.bind(this));
 
   if(this.useDataCollector) {
     initializationPromise = initializationPromise.then(this._createDataCollector.bind(this));
@@ -84,7 +84,7 @@ SolidusPaypalBraintree.Client.prototype.initialize = function() {
   }
 
   return initializationPromise.then(this._invokeReadyCallback.bind(this));
-}
+};
 
 /**
  * Returns the braintree client instance
@@ -92,7 +92,7 @@ SolidusPaypalBraintree.Client.prototype.initialize = function() {
 **/
 SolidusPaypalBraintree.Client.prototype.getBraintreeInstance = function() {
   return this._braintreeInstance;
-}
+};
 
 /**
  * Returns the braintree paypal instance
@@ -100,7 +100,7 @@ SolidusPaypalBraintree.Client.prototype.getBraintreeInstance = function() {
 **/
 SolidusPaypalBraintree.Client.prototype.getPaypalInstance = function() {
   return this._paypalInstance;
-}
+};
 
 /**
  * Returns the braintree Apple Pay instance
@@ -108,7 +108,7 @@ SolidusPaypalBraintree.Client.prototype.getPaypalInstance = function() {
 **/
 SolidusPaypalBraintree.Client.prototype.getApplepayInstance = function() {
   return this._applepayInstance;
-}
+};
 
 /**
  * Returns the braintree dataCollector instance
@@ -116,7 +116,7 @@ SolidusPaypalBraintree.Client.prototype.getApplepayInstance = function() {
 **/
 SolidusPaypalBraintree.Client.prototype.getDataCollectorInstance = function() {
   return this._dataCollectorInstance;
-}
+};
 
 
 SolidusPaypalBraintree.Client.prototype._fetchToken = function() {
@@ -127,7 +127,7 @@ SolidusPaypalBraintree.Client.prototype._fetchToken = function() {
     error: function(xhr) {
       console.error("Error fetching braintree token");
     }
-  }
+  };
 
   if (this.paymentMethodId) {
     payload.data = {
@@ -136,7 +136,7 @@ SolidusPaypalBraintree.Client.prototype._fetchToken = function() {
   }
 
   return Spree.ajax(payload);
-}
+};
 
 SolidusPaypalBraintree.Client.prototype._createBraintreeInstance = function(tokenResponse) {
   this.paymentMethodId = tokenResponse.payment_method_id;
@@ -155,7 +155,7 @@ SolidusPaypalBraintree.Client.prototype._invokeReadyCallback = function() {
   }
 
   return this;
-}
+};
 
 SolidusPaypalBraintree.Client.prototype._createDataCollector = function() {
   return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.dataCollector.create, [{
@@ -165,7 +165,7 @@ SolidusPaypalBraintree.Client.prototype._createDataCollector = function() {
     this._dataCollectorInstance = dataCollectorInstance;
     return dataCollectorInstance;
   }.bind(this));
-}
+};
 
 SolidusPaypalBraintree.Client.prototype._createPaypal = function() {
   return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.paypal.create, [{
@@ -174,7 +174,7 @@ SolidusPaypalBraintree.Client.prototype._createPaypal = function() {
     this._paypalInstance = paypalInstance;
     return paypalInstance;
   }.bind(this));
-}
+};
 
 SolidusPaypalBraintree.Client.prototype._createApplepay = function() {
   return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.applePay.create, [{
@@ -183,4 +183,4 @@ SolidusPaypalBraintree.Client.prototype._createApplepay = function() {
     this._applepayInstance = applePayInstance;
     return applePayInstance;
   }.bind(this));
-}
+};
