@@ -40,7 +40,7 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initializeCallback = function() 
   this._applePayInstance = this._client.getApplepayInstance();
 
   this._element.removeAttribute('disabled');
-  this._element.style.display="block";
+  this._element.classList.add("visible");
   this._element.addEventListener('click', function(event) {
     this.initializeApplePaySession();
     event.preventDefault();
