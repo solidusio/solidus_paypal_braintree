@@ -23,14 +23,16 @@ SolidusPaypalBraintree.ApplepayButton = function(element, applepayOptions) {
  * See {@link https://braintree.github.io/braintree-web/3.9.0/Apple Pay.html#tokenize}
  */
 SolidusPaypalBraintree.ApplepayButton.prototype.initialize = function() {
-  this._client = new SolidusPaypalBraintree.createClient(
-    {
-      useDataCollector: false,
-      useApplepay: true,
-      paymentMethodId: this._applepayOptions.paymentMethodId
-    }
-  );
-  return this._client.initialize().then(this.initializeCallback.bind(this));
+  if (window.ApplePaySession && ApplePaySession.canMakePayments()) {
+    this._client = new SolidusPaypalBraintree.createClient(
+      {
+        useDataCollector: false,
+        useApplepay: true,
+        paymentMethodId: this._applepayOptions.paymentMethodId
+      }
+    );
+    return this._client.initialize().then(this.initializeCallback.bind(this));
+  }
 };
 
 SolidusPaypalBraintree.ApplepayButton.prototype.initializeCallback = function() {
