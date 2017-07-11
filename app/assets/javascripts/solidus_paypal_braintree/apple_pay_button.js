@@ -51,14 +51,13 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initializeCallback = function() 
  * @param {Object} config.applePayInstance The instance returned from applePay.create
  * @param {String} config.storeName The name of the store
  * @param {Object} config.paymentRequest The payment request to submit
- * @param {String} [config.currentUserEmail] The active user's email
+ * @param {String} [config.orderEmail] The order's email
  * @param {Integer} config.paymentMethodId The SolidusPaypalBraintree::Gateway Id from the backend
 **/
 SolidusPaypalBraintree.ApplepayButton.prototype.initializeApplePaySession = function() {
-  // TODO: rename currentUserEmail, as we're using the order email, which might be for a guest checkout without a current user
   var config = {
     storeName: this._applepayOptions.storeName,
-    currentUserEmail: this._applepayOptions.orderEmail,
+    orderEmail: this._applepayOptions.orderEmail,
     paymentMethodId: this._paymentMethodId,
   };
 
@@ -82,7 +81,7 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initializeApplePaySession = func
 
   var requiredFields = ['postalAddress', 'phone'];
 
-  if (!config.currentUserEmail) {
+  if (!config.orderEmail) {
     requiredFields.push('email');
   }
 
@@ -158,7 +157,7 @@ SolidusPaypalBraintree.ApplepayButton.transactionParams = function(payload, conf
   return {
     payment_method_id: config.paymentMethodId,
     transaction: {
-      email: config.currentUserEmail || shippingContact.emailAddress,
+      email: config.orderEmail || shippingContact.emailAddress,
       nonce: payload.nonce,
       payment_type: payload.type,
       phone: shippingContact.phoneNumber,
