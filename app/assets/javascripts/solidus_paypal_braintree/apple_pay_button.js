@@ -49,56 +49,18 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initializeCallback = function() 
 
 /**
  * Initializes and begins the ApplePay session
- *
- * @param {Object} config Configuration settings for the session
- * @param {Object} config.applePayInstance The instance returned from applePay.create
- * @param {String} config.storeName The name of the store
- * @param {Object} config.paymentRequest The payment request to submit
- * @param {String} [config.orderEmail] The order's email
- * @param {Integer} config.paymentMethodId The SolidusPaypalBraintree::Gateway Id from the backend
 **/
 SolidusPaypalBraintree.ApplepayButton.prototype.initializeApplePaySession = function() {
-  var config = {
-    storeName: this._applepayOptions.storeName,
-    orderEmail: this._applepayOptions.orderEmail,
-    paymentMethodId: this._paymentMethodId,
-  };
-
-  // countryCode
-  // currencyCode
-  // merchantCapabilities
-  // supportedNetworks
-  // ... are added by the Braintree gateway, but can be overridden
-  // See https://developer.apple.com/documentation/applepayjs/applepaypaymentrequest
-  var paymentRequestHash = {
-    total: {
-      label: this._applepayOptions.storeName,
-      amount: this._applepayOptions.amount
-    },
-    shippingContact: this._applepayOptions.shippingContact
-    // lineItems
-    // billingContact
-    // shippingContact
-    // applicationData
-  };
-
-  var requiredFields = ['postalAddress', 'phone'];
-
-  if (!config.orderEmail) {
-    requiredFields.push('email');
-  }
-
-  paymentRequestHash.requiredShippingContactFields = requiredFields;
-
+  var paymentMethodId = this._paymentMethodId;
   var applePayInstance = this._applePayInstance;
-  var paymentRequest = applePayInstance.createPaymentRequest(paymentRequestHash);
-
+  var paymentRequest = applePayInstance.createPaymentRequest(this._paymentRequestHash());
   var session = new ApplePaySession(SolidusPaypalBraintree.APPLE_PAY_API_VERSION, paymentRequest);
 
   session.onvalidatemerchant = function (event) {
+    var storeName = paymentRequest.total.label;
     applePayInstance.performValidation({
       validationURL: event.validationURL,
-      displayName: config.storeName,
+      displayName: storeName,
     }, function (validationErr, merchantSession) {
       if (validationErr) {
         console.error('Error validating Apple Pay:', validationErr);
@@ -119,7 +81,7 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initializeApplePaySession = func
       }
 
       var contact = event.payment.shippingContact;
-      var params = SolidusPaypalBraintree.ApplepayButton.transactionParams(payload, config, contact);
+      var params = SolidusPaypalBraintree.ApplepayButton.transactionParams(payload, paymentMethodId, contact);
 
       Spree.ajax({
         data: params,
@@ -147,8 +109,24 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initializeApplePaySession = func
   };
 
   session.begin();
-},
+};
 
+// countryCode
+// currencyCode
+// merchantCapabilities
+// supportedNetworks
+// ... are added by the Braintree gateway, but can be overridden
+// See https://developer.apple.com/documentation/applepayjs/applepaypaymentrequest
+SolidusPaypalBraintree.ApplepayButton.prototype._paymentRequestHash = function() {
+  return {
+    total: {
+      label: this._applepayOptions.storeName,
+      amount: this._applepayOptions.amount
+    },
+    shippingContact: this._applepayOptions.shippingContact,
+    requiredShippingContactFields: ['postalAddress', 'phone', 'email']
+  };
+};
 
 /**
  * Builds the transaction parameters to submit to Solidus for the given
@@ -156,11 +134,11 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initializeApplePaySession = func
  *
  * @param {object} payload - The payload returned by Braintree after tokenization
  */
-SolidusPaypalBraintree.ApplepayButton.transactionParams = function(payload, config, shippingContact) {
+SolidusPaypalBraintree.ApplepayButton.transactionParams = function(payload, paymentMethodId, shippingContact) {
   return {
-    payment_method_id: config.paymentMethodId,
+    payment_method_id: paymentMethodId,
     transaction: {
-      email: config.orderEmail || shippingContact.emailAddress,
+      email: shippingContact.emailAddress,
       nonce: payload.nonce,
       payment_type: payload.type,
       phone: shippingContact.phoneNumber,
