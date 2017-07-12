@@ -11,7 +11,7 @@ Installation
 Add solidus_paypal_braintree to your Gemfile:
 
 ```ruby
-gem 'solidus_paypal_braintree'
+gem 'solidus_paypal_braintree', github: 'solidusio/solidus_paypal_braintree', branch: :master
 ```
 
 Bundle your dependencies and run the installation generator:
@@ -21,46 +21,69 @@ bundle
 bundle exec rails g solidus_paypal_braintree:install
 ```
 
-Usage
------
+## Basic Setup
 
-This gem extends Solidus by providing a new payment method and source, named
-`SolidusPaypalBraintree::Gateway` and `SolidusPaypalBraintree::Source` respectively.
-All payment types - PayPal, ApplePay, and Credit Cards - are supported through
-the same payment method.
+### Retrieve Braintree account details
+You'll need the following account details:
+- `Merchant ID`
+- `Public key`
+- `Private key`
 
-The payment method requires 3 preferences to be set to process payments:
-- `merchant_id`
-- `public_key`
-- `private_key`
-
-These values can be obtained by logging in to your Braintree account and going
+These values can be obtained by logging in to your Braintree account, going
 to `Account -> My User` and clicking `View Authorizations` in the **API Keys,
 Tokenization Keys, Encryption Keys** section.
 
-The payment method also provides an optional preference `merchant_currency_map`.
-This preference allows users to provide different Merchant Account Ids for
-different currencies. If you only plan to accept payment in one currency, the
-defaut Merchant Account Id will be used and you can omit this option.
-An example of setting this preference can be found
-[here](https://github.com/solidusio/solidus_paypal_braintree/blob/master/spec/spec_helper.rb#L70-L72).
+### Create a new payment method
+Payment methods can accept preferences either directly entered in admin, or from a static source in code. For most projects we recommend using a static source, so that sensitive account credentials are not stored in the database.
 
-Store Configuration
--------------------
+1. Set static preferences in an initializer
+```ruby
+# config/initializers/spree.rb
+Spree::Config.configure do |config|
+  config.static_model_preferences.add(
+    SolidusPaypalBraintree::Gateway,
+    'braintree_credentials', {
+      environment: Rails.env.production? ? 'production' : 'sandbox',
+      merchant_id: ENV['BRAINTREE_MERCHANT_ID'],
+      public_key: ENV['BRAINTREE_PUBLIC_KEY'],
+      private_key: ENV['BRAINTREE_PRIVATE_KEY']
+    }
+  )
+end
+```
+Other optional preferences are discussed below.
+2. Visit `/admin/payment_methods/new`
+3. Set `provider` to SolidusPaypalBraintree::Gateway
+4. Click "Save"
+5. Choose `braintree_credentials` from the `Preference Source` select
+6. Click `Update` to save
 
-This gem adds a configuration model - `SolidusPaypalBraintree::Configuration` -
-that belongs to `Spree::Store` as `braintree_configuration`. In multi-store
-Solidus applications, this model allows admins to enable/disable payment types
-on a per-store basis.
+Alternatively, create a payment method from the Rails console with:
+```ruby
+SolidusPaypalBraintree::Gateway.new(
+  name: "Braintree",
+  preference_source: "braintree_credentials"
+).save
+```
 
-The migrations for this gem will add a default configuration to all stores that
-has each payment type disabled. It also adds a `before_create` callback to
-`Spree::Store` that builds a default configuration. You can customize the
-default configuration that gets created by overriding the private
-`build_default_configuration` method on `Spree::Store`.
+### Configure payment types
+Your payment method can accept payments in three ways: through Paypal, through ApplePay, or with credit card details entered directly by the customer. By default all are disabled for all your site's stores.
+1. Visit /solidus_paypal_braintree/configurations/list
+2. Check the payment types you'd like to accept. If your site has multiple stores, there'll be a set of checkboxes for each.
+3. Click `Save changes` to save
 
-A view override is provided that adds a `Braintree` tab to the admin settings
-submenu. Admins can go here to edit the configuration for each store.
+Or from the console:
+```ruby
+Spree::Store.all.each do |store|
+  store.create_braintree_configuration(
+    credit_card: true,
+    paypal: true,
+    apple_pay: true
+  )
+end
+```
+
+3. If your site uses an unmodified `solidus_frontend`, it should now be ready to take credit card payments (if you've enabled that payment type). Paypal and ApplePay require some further configuration, discussed below.
 
 Apple Pay
 ---------
@@ -135,6 +158,23 @@ var button = new PaypalButton(document.querySelector("#your-button-id"));
 
 button.setTokenizeCallback(your-callback);
 ```
+
+## Optional configuration
+
+### Accepting multiple currencies
+The payment method also provides an optional preference `merchant_currency_map`.
+This preference allows users to provide different Merchant Account Ids for
+different currencies. If you only plan to accept payment in one currency, the
+defaut Merchant Account Id will be used and you can omit this option.
+An example of setting this preference can be found
+[here](https://github.com/solidusio/solidus_paypal_braintree/blob/master/spec/spec_helper.rb#L70-L72).
+
+### Default store configuration
+The migrations for this gem will add a default configuration to all stores that
+has each payment type disabled. It also adds a `before_create` callback to
+`Spree::Store` that builds a default configuration. You can customize the
+default configuration that gets created by overriding the private
+`build_default_configuration` method on `Spree::Store`.
 
 Testing
 -------
