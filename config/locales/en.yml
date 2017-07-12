@@ -19,6 +19,7 @@ en:
     nonce: Nonce
     token: Token
     payment_type:
+      label: Payment Type
       apple_pay_card: Apple Pay
       credit_card: Credit Card
       pay_pal_account: PayPal
