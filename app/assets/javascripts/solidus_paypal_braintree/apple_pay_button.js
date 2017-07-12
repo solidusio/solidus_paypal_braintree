@@ -48,64 +48,73 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initializeCallback = function() 
 };
 
 /**
- * Initializes and begins the ApplePay session
+ * Initialize and begin the ApplePay session
 **/
 SolidusPaypalBraintree.ApplepayButton.prototype.initializeApplePaySession = function() {
-  var applePayInstance = this._applePayInstance;
-  var paymentRequest = applePayInstance.createPaymentRequest(this._paymentRequestHash());
+  var paymentRequest = this._applePayInstance.createPaymentRequest(this._paymentRequestHash());
   var session = new ApplePaySession(SolidusPaypalBraintree.APPLE_PAY_API_VERSION, paymentRequest);
   var applePayButton = this;
 
   session.onvalidatemerchant = function (event) {
-    var storeName = paymentRequest.total.label;
-    applePayInstance.performValidation({
-      validationURL: event.validationURL,
-      displayName: storeName,
-    }, function (validationErr, merchantSession) {
-      if (validationErr) {
-        console.error('Error validating Apple Pay:', validationErr);
-        session.abort();
-        return;
-      }
-      session.completeMerchantValidation(merchantSession);
-    });
+    applePayButton.validateMerchant(session, paymentRequest);
   };
 
   session.onpaymentauthorized = function (event) {
-    applePayInstance.tokenize({
-      token: event.payment.token
-    }, function (tokenizeErr, payload) {
+    applePayButton.tokenize(session, event.payment);
+  };
+
+  session.begin();
+};
+
+SolidusPaypalBraintree.ApplepayButton.prototype.validateMerchant = function(session, paymentRequest) {
+  this._applePayInstance.performValidation({
+    validationURL: event.validationURL,
+    displayName: paymentRequest.total.label,
+  }, function (validationErr, merchantSession) {
+    if (validationErr) {
+      console.error('Error validating Apple Pay:', validationErr);
+      session.abort();
+      return;
+    }
+    session.completeMerchantValidation(merchantSession);
+  });
+};
+
+SolidusPaypalBraintree.ApplepayButton.prototype.tokenize = function (session, payment) {
+  this._applePayInstance.tokenize(
+    {token: payment.token},
+    function (tokenizeErr, payload) {
       if (tokenizeErr) {
         console.error('Error tokenizing Apple Pay:', tokenizeErr);
         session.completePayment(ApplePaySession.STATUS_FAILURE);
       }
+      this._createTransaction(session, payment, payload);
+    }.bind(this)
+  );
+};
 
-      Spree.ajax({
-        data: applePayButton.transactionParams(payload, event.payment.shippingContact),
-        dataType: 'json',
-        type: 'POST',
-        url: SolidusPaypalBraintree.config.paths.transactions,
-        success: function(response) {
-          session.completePayment(ApplePaySession.STATUS_SUCCESS);
-          window.location.replace(response.redirectUrl);
-        },
-        error: function(xhr) {
-          if (xhr.status === 422) {
-            var errors = xhr.responseJSON.errors;
+SolidusPaypalBraintree.ApplepayButton.prototype._createTransaction = function (session, payment, payload) {
+  Spree.ajax({
+    data: this._transactionParams(payload, payment.shippingContact),
+    dataType: 'json',
+    type: 'POST',
+    url: SolidusPaypalBraintree.config.paths.transactions,
+    success: function(response) {
+      session.completePayment(ApplePaySession.STATUS_SUCCESS);
+      window.location.replace(response.redirectUrl);
+    },
+    error: function(xhr) {
+      if (xhr.status === 422) {
+        var errors = xhr.responseJSON.errors;
 
-            if (errors && errors.Address) {
-              session.completePayment(ApplePaySession.STATUS_INVALID_SHIPPING_POSTAL_ADDRESS);
-            } else {
-              session.completePayment(ApplePaySession.STATUS_FAILURE);
-            }
-          }
+        if (errors && errors.Address) {
+          session.completePayment(ApplePaySession.STATUS_INVALID_SHIPPING_POSTAL_ADDRESS);
+        } else {
+          session.completePayment(ApplePaySession.STATUS_FAILURE);
         }
-      });
-
-    });
-  };
-
-  session.begin();
+      }
+    }
+  });
 };
 
 // countryCode
@@ -131,7 +140,7 @@ SolidusPaypalBraintree.ApplepayButton.prototype._paymentRequestHash = function()
  *
  * @param {object} payload - The payload returned by Braintree after tokenization
  */
-SolidusPaypalBraintree.ApplepayButton.prototype.transactionParams = function(payload, shippingContact) {
+SolidusPaypalBraintree.ApplepayButton.prototype._transactionParams = function(payload, shippingContact) {
   return {
     payment_method_id: this._applepayOptions.paymentMethodId,
     transaction: {
@@ -139,7 +148,7 @@ SolidusPaypalBraintree.ApplepayButton.prototype.transactionParams = function(pay
       nonce: payload.nonce,
       payment_type: payload.type,
       phone: shippingContact.phoneNumber,
-      address_attributes: this.addressParams(shippingContact)
+      address_attributes: this._addressParams(shippingContact)
     }
   };
 };
@@ -150,7 +159,7 @@ SolidusPaypalBraintree.ApplepayButton.prototype.transactionParams = function(pay
  *
  * @param {object} payload - The payload returned by Braintree after tokenization
  */
-SolidusPaypalBraintree.ApplepayButton.prototype.addressParams = function(shippingContact) {
+SolidusPaypalBraintree.ApplepayButton.prototype._addressParams = function(shippingContact) {
   var addressHash = {
     country_name:   shippingContact.country,
     country_code:   shippingContact.countryCode,
