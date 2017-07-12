@@ -1,4 +1,7 @@
 en:
+  activerecord:
+    models:
+      solidus_paypal_braintree/gateway: Braintree
   spree:
     admin:
       tab:
@@ -12,6 +15,7 @@ en:
     public_key: Public key
     token_generation_enabled: Token generation enabled?
   solidus_paypal_braintree:
+    braintree: Braintree
     nonce: Nonce
     token: Token
     payment_type:
