@@ -42,6 +42,11 @@ module SolidusPaypalBraintree
     if backend_available?
       config.assets.precompile += ["spree/backend/solidus_paypal_braintree.js"]
       paths["app/controllers"] << "lib/controllers/backend"
+
+      # We support Solidus v1.2, which requires some different markup in the
+      # source form partial. This will take precedence over lib/views/backend.
+      paths["app/views"] << "lib/views/backend_v1.2" if Gem::Version.new(Spree.solidus_version) < Gem::Version.new('1.3')
+
       paths["app/views"] << "lib/views/backend"
     end
   end

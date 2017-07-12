@@ -196,6 +196,17 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     end
   end
 
+  describe "#display_number" do
+    let(:instance) { described_class.new }
+    subject { instance.display_number }
+
+    before do
+      allow(instance).to receive(:last_digits).and_return('1234')
+    end
+
+    it { is_expected.to eq 'XXXX-XXXX-XXXX-1234' }
+  end
+
   describe "#card_type", vcr: { cassette_name: "source/card_type" } do
     let(:method) { new_gateway.tap(&:save!) }
     let(:instance) { described_class.create!(payment_type: "CreditCard", payment_method: method) }

@@ -55,6 +55,10 @@ module SolidusPaypalBraintree
       payment_type == CREDIT_CARD
     end
 
+    def display_number
+      "XXXX-XXXX-XXXX-#{last_digits}"
+    end
+
     private
 
     def braintree_payment_method
