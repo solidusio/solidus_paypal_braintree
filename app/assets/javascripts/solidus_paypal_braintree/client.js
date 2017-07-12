@@ -46,7 +46,7 @@
  * @constructor
  * @param {Object} config Initalization options for the client
  * @param {Boolean} config.useDataCollector Use data collector capabilities for the braintree client
- * @param {Boolean} config.usePapyal Use Paypal capabilities for the braintree client
+ * @param {Boolean} config.usePaypal Use Paypal capabilities for the braintree client
  * @param {requestCallback} config.readyCallback A callback to be invoked when the client is ready to go.
  * @param {Number} config.paymentMethodId A number indicating a specific payment method to be preferrred.
  *
