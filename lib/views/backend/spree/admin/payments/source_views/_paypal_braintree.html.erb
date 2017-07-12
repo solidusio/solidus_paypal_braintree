@@ -7,6 +7,9 @@
         <dt><%= Spree.t(:identifier) %>:</dt>
         <dd><%= payment.number %></dd>
 
+        <dt><%= Spree.t(:response_code) %>:</dt>
+        <dd><%= braintree_transaction_link(payment) %></dd>
+
         <% if payment.source.token.present? %>
           <dt><%= t('solidus_paypal_braintree.token') %>:</dt>
           <dd><%= payment.source.token %></dd>
@@ -14,9 +17,6 @@
           <dt><%= t('solidus_paypal_braintree.nonce') %>:</dt>
           <dd><%= payment.source.nonce %></dd>
         <% end %>
-
-        <dt><%= Spree.t(:response_code) %>:</dt>
-        <dd><%= payment.response_code %></dd>
       </dl>
     </div>
   </div>
