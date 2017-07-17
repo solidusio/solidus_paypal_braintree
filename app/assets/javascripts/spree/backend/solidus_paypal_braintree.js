@@ -1,4 +1,6 @@
 //= require solidus_paypal_braintree/constants
+//= require solidus_paypal_braintree/client
+//= require solidus_paypal_braintree/promise
 //= require solidus_paypal_braintree/hosted_form
 
 $(function() {
@@ -19,6 +21,33 @@ $(function() {
     $("#card_form" + id).hide();
   }
 
+  function addFormHook(braintreeForm, errorCallback) {
+    var shouldSubmit = false;
+
+    function submit(payload) {
+      shouldSubmit = true;
+
+      $("#payment_method_nonce", braintreeForm.hostedFields).val(payload.nonce);
+      braintreeForm.paymentForm.submit();
+    }
+
+    return function(hostedFields) {
+      braintreeForm.paymentForm.on("submit", function(e) {
+        if (braintreeForm.hostedFields.is(":visible") && !shouldSubmit) {
+          e.preventDefault();
+
+          hostedFields.tokenize(function(err, payload) {
+            if (err) {
+              errorCallback(err);
+            } else {
+              submit(payload);
+            }
+          });
+        }
+      });
+    };
+  }
+
   function initFields($container, id) {
     function setHostedFieldsInstance(instance) {
       hostedFieldsInstance = instance;
@@ -27,9 +56,10 @@ $(function() {
 
     if (hostedFieldsInstance === null) {
       braintreeForm = new SolidusPaypalBraintree.HostedForm($paymentForm, $container, id);
-      braintreeForm.initializeHostedFields().
+      braintreeForm.initialize().
         then(setHostedFieldsInstance).
-        then(braintreeForm.addFormHook(onError)).
+        then(braintreeForm.createHostedFields.bind(braintreeForm)).
+        then(addFormHook(braintreeForm, onError)).
         fail(onError);
     }
   }

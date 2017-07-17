@@ -29,27 +29,53 @@ $(function() {
     $submitButton.attr("disabled", true).removeClass("primary").addClass("disabled");
   }
 
+  function addFormHook(braintreeForm, hostedField) {
+    $paymentForm.on("submit",function(event) {
+      var $field = $(hostedField);
+
+      if ($field.is(":visible") && !$field.data("submitting")) {
+        var $nonce = $("#payment_method_nonce", $field);
+
+        if ($nonce.length > 0 && $nonce.val() === "") {
+          event.preventDefault();
+          disableSubmit();
+
+          braintreeForm.tokenize(function(error, payload) {
+            if (error) {
+              braintreeError(error);
+            } else {
+              $nonce.val(payload.nonce);
+              $paymentForm.submit();
+            }
+          });
+        }
+      }
+    });
+  }
+
   var $paymentForm = $("#checkout_form_payment");
   var $hostedFields = $("[data-braintree-hosted-fields]");
   var $submitButton = $("input[type='submit']", $paymentForm);
-  var $checkoutForm = $("#checkout_form_payment");
 
   // If we're not using hosted fields, the form doesn't need to wait.
   if ($hostedFields.length > 0) {
     disableSubmit();
+
+    var fieldPromises = $hostedFields.map(function(index, field) {
+      var $this = $(this);
+      var id = $this.data("id");
+
+      var braintreeForm = new SolidusPaypalBraintree.HostedForm($paymentForm, $this, id);
+
+      var formInitializationSuccess = function(formObject) {
+        addFormHook(formObject, field);
+      }
+
+      return braintreeForm.initialize().
+        then(braintreeForm.createHostedFields.bind(braintreeForm)).
+        then(formInitializationSuccess, braintreeError)
+    });
+
+    $.when.apply($, fieldPromises).done(enableSubmit);
   }
-
-  $checkoutForm.submit(disableSubmit);
-
-  var fieldPromises = $hostedFields.map(function() {
-    var $this = $(this);
-    var id = $this.data("id");
-
-    var braintreeForm = new SolidusPaypalBraintree.HostedForm($paymentForm, $this, id);
-    return braintreeForm.initializeHostedFields().
-      then(braintreeForm.addFormHook(braintreeError)).
-      fail(braintreeError);
-  });
-
-  $.when.apply($, fieldPromises).done(enableSubmit);
 });
