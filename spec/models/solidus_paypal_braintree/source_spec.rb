@@ -49,25 +49,51 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     end
   end
 
-  describe "#can_void?" do
-    subject { described_class.new.can_void?(payment) }
+  describe '#can_void?' do
+    let(:payment_source) { described_class.new }
+    let(:payment) { build(:payment) }
 
-    context "when the payment failed" do
-      let(:payment) { build(:payment, state: "failed") }
-
-      it { is_expected.not_to be }
+    let(:transaction_response) do
+      double(status: Braintree::Transaction::Status::SubmittedForSettlement)
     end
 
-    context "when the payment is already voided" do
-      let(:payment) { build(:payment, state: "void") }
-
-      it { is_expected.not_to be }
+    let(:transaction_request) do
+      double(find: transaction_response)
     end
 
-    context "when the payment is completed" do
-      let(:payment) { build(:payment, state: "completed") }
+    subject { payment_source.can_void?(payment) }
 
-      it { is_expected.to be }
+    before do
+      allow(payment_source).to receive(:braintree_client) do
+        double(transaction: transaction_request)
+      end
+    end
+
+    context 'when transaction id is not present' do
+      let(:payment) { build(:payment, response_code: nil) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when transaction has voidable status' do
+      it { is_expected.to be(true) }
+    end
+
+    context 'when transaction has non voidable status' do
+      let(:transaction_response) do
+        double(status: Braintree::Transaction::Status::Settled)
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when transaction is not found at Braintreee' do
+      before do
+        allow(transaction_request).to \
+          receive(:find).and_raise(Braintree::NotFoundError)
+      end
+
+      it { is_expected.to be(false) }
     end
   end
 
