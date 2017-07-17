@@ -1,9 +1,14 @@
 <fieldset data-hook="credit_card">
+  <legend align="center"><%= SolidusPaypalBraintree::Gateway.model_name.human %></legend>
+
   <div class="row">
     <div class="alpha six columns">
       <dl>
         <dt><%= Spree.t(:identifier) %>:</dt>
         <dd><%= payment.number %></dd>
+
+        <dt><%= Spree.t(:response_code) %>:</dt>
+        <dd><%= braintree_transaction_link(payment) %></dd>
 
         <% if payment.source.token.present? %>
           <dt><%= t('solidus_paypal_braintree.token') %>:</dt>
@@ -13,8 +18,16 @@
           <dd><%= payment.source.nonce %></dd>
         <% end %>
 
-        <dt><%= Spree.t(:response_code) %>:</dt>
-        <dd><%= payment.response_code %></dd>
+        <dt><%= t('solidus_paypal_braintree.payment_type.label') %>:</dt>
+        <dd><%= payment.source.friendly_payment_type %></dd>
+
+        <% if payment.source.credit_card? %>
+          <dt><%= Spree::CreditCard.human_attribute_name(:card_type) %>:</dt>
+          <dd><%= payment.source.card_type %></dd>
+
+          <dt><%= Spree::CreditCard.human_attribute_name(:last_digits) %>:</dt>
+          <dd><%= payment.source.last_digits %></dd>
+        <% end %>
       </dl>
     </div>
   </div>
