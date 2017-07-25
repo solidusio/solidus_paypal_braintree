@@ -91,24 +91,27 @@ SolidusPaypalBraintree.PaypalButton.prototype._transactionParams = function(payl
  * @param {object} payload - The payload returned by Braintree after tokenization
  */
 SolidusPaypalBraintree.PaypalButton.prototype._addressParams = function(payload) {
-  if (payload.details.shippingAddress.recipientName) {
-    var first_name = payload.details.shippingAddress.recipientName.split(" ")[0];
-    var last_name = payload.details.shippingAddress.recipientName.split(" ")[1];
+  var first_name, last_name;
+  var payload_address = payload.details.shippingAddress || payload.details.billingAddress;
+
+  if (payload_address.recipientName) {
+    first_name = payload_address.recipientName.split(" ")[0];
+    last_name = payload_address.recipientName.split(" ")[1];
   }
-  if (first_name == null || last_name == null) {
-    var first_name = payload.details.firstName;
-    var last_name = payload.details.lastName;
+
+  if (!first_name || !last_name) {
+    first_name = payload.details.firstName;
+    last_name = payload.details.lastName;
   }
 
   return {
     "first_name" : first_name,
     "last_name" : last_name,
-    "address_line_1" : payload.details.shippingAddress.line1,
-    "address_line_2" : payload.details.shippingAddress.line2,
-    "city" : payload.details.shippingAddress.city,
-    "state_code" : payload.details.shippingAddress.state,
-    "zip" : payload.details.shippingAddress.postalCode,
-    "country_code" : payload.details.shippingAddress.countryCode
-  }
+    "address_line_1" : payload_address.line1,
+    "address_line_2" : payload_address.line2,
+    "city" : payload_address.city,
+    "state_code" : payload_address.state,
+    "zip" : payload_address.postalCode,
+    "country_code" : payload_address.countryCode
+  };
 };
-
