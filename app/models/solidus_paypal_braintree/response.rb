@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Response object that all actions on the gateway should return
 module SolidusPaypalBraintree
   class Response < ActiveMerchant::Billing::Response
@@ -41,10 +43,29 @@ module SolidusPaypalBraintree
         if result.errors.any?
           result.errors.map { |e| "#{e.message} (#{e.code})" }.join(" ")
         else
-          [result.transaction.status,
-           result.transaction.gateway_rejection_reason,
-           result.transaction.processor_settlement_response_code,
-           result.transaction.processor_settlement_response_text].compact.join(" ")
+          transaction_error_message(result.transaction)
+        end
+      end
+
+      # Human readable error message for transaction responses
+      def transaction_error_message(transaction)
+        case transaction.status
+        when 'gateway_rejected'
+          I18n.t(transaction.gateway_rejection_reason,
+            scope: 'solidus_paypal_braintree.gateway_rejection_reasons',
+            default: "#{transaction.status.humanize} #{transaction.gateway_rejection_reason.humanize}")
+        when 'processor_declined'
+          I18n.t(transaction.processor_response_code,
+            scope: 'solidus_paypal_braintree.processor_response_codes',
+            default: "#{transaction.processor_response_text} (#{transaction.processor_response_code})")
+        when 'settlement_declined'
+          I18n.t(transaction.processor_settlement_response_code,
+            scope: 'solidus_paypal_braintree.processor_settlement_response_codes',
+            default: "#{transaction.processor_settlement_response_text} (#{transaction.processor_settlement_response_code})")
+        else
+          I18n.t(transaction.status,
+            scope: 'solidus_paypal_braintree.transaction_statuses',
+            default: transaction.status.humanize)
         end
       end
     end

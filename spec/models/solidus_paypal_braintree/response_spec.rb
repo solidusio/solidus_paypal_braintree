@@ -69,34 +69,69 @@ RSpec.describe SolidusPaypalBraintree::Response do
         it { is_expected.to eq "Cannot refund a transaction unless it is settled. (12345)" }
       end
 
-      context "with a processor error" do
+      context "with a settlement_declined status" do
         let(:error) { nil }
         let(:failed_transaction) do
           instance_double(
             'Braintree::Transaction',
             status: "settlement_declined",
-            gateway_rejection_reason: nil,
             processor_settlement_response_code: "4001",
             processor_settlement_response_text: "Settlement Declined"
           )
         end
 
-        it { is_expected.to eq "settlement_declined 4001 Settlement Declined" }
+        it { is_expected.to eq "Settlement Declined (4001)" }
       end
 
-      context "with a gateway error" do
+      context "with a gateway_rejected status" do
         let(:error) { nil }
         let(:failed_transaction) do
           instance_double(
             'Braintree::Transaction',
             status: "gateway_rejected",
-            gateway_rejection_reason: "cvv",
-            processor_settlement_response_code: nil,
-            processor_settlement_response_text: nil
+            gateway_rejection_reason: "cvv"
           )
         end
 
-        it { is_expected.to eq "gateway_rejected cvv" }
+        it { is_expected.to eq "CVV check failed." }
+      end
+
+      context "with a processor_declined status" do
+        let(:error) { nil }
+        let(:failed_transaction) do
+          instance_double(
+            'Braintree::Transaction',
+            status: "processor_declined",
+            processor_response_code: '2001',
+            processor_response_text: 'Insufficient Funds'
+          )
+        end
+
+        it { is_expected.to eq "Insufficient Funds (2001)" }
+      end
+
+      context 'with other transaction status' do
+        let(:error) { nil }
+        let(:failed_transaction) do
+          instance_double(
+            'Braintree::Transaction',
+            status: "authorization_expired"
+          )
+        end
+
+        it { is_expected.to eq 'Payment authorization has expired.' }
+      end
+
+      context 'with other transaction status that is not translated' do
+        let(:error) { nil }
+        let(:failed_transaction) do
+          instance_double(
+            'Braintree::Transaction',
+            status: "something_bad_happened"
+          )
+        end
+
+        it { is_expected.to eq 'Something bad happened' }
       end
     end
   end
