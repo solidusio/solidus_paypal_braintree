@@ -42,7 +42,7 @@ describe SolidusPaypalBraintree::Transaction do
     end
 
     context 'bad gateway' do
-      let(:valid_attributes) { super().merge(payment_method: Spree::Gateway.new) }
+      let(:valid_attributes) { super().merge(payment_method: Spree::PaymentMethod.new) }
       it { is_expected.to be false }
     end
 
