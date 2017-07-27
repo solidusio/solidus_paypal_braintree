@@ -36,7 +36,7 @@ module SolidusPaypalBraintree
       end
 
       def build_failure(result)
-        new(false, error_message(result))
+        new(false, error_message(result), result.params)
       end
 
       def error_message(result)

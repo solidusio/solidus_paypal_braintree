@@ -9,12 +9,14 @@ RSpec.describe SolidusPaypalBraintree::Response do
       message: "Cannot refund a transaction unless it is settled."
     )
   end
+
   let(:error_result) do
     instance_double(
       'Braintree::ErrorResult',
       success?: false,
       errors: [error],
-      transaction: failed_transaction
+      transaction: failed_transaction,
+      params: { some: 'error' }
     )
   end
 
@@ -132,6 +134,16 @@ RSpec.describe SolidusPaypalBraintree::Response do
         end
 
         it { is_expected.to eq 'Something bad happened' }
+      end
+    end
+  end
+
+  describe '#params' do
+    context "with an error response" do
+      subject { error_response.params }
+
+      it 'includes request params' do
+        is_expected.to eq({ 'some' => 'error' })
       end
     end
   end
