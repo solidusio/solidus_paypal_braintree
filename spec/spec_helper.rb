@@ -61,41 +61,12 @@ require 'braintree'
 
 Braintree::Configuration.logger = Rails.logger
 
-module BraintreeHelpers
-  def new_gateway(opts = {})
-    SolidusPaypalBraintree::Gateway.new({
-      name: "Braintree",
-      preferences: {
-        environment: 'sandbox',
-        public_key:  'mwjkkxwcp32ckhnf',
-        private_key: 'a9298f43b30c699db3072cc4a00f7f49',
-        merchant_id: '7rdg92j7bm7fk5h3',
-        merchant_currency_map: {
-          'EUR' => 'stembolt_EUR'
-        },
-        paypal_payee_email_map: {
-          'EUR' => 'paypal+europe@example.com'
-        }
-      }
-    }.merge(opts))
-  end
-
-  def create_gateway(opts = {})
-    new_gateway(opts).tap(&:save!)
-  end
-
-  # Using order.update! was deprecated in Solidus v2.3
-  def recalculate(order)
-    order.respond_to?(:recalculate) ? order.recalculate : order.update!
-  end
-end
-
 RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
   config.use_transactional_fixtures = false
   config.example_status_persistence_file_path = "tmp/failed_examples.txt"
 
-  config.include BraintreeHelpers
+  config.include SolidusPaypalBraintree::GatewayHelpers
 
   config.before(:each, type: :feature, js: true) do |ex|
     Capybara.current_driver = ex.metadata[:driver] || :poltergeist
