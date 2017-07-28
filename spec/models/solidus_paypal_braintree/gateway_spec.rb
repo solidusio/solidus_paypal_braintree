@@ -91,7 +91,6 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       it 'returns a successful billing response', aggregate_failures: true do
         expect(subject).to be_a ActiveMerchant::Billing::Response
         expect(subject).to be_success
-        expect(subject).to be_test
       end
     end
 

@@ -28,7 +28,10 @@ RSpec.describe SolidusPaypalBraintree::Response do
     transaction = instance_double(
       'Braintree::Transaction',
       status: 'ok',
-      id: 'abcdef'
+      id: 'abcdef',
+      avs_error_response_code: nil,
+      avs_street_address_response_code: 'M',
+      avs_postal_code_response_code: 'M'
     )
 
     instance_double(
@@ -134,6 +137,20 @@ RSpec.describe SolidusPaypalBraintree::Response do
         end
 
         it { is_expected.to eq 'Something bad happened' }
+      end
+    end
+  end
+
+  describe '#avs_result' do
+    context 'with a successful result' do
+      subject { described_class.build(successful_result).avs_result }
+
+      it 'includes AVS response code' do
+        expect(subject['code']).to eq 'M'
+      end
+
+      it 'includes AVS response message' do
+        expect(subject['message']).to eq 'Street address and postal code match.'
       end
     end
   end
