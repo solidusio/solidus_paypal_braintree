@@ -23,10 +23,17 @@ module SolidusPaypalBraintree
       end
 
       def build_failure(result)
-        new(false, error_message(result), result.params)
+        transaction = result.transaction
+        options = response_options(transaction).update(
+          # For error responses we want to have the CVV code
+          cvv_result: transaction.try!(:cvv_response_code)
+        )
+        new(false, error_message(result), result.params, options)
       end
 
       def response_options(transaction)
+        # Some error responses do not have a transaction
+        return {} if transaction.nil?
         {
           authorization: transaction.id,
           avs_result: AVSResult.build(transaction),
