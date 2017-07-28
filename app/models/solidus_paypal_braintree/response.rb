@@ -19,8 +19,15 @@ module SolidusPaypalBraintree
 
       def build_success(result)
         transaction = result.transaction
+        new(true, transaction.status, {}, response_options(transaction))
+      end
 
-        options = {
+      def build_failure(result)
+        new(false, error_message(result), result.params)
+      end
+
+      def response_options(transaction)
+        {
           authorization: transaction.id,
           avs_result: AVSResult.build(transaction),
           # As we do not provide the CVV while submitting the transaction (for PCI compliance reasons),
@@ -28,12 +35,6 @@ module SolidusPaypalBraintree
           # Otherwise Solidus thinks this payment is risky.
           cvv_result: nil
         }
-
-        new(true, transaction.status, {}, options)
-      end
-
-      def build_failure(result)
-        new(false, error_message(result), result.params)
       end
 
       def error_message(result)
