@@ -31,7 +31,8 @@ RSpec.describe SolidusPaypalBraintree::Response do
       id: 'abcdef',
       avs_error_response_code: nil,
       avs_street_address_response_code: 'M',
-      avs_postal_code_response_code: 'M'
+      avs_postal_code_response_code: 'M',
+      cvv_response_code: 'I'
     )
 
     instance_double(
@@ -151,6 +152,20 @@ RSpec.describe SolidusPaypalBraintree::Response do
 
       it 'includes AVS response message' do
         expect(subject['message']).to eq 'Street address and postal code match.'
+      end
+    end
+  end
+
+  describe '#cvv_result' do
+    context 'with a successful result' do
+      subject { described_class.build(successful_result).cvv_result }
+
+      it 'does not include CVV response code' do
+        expect(subject['code']).to be_nil
+      end
+
+      it 'does not include CVV response message' do
+        expect(subject['message']).to be_nil
       end
     end
   end
