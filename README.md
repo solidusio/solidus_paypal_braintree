@@ -37,25 +37,30 @@ Tokenization Keys, Encryption Keys** section.
 Payment methods can accept preferences either directly entered in admin, or from a static source in code. For most projects we recommend using a static source, so that sensitive account credentials are not stored in the database.
 
 1. Set static preferences in an initializer
-```ruby
-# config/initializers/spree.rb
-Spree::Config.configure do |config|
-  config.static_model_preferences.add(
-    SolidusPaypalBraintree::Gateway,
-    'braintree_credentials', {
-      environment: Rails.env.production? ? 'production' : 'sandbox',
-      merchant_id: ENV['BRAINTREE_MERCHANT_ID'],
-      public_key: ENV['BRAINTREE_PUBLIC_KEY'],
-      private_key: ENV['BRAINTREE_PRIVATE_KEY']
-    }
-  )
-end
-```
-Other optional preferences are discussed below.
+  ```ruby
+  # config/initializers/spree.rb
+  Spree::Config.configure do |config|
+    config.static_model_preferences.add(
+      SolidusPaypalBraintree::Gateway,
+      'braintree_credentials', {
+        environment: Rails.env.production? ? 'production' : 'sandbox',
+        merchant_id: ENV['BRAINTREE_MERCHANT_ID'],
+        public_key: ENV['BRAINTREE_PUBLIC_KEY'],
+        private_key: ENV['BRAINTREE_PRIVATE_KEY']
+      }
+    )
+  end
+  ```
+  Other optional preferences are discussed below.
+
 2. Visit `/admin/payment_methods/new`
+
 3. Set `provider` to SolidusPaypalBraintree::Gateway
+
 4. Click "Save"
+
 5. Choose `braintree_credentials` from the `Preference Source` select
+
 6. Click `Update` to save
 
 Alternatively, create a payment method from the Rails console with:
@@ -68,24 +73,27 @@ SolidusPaypalBraintree::Gateway.new(
 
 ### Configure payment types
 Your payment method can accept payments in three ways: through Paypal, through ApplePay, or with credit card details entered directly by the customer. By default all are disabled for all your site's stores.
+
 1. Visit /solidus_paypal_braintree/configurations/list
+
 2. Check the payment types you'd like to accept. If your site has multiple stores, there'll be a set of checkboxes for each.
+
 3. Click `Save changes` to save
 
-Or from the console:
-```ruby
-Spree::Store.all.each do |store|
-  store.create_braintree_configuration(
-    credit_card: true,
-    paypal: true,
-    apple_pay: true
-  )
-end
-```
+  Or from the console:
+  ```ruby
+  Spree::Store.all.each do |store|
+    store.create_braintree_configuration(
+      credit_card: true,
+      paypal: true,
+      apple_pay: true
+    )
+  end
+  ```
 
-3. If your site uses an unmodified `solidus_frontend`, it should now be ready to take payments. See below for more information on configuring Paypal and ApplePay.
+4. If your site uses an unmodified `solidus_frontend`, it should now be ready to take payments. See below for more information on configuring Paypal and ApplePay.
 
-4. Typical Solidus sites will have customized frontend code, and may require some additional work. Use `lib/views/frontend/spree/checkout/payment/_paypal_braintree.html.erb` and `app/assets/javascripts/solidus_paypal_braintree/checkout.js` as models.
+5. Typical Solidus sites will have customized frontend code, and may require some additional work. Use `lib/views/frontend/spree/checkout/payment/_paypal_braintree.html.erb` and `app/assets/javascripts/solidus_paypal_braintree/checkout.js` as models.
 
 ## Apple Pay
 ### Developing with Apple Pay
@@ -131,7 +139,7 @@ The following is a relatively bare-bones implementation to enable Apple Pay on t
 <% end %>
 ```
 
-### Further information
+### Further Apple Pay information
 Braintree has some [excellent documentation](https://developers.braintreepayments.com/guides/apple-pay/configuration/javascript/v3) on what you'll need to do to get Apple Pay up and running.
 
 For additional information check out [Apple's documentation](https://developer.apple.com/reference/applepayjs/) and [Braintree's documentation](https://developers.braintreepayments.com/guides/apple-pay/client-side/javascript/v3).
