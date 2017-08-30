@@ -266,7 +266,7 @@ module SolidusPaypalBraintree
         params[:shipping] = braintree_shipping_address(options)
       end
 
-      if source.credit_card?
+      if source.credit_card? && options[:bliing_address].present?
         params[:billing] = braintree_billing_address(options)
       end
 
