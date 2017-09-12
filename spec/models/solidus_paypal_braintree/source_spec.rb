@@ -226,13 +226,13 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     context 'when the source token is not known at Braintree' do
       include_context 'unknown source token'
 
-      it('should be nil', :pending) { is_expected.to be(nil) }
+      it { is_expected.to be(nil) }
     end
 
     context 'when the source token is nil' do
       include_context 'nil source token'
 
-      it('should be nil', :pending) { is_expected.to be(nil) }
+      it { is_expected.to be(nil) }
     end
   end
 
@@ -276,13 +276,13 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     context 'when the source token is not known at Braintree' do
       include_context 'unknown source token'
 
-      it('should be nil', :pending) { is_expected.to be_nil }
+      it { is_expected.to be_nil }
     end
 
     context 'when the source token is nil' do
       include_context 'nil source token'
 
-      it('should be nil', :pending) { is_expected.to be_nil }
+      it { is_expected.to be_nil }
     end
   end
 end
