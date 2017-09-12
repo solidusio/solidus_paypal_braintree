@@ -173,10 +173,10 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
 
   describe "#last_4", vcr: { cassette_name: "source/last4" } do
     let(:method) { new_gateway.tap(&:save!) }
-    let(:instance) { described_class.create!(payment_type: "CreditCard", payment_method: method) }
+    let(:payment_source) { described_class.create!(payment_type: "CreditCard", payment_method: method) }
     let(:braintree_client) { method.braintree }
 
-    subject { instance.last_4 }
+    subject { payment_source.last_4 }
 
     before do
       customer = braintree_client.customer.create
@@ -187,21 +187,21 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
       })
       expect(method.payment_method.token).to be
 
-      instance.update_attributes!(token: method.payment_method.token)
+      payment_source.update_attributes!(token: method.payment_method.token)
     end
 
     it "delegates to the braintree payment method" do
-      method = braintree_client.payment_method.find(instance.token)
+      method = braintree_client.payment_method.find(payment_source.token)
       expect(subject).to eql(method.last_4)
     end
   end
 
   describe "#display_number" do
-    let(:instance) { described_class.new }
-    subject { instance.display_number }
+    let(:payment_source) { described_class.new }
+    subject { payment_source.display_number }
 
     before do
-      allow(instance).to receive(:last_digits).and_return('1234')
+      allow(payment_source).to receive(:last_digits).and_return('1234')
     end
 
     it { is_expected.to eq 'XXXX-XXXX-XXXX-1234' }
@@ -209,10 +209,10 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
 
   describe "#card_type", vcr: { cassette_name: "source/card_type" } do
     let(:method) { new_gateway.tap(&:save!) }
-    let(:instance) { described_class.create!(payment_type: "CreditCard", payment_method: method) }
+    let(:payment_source) { described_class.create!(payment_type: "CreditCard", payment_method: method) }
     let(:braintree_client) { method.braintree }
 
-    subject { instance.card_type }
+    subject { payment_source.card_type }
 
     before do
       customer = braintree_client.customer.create
@@ -223,11 +223,11 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
       })
       expect(method.payment_method.token).to be
 
-      instance.update_attributes!(token: method.payment_method.token)
+      payment_source.update_attributes!(token: method.payment_method.token)
     end
 
     it "delegates to the braintree payment method" do
-      method = braintree_client.payment_method.find(instance.token)
+      method = braintree_client.payment_method.find(payment_source.token)
       expect(subject).to eql(method.card_type)
     end
   end
