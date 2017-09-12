@@ -56,7 +56,7 @@ module SolidusPaypalBraintree
     end
 
     def display_number
-      "XXXX-XXXX-XXXX-#{last_digits}"
+      "XXXX-XXXX-XXXX-#{last_digits.to_s.rjust(4, 'X')}"
     end
 
     private

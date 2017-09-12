@@ -240,11 +240,21 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     let(:payment_source) { described_class.new }
     subject { payment_source.display_number }
 
-    before do
-      allow(payment_source).to receive(:last_digits).and_return('1234')
+    context "when last_digits is a number" do
+      before do
+        allow(payment_source).to receive(:last_digits).and_return('1234')
+      end
+
+      it { is_expected.to eq 'XXXX-XXXX-XXXX-1234' }
     end
 
-    it { is_expected.to eq 'XXXX-XXXX-XXXX-1234' }
+    context "when last_digits is nil" do
+      before do
+        allow(payment_source).to receive(:last_digits).and_return(nil)
+      end
+
+      it { is_expected.to eq 'XXXX-XXXX-XXXX-XXXX' }
+    end
   end
 
   describe "#card_type" do
