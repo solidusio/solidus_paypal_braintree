@@ -1,5 +1,5 @@
 module SolidusPaypalBraintree
-  class Source < Spree::PaymentSource
+  class Source < SolidusSupport.payment_source_parent_class
     PAYPAL = "PayPalAccount"
     APPLE_PAY = "ApplePayCard"
     CREDIT_CARD = "CreditCard"
@@ -7,7 +7,6 @@ module SolidusPaypalBraintree
     belongs_to :user, class_name: Spree::UserClassHandle.new
     belongs_to :payment_method, class_name: 'Spree::PaymentMethod'
     has_many :payments, as: :source, class_name: "Spree::Payment"
-    has_many :wallet_payment_sources, class_name: 'Spree::WalletPaymentSource', as: :payment_source, inverse_of: :payment_source
 
     belongs_to :customer, class_name: "SolidusPaypalBraintree::Customer"
 
