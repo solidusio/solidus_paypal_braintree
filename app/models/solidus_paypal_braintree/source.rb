@@ -1,5 +1,5 @@
 module SolidusPaypalBraintree
-  class Source < ApplicationRecord
+  class Source < SolidusSupport.payment_source_parent_class
     PAYPAL = "PayPalAccount"
     APPLE_PAY = "ApplePayCard"
     CREDIT_CARD = "CreditCard"
@@ -49,6 +49,10 @@ module SolidusPaypalBraintree
 
     def paypal?
       payment_type == PAYPAL
+    end
+
+    def reusable?
+      true
     end
 
     def credit_card?
