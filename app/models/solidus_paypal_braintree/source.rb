@@ -60,7 +60,7 @@ module SolidusPaypalBraintree
     end
 
     def display_number
-      "XXXX-XXXX-XXXX-#{last_digits}"
+      "XXXX-XXXX-XXXX-#{last_digits.to_s.rjust(4, 'X')}"
     end
 
     private
@@ -68,6 +68,9 @@ module SolidusPaypalBraintree
     def braintree_payment_method
       return unless braintree_client && credit_card?
       @braintree_payment_method ||= braintree_client.payment_method.find(token)
+    rescue Braintree::NotFoundError, ArgumentError => e
+      Rails.logger.warn("#{e}: token unknown or missing for #{inspect}")
+      nil
     end
 
     def braintree_client
