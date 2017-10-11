@@ -32,7 +32,11 @@ module SolidusPaypalBraintree
     end
 
     def can_void?(payment)
-      !payment.failed? && !payment.void?
+      return false unless payment.response_code
+      transaction = braintree_client.transaction.find(payment.response_code)
+      Gateway::VOIDABLE_STATUSES.include?(transaction.status)
+    rescue Braintree::NotFoundError
+      false
     end
 
     def can_credit?(payment)
