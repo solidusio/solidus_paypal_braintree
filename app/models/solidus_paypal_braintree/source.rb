@@ -1,5 +1,7 @@
 module SolidusPaypalBraintree
   class Source < ApplicationRecord
+    include RequestProtection
+
     PAYPAL = "PayPalAccount"
     APPLE_PAY = "ApplePayCard"
     CREDIT_CARD = "CreditCard"
@@ -33,9 +35,11 @@ module SolidusPaypalBraintree
 
     def can_void?(payment)
       return false unless payment.response_code
-      transaction = braintree_client.transaction.find(payment.response_code)
+      transaction = protected_request do
+        braintree_client.transaction.find(payment.response_code)
+      end
       Gateway::VOIDABLE_STATUSES.include?(transaction.status)
-    rescue Braintree::NotFoundError
+    rescue ActiveMerchant::ConnectionError
       false
     end
 
@@ -67,8 +71,10 @@ module SolidusPaypalBraintree
 
     def braintree_payment_method
       return unless braintree_client && credit_card?
-      @braintree_payment_method ||= braintree_client.payment_method.find(token)
-    rescue Braintree::NotFoundError, ArgumentError => e
+      @braintree_payment_method ||= protected_request do
+        braintree_client.payment_method.find(token)
+      end
+    rescue ActiveMerchant::ConnectionError, ArgumentError => e
       Rails.logger.warn("#{e}: token unknown or missing for #{inspect}")
       nil
     end
