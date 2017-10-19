@@ -1,9 +1,8 @@
 require 'braintree'
-require 'active_merchant/network_connection_retries'
 
 module SolidusPaypalBraintree
   class Gateway < ::Spree::PaymentMethod
-    include ActiveMerchant::NetworkConnectionRetries
+    include RequestProtection
 
     TOKEN_GENERATION_DISABLED_MESSAGE = 'Token generation is disabled.' \
       ' To re-enable set the `token_generation_enabled` preference on the' \
@@ -333,17 +332,6 @@ module SolidusPaypalBraintree
       end
 
       params
-    end
-
-    def protected_request
-      raise ArgumentError unless block_given?
-      options = {
-        connection_exceptions: {
-          Braintree::BraintreeError => 'Error while connecting to Braintree gateway'
-        },
-        logger: Rails.logger
-      }
-      retry_exceptions(options) { yield }
     end
   end
 end
