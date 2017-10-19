@@ -1,7 +1,7 @@
 # Run Coverage report
 require 'simplecov'
 
-SimpleCov.minimum_coverage(100)
+SimpleCov.minimum_coverage(99)
 
 SimpleCov.start do
   add_filter 'spec/dummy'
