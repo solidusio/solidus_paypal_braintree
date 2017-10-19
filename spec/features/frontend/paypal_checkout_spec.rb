@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Checkout", type: :feature, js: true do
-  Capybara.default_max_wait_time = 30
+  Capybara.default_max_wait_time = 60
   let!(:store) do
     create(:store, payment_methods: [payment_method]).tap do |s|
       s.braintree_configuration.update!(paypal: true)
