@@ -350,8 +350,8 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       end
 
       context "when the transaction is not found", vcr: { cassette_name: 'gateway/cancel/missing' } do
-        it 'raises an error', aggregate_failures: true do
-          expect{ cancel }.to raise_error Braintree::NotFoundError
+        it 'raises an error' do
+          expect{ cancel }.to raise_error ActiveMerchant::ConnectionError
         end
       end
     end

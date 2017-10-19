@@ -150,7 +150,9 @@ module SolidusPaypalBraintree
     # @param response_code [String] the transaction id of the payment to void
     # @return [Response]
     def cancel(response_code)
-      transaction = braintree.transaction.find(response_code)
+      transaction = protected_request do
+        braintree.transaction.find(response_code)
+      end
       if VOIDABLE_STATUSES.include?(transaction.status)
         void(response_code, nil, {})
       else
