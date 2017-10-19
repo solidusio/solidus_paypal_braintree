@@ -405,7 +405,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     end
 
     shared_examples "sources_by_order" do
-      let(:order) { FactoryGirl.create :order, user: user, state: "complete", completed_at: DateTime.current }
+      let(:order) { FactoryGirl.create :order, user: user, state: "complete", completed_at: Time.current }
       let(:gateway) { new_gateway.tap(&:save!) }
 
       let(:other_payment_method) { FactoryGirl.create(:payment_method) }
@@ -463,7 +463,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
 
     describe "#sources_by_order" do
       let(:gateway) { new_gateway.tap(&:save!) }
-      let(:order) { FactoryGirl.create :order, user: user, state: "complete", completed_at: DateTime.current }
+      let(:order) { FactoryGirl.create :order, user: user, state: "complete", completed_at: Time.current }
 
       subject { gateway.sources_by_order(order) }
 
