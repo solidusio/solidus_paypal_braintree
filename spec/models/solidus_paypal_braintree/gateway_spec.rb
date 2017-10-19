@@ -103,7 +103,6 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
         end
 
         it 'raises ActiveMerchant::ConnectionError' do
-          pending 'Show that we are not protected against various connection errors'
           expect { subject }.to raise_error ActiveMerchant::ConnectionError
         end
       end
