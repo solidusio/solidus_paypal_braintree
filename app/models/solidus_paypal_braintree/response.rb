@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'active_merchant/billing/response'
 require_relative 'avs_result'
 
 # Response object that all actions on the gateway should return
