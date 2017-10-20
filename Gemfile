@@ -18,7 +18,7 @@ end
 gem 'solidus_auth_devise', '~> 1.0'
 
 # Asset compilation speed
-gem 'execjs-fastnode'
+gem 'mini_racer'
 gem 'sassc-rails', platforms: :mri
 
 group :development, :test do
