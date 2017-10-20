@@ -5,6 +5,7 @@ describe SolidusPaypalBraintree::ClientTokensController do
 
   cassette_options = { cassette_name: "braintree/token" }
   describe "POST create", vcr: cassette_options do
+    let!(:store) { FactoryGirl.create(:store) }
     let!(:gateway) { create_gateway }
     let(:user) { create(:user) }
     let(:json) { JSON.parse(response.body) }

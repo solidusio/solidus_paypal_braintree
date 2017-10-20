@@ -56,6 +56,6 @@ class SolidusPaypalBraintree::TransactionsController < Spree::StoreController
   end
 
   def payment_method
-    SolidusPaypalBraintree::Gateway.find(params[:payment_method_id])
+    SolidusPaypalBraintree::Gateway.available_to_store(current_store).find(params[:payment_method_id])
   end
 end
