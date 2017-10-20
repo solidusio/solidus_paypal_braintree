@@ -45,14 +45,11 @@ describe "Checkout", type: :feature, js: true do
       click_button("Save and Continue")
       expect(page).to have_content("SHIPPING METHOD")
       click_button("Save and Continue")
-      begin
+      pend_if_paypal_slow do
         move_through_paypal_popup
         expect(page).to have_content("Shipments")
         click_on "Place Order"
         expect(page).to have_content("Your order has been processed successfully")
-      rescue RSpec::Expectations::ExpectationNotMetError => e
-        pending "PayPal did not answer in #{Capybara.default_max_wait_time} seconds."
-        raise e
       end
     end
   end
@@ -117,5 +114,12 @@ describe "Checkout", type: :feature, js: true do
     visit spree.root_path
     click_link mug.name
     click_button "add-to-cart-button"
+  end
+
+  def pend_if_paypal_slow
+    yield
+  rescue RSpec::Expectations::ExpectationNotMetError => e
+    pending "PayPal did not answer in #{Capybara.default_max_wait_time} seconds."
+    raise e
   end
 end
