@@ -18,15 +18,15 @@ end
 gem 'solidus_auth_devise', '~> 1.0'
 
 # Asset compilation speed
-gem 'execjs-fastnode'
+gem 'mini_racer'
 gem 'sassc-rails', platforms: :mri
 
 group :development, :test do
   gem 'listen'
-  gem 'launchy'
   gem "pry-rails"
   gem 'selenium-webdriver', require: false
   gem 'chromedriver-helper', require: false
+  gem 'ffaker'
 end
 
 gemspec

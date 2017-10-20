@@ -28,3 +28,16 @@ en:
       tab: Braintree
       update_success: Successfully updated Braintree configurations.
       update_error: An error occurred while updating Braintree configurations.
+    gateway_rejection_reasons:
+      avs: AVS check failed.
+      avs_and_cvv: AVS and CVV check failed.
+      cvv: CVV check failed.
+      duplicate: Duplicate transaction.
+      fraud: Credit card was rejected because of potential fraud.
+      three_d_secure: 3D Secure check failed.
+    transaction_statuses:
+      authorization_expired: Payment authorization has expired.
+      failed: An error occurred when sending the transaction to the processor.
+      gateway_rejected: Gateway rejected this transaction.
+      processor_declined: Processor declined this transaction.
+      settlement_declined: Settlement was declined by processor.
