@@ -1,5 +1,5 @@
 module SolidusPaypalBraintree
-  class Source < ApplicationRecord
+  class Source < SolidusSupport.payment_source_parent_class
     include RequestProtection
 
     PAYPAL = "PayPalAccount"
@@ -57,6 +57,10 @@ module SolidusPaypalBraintree
 
     def paypal?
       payment_type == PAYPAL
+    end
+
+    def reusable?
+      true
     end
 
     def credit_card?
