@@ -93,6 +93,9 @@ describe "Checkout", type: :feature, js: true do
     rescue Capybara::Poltergeist::JavascriptError => e
       pending "PayPal had javascript errors in their popup window."
       raise e
+    rescue Capybara::ElementNotFound => e
+      pending "PayPal delivered unkown HTML in their popup window."
+      raise e
     end
 
     page.switch_to_window(page.windows.first)
