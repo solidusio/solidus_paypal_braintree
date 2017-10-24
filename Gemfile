@@ -27,6 +27,9 @@ group :development, :test do
   gem 'selenium-webdriver', require: false
   gem 'chromedriver-helper', require: false
   gem 'ffaker'
+
+  gem 'pg'
+  gem 'mysql2'
 end
 
 gemspec
