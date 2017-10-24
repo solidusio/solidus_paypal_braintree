@@ -405,10 +405,10 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     end
 
     shared_examples "sources_by_order" do
-      let(:order) { FactoryGirl.create :order, user: user, state: "complete", completed_at: Time.current }
+      let(:order) { FactoryBot.create :order, user: user, state: "complete", completed_at: Time.current }
       let(:gateway) { new_gateway.tap(&:save!) }
 
-      let(:other_payment_method) { FactoryGirl.create(:payment_method) }
+      let(:other_payment_method) { FactoryBot.create(:payment_method) }
 
       let(:source_without_profile) do
         SolidusPaypalBraintree::Source.create!(
@@ -429,7 +429,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
         end
       end
 
-      let!(:source_payment) { FactoryGirl.create(:payment, order: order, payment_method_id: payment_method_id, source: source) }
+      let!(:source_payment) { FactoryBot.create(:payment, order: order, payment_method_id: payment_method_id, source: source) }
 
       context "when the order has payments with the braintree payment method" do
         let(:payment_method_id) { gateway.id }
@@ -453,7 +453,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
 
       context "when the order has no payments with the braintree payment method" do
         let(:payment_method_id) { other_payment_method.id }
-        let(:source) { FactoryGirl.create :credit_card }
+        let(:source) { FactoryBot.create :credit_card }
 
         it "returns no results" do
           expect(subject.to_a).to eql([])
@@ -463,7 +463,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
 
     describe "#sources_by_order" do
       let(:gateway) { new_gateway.tap(&:save!) }
-      let(:order) { FactoryGirl.create :order, user: user, state: "complete", completed_at: Time.current }
+      let(:order) { FactoryBot.create :order, user: user, state: "complete", completed_at: Time.current }
 
       subject { gateway.sources_by_order(order) }
 
@@ -471,7 +471,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     end
 
     describe "#reusable_sources" do
-      let(:order) { FactoryGirl.build :order, user: user }
+      let(:order) { FactoryBot.build :order, user: user }
       let(:gateway) { new_gateway.tap(&:save!) }
 
       subject { gateway.reusable_sources(order) }
@@ -482,7 +482,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
 
       context "when an order is not completed" do
         context "when the order has a user id" do
-          let(:user) { FactoryGirl.create(:user) }
+          let(:user) { FactoryBot.create(:user) }
 
           let!(:source_without_profile) do
             SolidusPaypalBraintree::Source.create!(
