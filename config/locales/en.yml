@@ -18,6 +18,15 @@ en:
     braintree: Braintree
     nonce: Nonce
     token: Token
+    errors:
+      default_error: "Something bad happened!"
+      empty_fields: "All fields are empty! Please fill out the form."
+      invalid_fields: "Some payment input fields are invalid."
+      invalid_card: "Credit card data is incorrect."
+      network_error: "Network error occurred."
+      duplicate_iframe: "Duplicate Braintree iframe."
+      fail_on_duplicate: "This payment method already exists in your vault."
+      cvv_verification_failed: "CVV did not pass verification."
     payment_type:
       label: Payment Type
       apple_pay_card: Apple Pay
