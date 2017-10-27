@@ -25,16 +25,12 @@ describe SolidusPaypalBraintree::ClientTokensController do
       end
 
       context 'with a payment method id' do
-        before do
-          create_gateway id: 3
-        end
-
         subject(:response) do
-          post :create, params: { token: user.spree_api_key, payment_method_id: 3 }
+          post :create, params: { token: user.spree_api_key, payment_method_id: gateway.id }
         end
 
         it 'uses the selected gateway' do
-          expect(json["payment_method_id"]).to eq 3
+          expect(json["payment_method_id"]).to eq gateway.id
         end
       end
     end
