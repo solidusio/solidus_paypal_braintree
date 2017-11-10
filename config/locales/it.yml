@@ -1,0 +1,11 @@
+it:
+  solidus_paypal_braintree:
+    errors:
+      default_error: "Qualcosa è andato storto."
+      empty_fields: "I campi non possono essere vuoti."
+      invalid_fields: "Alcuni campi non sono corretti."
+      invalid_card: "I dati della carta di credito non sono corretti."
+      network_error: "Si è verificato un errore di rete."
+      duplicate_iframe: "Ci sono due form Braintree."
+      fail_on_duplicate: "Questo metodo di pagamento già esiste."
+      cvv_verification_failed: "Il codice CVV non è corretto."
