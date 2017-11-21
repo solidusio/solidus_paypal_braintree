@@ -1,3 +1,5 @@
+require 'solidus_support'
+
 module SolidusPaypalBraintree
   class Engine < Rails::Engine
     isolate_namespace SolidusPaypalBraintree
@@ -21,15 +23,7 @@ module SolidusPaypalBraintree
 
     config.to_prepare(&method(:activate).to_proc)
 
-    def self.frontend_available?
-      defined?(Spree::Frontend::Engine) == "constant"
-    end
-
-    def self.backend_available?
-      defined?(Spree::Backend::Engine) == "constant"
-    end
-
-    if frontend_available?
+    if SolidusSupport.frontend_available?
       config.assets.precompile += [
         'solidus_paypal_braintree/checkout.js',
         'solidus_paypal_braintree/frontend.js',
@@ -40,13 +34,13 @@ module SolidusPaypalBraintree
       paths["app/views"] << "lib/views/frontend"
     end
 
-    if backend_available?
+    if SolidusSupport.backend_available?
       config.assets.precompile += ["spree/backend/solidus_paypal_braintree.js"]
       paths["app/controllers"] << "lib/controllers/backend"
 
       # We support Solidus v1.2, which requires some different markup in the
       # source form partial. This will take precedence over lib/views/backend.
-      paths["app/views"] << "lib/views/backend_v1.2" if Gem::Version.new(Spree.solidus_version) < Gem::Version.new('1.3')
+      paths["app/views"] << "lib/views/backend_v1.2" if SolidusSupport.solidus_gem_version < Gem::Version.new('1.3')
 
       paths["app/views"] << "lib/views/backend"
     end
