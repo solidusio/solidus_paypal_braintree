@@ -6,7 +6,7 @@ SolidusPaypalBraintree = {
       clientTokens: Spree.pathFor('solidus_paypal_braintree/client_token'),
       transactions: Spree.pathFor('solidus_paypal_braintree/transactions')
     },
-    
+
     // Override to provide your own error messages.
     braintreeErrorHandle: function(braintreeError) {
       BraintreeError.getErrorFromSlug(braintreeError.code);
@@ -31,7 +31,7 @@ SolidusPaypalBraintree = {
       }
     }
   },
-  
+
   showError: function(error) {
     var $contentContainer = $("#content");
     var $flash = $("<div class='flash error'>" + error + "</div>");

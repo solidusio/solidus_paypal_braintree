@@ -1,5 +1,7 @@
 <% prefix = "payment_source[#{id}]" %>
 
+<%= render partial: "spree/shared/braintree_errors" %>
+
 <div class="hosted-fields">
   <div class="field" data-hook="card_number">
     <%= label_tag "card_number#{id}", Spree::CreditCard.human_attribute_name(:number), class: "required" %>
