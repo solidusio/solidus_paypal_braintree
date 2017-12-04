@@ -9,11 +9,8 @@ SolidusPaypalBraintree = {
 
     // Override to provide your own error messages.
     braintreeErrorHandle: function(braintreeError) {
-      var $contentContainer = $("#content");
-      var $flash = $("<div class='flash error'>" + braintreeError.name + ": " + braintreeError.message + "</div>");
-      $contentContainer.prepend($flash);
-
-      $flash.show().delay(5000).fadeOut(500);
+      BraintreeError.getErrorFromSlug(braintreeError.code);
+      SolidusPaypalBraintree.showError(error);
     },
 
     classes: {
@@ -33,6 +30,13 @@ SolidusPaypalBraintree = {
         return SolidusPaypalBraintree.ApplepayButton;
       }
     }
+  },
+
+  showError: function(error) {
+    var $contentContainer = $("#content");
+    var $flash = $("<div class='flash error'>" + error + "</div>");
+    $contentContainer.prepend($flash);
+    $flash.show().delay(5000).fadeOut(500);
   },
 
   createHostedForm: function() {
