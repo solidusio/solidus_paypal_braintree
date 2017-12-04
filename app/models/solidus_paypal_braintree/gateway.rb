@@ -4,6 +4,9 @@ module SolidusPaypalBraintree
   class Gateway < ::Spree::PaymentMethod
     include RequestProtection
 
+    # Error message from Braintree that gets returned by a non voidable transaction
+    NON_VOIDABLE_STATUS_ERROR_REGEXP = /can only be voided if status is authorized/
+
     TOKEN_GENERATION_DISABLED_MESSAGE = 'Token generation is disabled.' \
       ' To re-enable set the `token_generation_enabled` preference on the' \
       ' gateway to `true`.'.freeze
@@ -173,7 +176,14 @@ module SolidusPaypalBraintree
     def try_void(response_code)
       transaction = braintree.transaction.find(response_code)
       if transaction.status.in? SolidusPaypalBraintree::Gateway::VOIDABLE_STATUSES
-        void(response_code, nil, {})
+        # Sometimes Braintree returns a voidable status although it is not voidable anymore.
+        # When we try to void that transaction we receive an error and need to return false
+        # so Solidus can create a refund instead.
+        begin
+          void(response_code, nil, {})
+        rescue ActiveMerchant::ConnectionError => e
+          e.message.match(NON_VOIDABLE_STATUS_ERROR_REGEXP) ? false : raise(e)
+        end
       else
         false
       end

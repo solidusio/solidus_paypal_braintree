@@ -380,6 +380,32 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
           expect(gateway).to receive(:void)
           subject
         end
+
+        context 'with error response mentioning an unvoidable transaction' do
+          before do
+            expect(gateway).to receive(:void) do
+              raise ActiveMerchant::ConnectionError.new(
+                'Transaction can only be voided if status is authorized',
+                double
+              )
+            end
+          end
+
+          it { is_expected.to be(false) }
+        end
+
+        context 'with other error response' do
+          before do
+            expect(gateway).to receive(:void) do
+              raise ActiveMerchant::ConnectionError.new(
+                'Server unreachable',
+                double
+              )
+            end
+          end
+
+          it { expect { subject }.to raise_error ActiveMerchant::ConnectionError }
+        end
       end
 
       context 'for voidable paypal payment' do
