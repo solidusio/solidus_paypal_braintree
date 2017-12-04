@@ -10,14 +10,14 @@ module SolidusPaypalBraintree
       :city, :zip, :state_code, :address_line_1, :address_line_2
 
     validates :first_name, :last_name, :address_line_1, :city, :zip,
-      :state_code, :country_code, presence: true
+      :country_code, presence: true
 
     before_validation do
       self.country_code = country_code.presence || "us"
     end
 
     validates :spree_country, presence: true
-    validates :spree_state, presence: true, if: :should_match_state_model?
+    validates :state_code, :spree_state, presence: true, if: :should_match_state_model?
 
     def initialize(attributes = {})
       country_name = attributes.delete(:country_name) || ""
@@ -57,10 +57,9 @@ module SolidusPaypalBraintree
       address
     end
 
-    # Check to see if this address should match to a state
-    #   model in the database.
+    # Check to see if this address should match to a state model in the database
     def should_match_state_model?
-      spree_country.present? && spree_country.states.any?
+      spree_country.try!(:states_required?)
     end
   end
 end
