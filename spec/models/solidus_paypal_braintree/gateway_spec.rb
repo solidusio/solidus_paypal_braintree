@@ -356,6 +356,42 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       end
     end
 
+    describe '#try_void' do
+      subject { gateway.try_void(source.token) }
+
+      let(:transaction_request) do
+        class_double('Braintree::Transaction',
+          find: transaction_response)
+      end
+
+      before do
+        client = instance_double('Braintree::Gateway')
+        expect(client).to receive(:transaction) { transaction_request }
+        expect(gateway).to receive(:braintree) { client }
+      end
+
+      context 'for voidable payment' do
+        let(:transaction_response) do
+          instance_double('Braintree::Transaction',
+            status: Braintree::Transaction::Status::Authorized)
+        end
+
+        it 'voids the payment' do
+          expect(gateway).to receive(:void)
+          subject
+        end
+      end
+
+      context 'for non-voidable payment' do
+        let(:transaction_response) do
+          instance_double('Braintree::Transaction',
+            status: Braintree::Transaction::Status::Settled)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+
     describe "#create_profile" do
       let(:payment) do
         build(:payment, {

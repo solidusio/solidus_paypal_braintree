@@ -159,6 +159,25 @@ module SolidusPaypalBraintree
       end
     end
 
+    # Will void the payment depending on its state or return false
+    #
+    # Used by Solidus >= 2.4 instead of +cancel+
+    #
+    # If the transaction has not yet been settled, we can void the transaction.
+    # Otherwise, we return false so Solidus creates a refund instead.
+    #
+    # @api public
+    # @param response_code [String] the transaction id of the payment to void
+    # @return [Response|FalseClass]
+    def try_void(response_code)
+      transaction = braintree.transaction.find(response_code)
+      if transaction.status.in? SolidusPaypalBraintree::Gateway::VOIDABLE_STATUSES
+        void(response_code, nil, {})
+      else
+        false
+      end
+    end
+
     # Creates a new customer profile in Braintree
     #
     # @api public
