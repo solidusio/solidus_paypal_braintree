@@ -17,6 +17,7 @@ module SolidusPaypalBraintree
 
     VOIDABLE_STATUSES = [
       Braintree::Transaction::Status::SubmittedForSettlement,
+      Braintree::Transaction::Status::SettlementPending,
       Braintree::Transaction::Status::Authorized
     ].freeze
 
