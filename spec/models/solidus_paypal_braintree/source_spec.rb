@@ -27,25 +27,51 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     end
   end
 
-  describe "#can_capture?" do
-    subject { described_class.new.can_capture?(payment) }
+  describe '#can_capture?' do
+    let(:payment_source) { described_class.new }
+    let(:payment) { build(:payment) }
 
-    context "when the payment state is pending" do
-      let(:payment) { build(:payment, state: "pending") }
-
-      it { is_expected.to be }
+    let(:transaction_response) do
+      double(status: Braintree::Transaction::Status::Authorized)
     end
 
-    context "when the payment state is checkout" do
-      let(:payment) { build(:payment, state: "checkout") }
-
-      it { is_expected.to be }
+    let(:transaction_request) do
+      double(find: transaction_response)
     end
 
-    context "when the payment is completed" do
-      let(:payment) { build(:payment, state: "completed") }
+    subject { payment_source.can_capture?(payment) }
 
-      it { is_expected.to_not be }
+    before do
+      allow(payment_source).to receive(:braintree_client) do
+        double(transaction: transaction_request)
+      end
+    end
+
+    context 'when transaction id is not present' do
+      let(:payment) { build(:payment, response_code: nil) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when transaction has capturable status' do
+      it { is_expected.to be(true) }
+    end
+
+    context 'when transaction has non capturable status' do
+      let(:transaction_response) do
+        double(status: Braintree::Transaction::Status::SubmittedForSettlement)
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when transaction is not found at Braintreee' do
+      before do
+        allow(transaction_request).to \
+          receive(:find).and_raise(Braintree::NotFoundError)
+      end
+
+      it { is_expected.to be(false) }
     end
   end
 

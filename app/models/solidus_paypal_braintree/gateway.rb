@@ -25,6 +25,10 @@ module SolidusPaypalBraintree
       Braintree::Transaction::Status::Settled
     ].freeze
 
+    CAPTURABLE_STATUSES = [
+      Braintree::Transaction::Status::Authorized
+    ].freeze
+
     # This is useful in feature tests to avoid rate limited requests from
     # Braintree
     preference(:client_sdk_enabled, :boolean, default: true)

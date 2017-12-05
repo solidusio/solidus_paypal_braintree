@@ -30,7 +30,8 @@ module SolidusPaypalBraintree
     end
 
     def can_capture?(payment)
-      payment.pending? || payment.checkout?
+      return false unless payment && braintree_transaction(payment)
+      Gateway::CAPTURABLE_STATUSES.include?(braintree_transaction(payment).status)
     end
 
     def can_void?(payment)
