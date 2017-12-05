@@ -39,7 +39,8 @@ module SolidusPaypalBraintree
     end
 
     def can_credit?(payment)
-      payment.completed? && payment.credit_allowed > 0
+      return false unless payment && braintree_transaction(payment)
+      Gateway::REFUNDABLE_STATUSES.include?(braintree_transaction(payment).status)
     end
 
     def friendly_payment_type
