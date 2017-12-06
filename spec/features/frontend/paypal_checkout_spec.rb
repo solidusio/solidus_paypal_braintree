@@ -23,6 +23,7 @@ describe "Checkout", type: :feature, js: true do
 
     it "should check out successfully using one touch" do
       pend_if_paypal_slow do
+        expect_any_instance_of(Spree::Order).to receive(:restart_checkout_flow)
         move_through_paypal_popup
         expect(page).to have_content("Shipments")
         click_on "Place Order"
@@ -48,6 +49,7 @@ describe "Checkout", type: :feature, js: true do
       expect(page).to have_content("SHIPPING METHOD")
       click_button("Save and Continue")
       pend_if_paypal_slow do
+        expect_any_instance_of(Spree::Order).to_not receive(:restart_checkout_flow)
         move_through_paypal_popup
         expect(page).to have_content("Shipments")
         click_on "Place Order"

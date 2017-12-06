@@ -15,10 +15,11 @@ class SolidusPaypalBraintree::TransactionsController < Spree::StoreController
   def create
     transaction = SolidusPaypalBraintree::Transaction.new transaction_params
     import = SolidusPaypalBraintree::TransactionImport.new(current_order, transaction)
+    restart_checkout = params[:options] && params[:options][:restart_checkout] == "true"
 
     respond_to do |format|
       if import.valid?
-        import.import!(import_state)
+        import.import!(import_state, restart_checkout: restart_checkout)
 
         format.html { redirect_to redirect_url(import) }
         format.json { render json: { redirectUrl: redirect_url(import) } }

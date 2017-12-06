@@ -196,5 +196,23 @@ describe SolidusPaypalBraintree::TransactionImport do
         )
       end
     end
+
+    context "checkout flow", vcr: { cassette_name: 'transaction/import/valid' } do
+      it "is not restarted by default" do
+        expect(order).to_not receive(:restart_checkout_flow)
+        subject
+      end
+
+      context "with restart_checkout: true" do
+        subject do
+          described_class.new(order, transaction).import!(end_state, restart_checkout: true)
+        end
+
+        it "is restarted" do
+          expect(order).to receive(:restart_checkout_flow)
+          subject
+        end
+      end
+    end
   end
 end
