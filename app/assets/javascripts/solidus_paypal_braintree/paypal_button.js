@@ -4,9 +4,10 @@
  * @constructor
  * @param {object} element - The DOM element of your PayPal button
  */
-SolidusPaypalBraintree.PaypalButton = function(element, paypalOptions) {
+SolidusPaypalBraintree.PaypalButton = function(element, paypalOptions, options) {
   this._element = element;
   this._paypalOptions = paypalOptions || {};
+  this._options = options || {};
   this._client = null;
 
   if(!this._element) {
@@ -74,6 +75,7 @@ SolidusPaypalBraintree.PaypalButton.prototype._tokenizeCallback = function(token
 SolidusPaypalBraintree.PaypalButton.prototype._transactionParams = function(payload) {
   return {
     "payment_method_id" : this._paymentMethodId,
+    "options": this._options,
     "transaction" : {
       "email" : payload.details.email,
       "phone" : payload.details.phone,
