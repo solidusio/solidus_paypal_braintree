@@ -18,9 +18,8 @@ describe SolidusPaypalBraintree::TransactionAddress do
       }
     end
 
-    before do
-      create :country, iso: 'US'
-    end
+    let!(:country) { create :country, iso: 'US', states_required: true }
+    let!(:state) { create :state, abbr: 'WA', country: country }
 
     it { is_expected.to be true }
 
@@ -58,6 +57,12 @@ describe SolidusPaypalBraintree::TransactionAddress do
     context "no state_code" do
       let(:valid_attributes) { super().except(:state_code) }
       it { is_expected.to be false }
+
+      context "when country does not requires states" do
+        let!(:country) { create :country, iso: 'US', states_required: false }
+
+        it { is_expected.to be true }
+      end
     end
 
     context "no country_code" do
@@ -155,18 +160,18 @@ describe SolidusPaypalBraintree::TransactionAddress do
   describe '#should_match_state_model' do
     subject { described_class.new(country_code: 'US').should_match_state_model? }
 
-    it { is_expected.to be false }
+    it { is_expected.to be_falsey }
 
-    context 'country exists' do
-      let!(:us) { create :country, iso: 'US' }
+    context 'country does not require states' do
+      before { create :country, iso: 'US', states_required: false }
 
       it { is_expected.to be false }
+    end
 
-      context 'country has states' do
-        let!(:state) { create :state, country: us }
+    context 'country requires states' do
+      before { create :country, iso: 'US', states_required: true }
 
-        it { is_expected.to be true }
-      end
+      it { is_expected.to be true }
     end
   end
 
