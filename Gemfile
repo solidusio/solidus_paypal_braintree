@@ -28,7 +28,7 @@ group :development, :test do
   gem 'chromedriver-helper', require: false
   gem 'ffaker'
 
-  gem 'pg'
+  gem 'pg', '~> 0.21'
   gem 'mysql2'
 end
 
