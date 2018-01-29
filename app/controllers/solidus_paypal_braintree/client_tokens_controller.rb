@@ -14,7 +14,7 @@ module SolidusPaypalBraintree
       if params[:payment_method_id]
         @gateway = ::SolidusPaypalBraintree::Gateway.find_by!(id: params[:payment_method_id])
       else
-        @gateway = ::SolidusPaypalBraintree::Gateway.find_by!(active: true)
+        @gateway = ::SolidusPaypalBraintree::Gateway.active.available_to_store(current_store).first!
       end
     end
   end
