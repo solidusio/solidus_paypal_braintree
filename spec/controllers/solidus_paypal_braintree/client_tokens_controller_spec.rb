@@ -11,7 +11,7 @@ describe SolidusPaypalBraintree::ClientTokensController do
 
     before { user.generate_spree_api_key! }
 
-    context 'with a payment method id' do
+    context 'without a payment method id' do
       subject(:response) do
         post :create, params: { token: user.spree_api_key }
       end
@@ -24,14 +24,33 @@ describe SolidusPaypalBraintree::ClientTokensController do
         expect(json["payment_method_id"]).to eq gateway.id
       end
 
-      context 'with a payment method id' do
-        subject(:response) do
-          post :create, params: { token: user.spree_api_key, payment_method_id: gateway.id }
+      context "when there's two gateway's for different stores" do
+        let!(:store1) { create(:store, code: 'store_1') }
+        let!(:store2) { create(:store, code: 'store_2') }
+
+        before do
+          create_gateway(id: 10).tap{ |gw| store1.payment_methods << gw }
+          create_gateway(id: 11).tap{ |gw| store2.payment_methods << gw }
         end
 
-        it 'uses the selected gateway' do
-          expect(json["payment_method_id"]).to eq gateway.id
+        it "returns the correct gateway for store1" do
+          allow_any_instance_of(described_class).to receive(:current_store).and_return store1
+          expect(json["payment_method_id"]).to eq 10
         end
+        it "returns the correct gateway for store1" do
+          allow_any_instance_of(described_class).to receive(:current_store).and_return store2
+          expect(json["payment_method_id"]).to eq 11
+        end
+      end
+    end
+
+    context 'with a payment method id' do
+      subject(:response) do
+        post :create, params: { token: user.spree_api_key, payment_method_id: gateway.id }
+      end
+
+      it 'uses the selected gateway' do
+        expect(json["payment_method_id"]).to eq gateway.id
       end
     end
   end
