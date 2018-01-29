@@ -2,7 +2,22 @@
 <% id = payment_method.id %>
 
 <% content_for :head do %>
-  <%= javascript_include_tag "spree/checkout/braintree" %>
+  <script src="https://js.braintreegateway.com/web/3.22.1/js/client.min.js"></script>
+  <script src="https://js.braintreegateway.com/web/3.22.1/js/data-collector.min.js"></script>
+
+  <% if current_store.braintree_configuration.paypal? %>
+    <script src="https://js.braintreegateway.com/web/3.22.1/js/paypal.min.js"></script>
+  <% end %>
+
+  <% if current_store.braintree_configuration.credit_card? %>
+    <script src="https://js.braintreegateway.com/web/3.22.1/js/hosted-fields.min.js"></script>
+  <% end %>
+
+  <% if current_store.braintree_configuration.apple_pay? %>
+    <script src="https://js.braintreegateway.com/web/3.22.1/js/apple-pay.min.js"></script>
+  <% end %>
+
+  <%= javascript_include_tag "solidus_paypal_braintree/checkout" %>
 <% end %>
 
 <% if current_store.braintree_configuration.paypal? %>
@@ -29,19 +44,15 @@
       recipientName: '<%= "#{address.firstname} #{address.lastname}" %>'
     }
 
-    $.when(
-      $.getScript("https://js.braintreegateway.com/web/3.9.0/js/client.min.js"),
-      $.getScript("https://js.braintreegateway.com/web/3.9.0/js/paypal.min.js"),
-      $.getScript("https://js.braintreegateway.com/web/3.9.0/js/data-collector.min.js")
-    ).done(function() {
-      var button = new PaypalButton(document.querySelector("#paypal-button"));
-      button.initialize({
-        flow: 'vault',
-        enableShippingAddress: true,
-        shippingAddressOverride: address,
-        shippingAddressEditable: false
-      });
-    });
+    var paypalOptions = {
+      flow: 'vault',
+      enableShippingAddress: true,
+      shippingAddressOverride: address,
+      shippingAddressEditable: false
+    }
+
+    var button = new SolidusPaypalBraintree.createPaypalButton(document.querySelector("#paypal-button"), paypalOptions);
+    button.initialize();
   </script>
 <% end %>
 
@@ -49,4 +60,31 @@
   <fieldset class="braintree-hosted-fields" data-braintree-hosted-fields data-id="<%= id %>">
     <%= render "spree/shared/braintree_hosted_fields", id: id %>
   </fieldset>
+<% end %>
+
+<% if current_store.braintree_configuration.apple_pay? %>
+  <button id="apple-pay-button" class="apple-pay-button"></button>
+  <script>
+    var applePayButtonElement = document.getElementById('apple-pay-button');
+    var applePayOptions = {
+      paymentMethodId: <%= id %>,
+      storeName: "<%= current_store.name %>",
+      orderEmail: "<%= current_order.email %>",
+      amount: "<%= current_order.total %>",
+      shippingContact: {
+        emailAddress: '<%= current_order.email %>',
+        familyName: '<%= address.firstname %>',
+        givenName: '<%= address.lastname %>',
+        phoneNumber: '<%= address.phone %>',
+        addressLines: ['<%= address.address1 %>','<%= address.address2 %>'],
+        locality: '<%= address.city %>',
+        administrativeArea: '<%= address.state.name %>',
+        postalCode: '<%= address.zipcode %>',
+        country: '<%= address.country.name %>',
+        countryCode: '<%= address.country.iso %>'
+      }
+    };
+    var button = new SolidusPaypalBraintree.createApplePayButton(applePayButtonElement, applePayOptions);
+    button.initialize();
+  </script>
 <% end %>

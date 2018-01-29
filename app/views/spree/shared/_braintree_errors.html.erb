@@ -1,0 +1,19 @@
+<script type="text/javascript">
+  BraintreeError = {
+    HOSTED_FIELDS_FIELDS_EMPTY: "<%= I18n.t('solidus_paypal_braintree.errors.empty_fields')%>",
+    HOSTED_FIELDS_FIELDS_INVALID: "<%= I18n.t('solidus_paypal_braintree.errors.invalid_fields')%>",
+    HOSTED_FIELDS_FAILED_TOKENIZATION: "<%= I18n.t('solidus_paypal_braintree.errors.invalid_card')%>",
+    HOSTED_FIELDS_TOKENIZATION_NETWORK_ERROR: "<%= I18n.t('solidus_paypal_braintree.errors.network_error')%>",
+    HOSTED_FIELDS_FIELD_DUPLICATE_IFRAME: "<%= I18n.t('solidus_paypal_braintree.errors.duplicate_iframe')%>",
+    HOSTED_FIELDS_TOKENIZATION_FAIL_ON_DUPLICATE: "<%= I18n.t('solidus_paypal_braintree.errors.fail_on_duplicate')%>",
+    HOSTED_FIELDS_TOKENIZATION_CVV_VERIFICATION_FAILED: "<%= I18n.t('solidus_paypal_braintree.errors.cvv_verification_failed')%>",
+
+    getErrorFromSlug: function(slug) {
+      // Default error message
+      error = "<%= I18n.t('solidus_paypal_braintree.errors.default_error')%>"
+      if (slug in BraintreeError)
+        error = BraintreeError[slug]
+      return error
+    }
+  }
+</script>

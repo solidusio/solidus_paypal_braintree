@@ -1,0 +1,398 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/client_token
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <client-token>
+          <version type="integer">2</version>
+        </client-token>
+    headers:
+      Accept-Encoding:
+      - gzip
+      Accept:
+      - application/xml
+      User-Agent:
+      - Braintree Ruby Gem 2.76.0
+      X-Apiversion:
+      - '4'
+      Authorization:
+      - Basic bXdqa2t4d2NwMzJja2huZjphOTI5OGY0M2IzMGM2OTlkYjMwNzJjYzRhMDBmN2Y0OQ==
+      Content-Type:
+      - application/xml
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Tue, 18 Jul 2017 14:22:40 GMT
+      Content-Type:
+      - application/xml; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      X-Frame-Options:
+      - SAMEORIGIN
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Authentication:
+      - basic_auth
+      X-User:
+      - 3v249hqtptsg744y
+      Vary:
+      - Accept-Encoding
+      Content-Encoding:
+      - gzip
+      Etag:
+      - W/"357c18e7b2d76a7ab0cdb81ab8b12454"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - 3477979e-8b47-4f63-ba51-3da01cd012e5
+      X-Runtime:
+      - '0.193653'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIALAZblkAA6RW246jOBB9n69o9fvsgGl6O1LPjCYXCFZwJoQY8BvY6eZiQzYXEvj6LZPdvki9o5H2IQrB5arjc06V8/j9ouRNu90fiqb+emv+YdzebGveiKJ+/nq7CZ3PD7ffv3165LLY1sfPx6ba1t8+3dw8tqk8bb9tO4xYjPs0Gp28sukWE5yLOGgyC++2yjH0+0DJE0O043O8y+pVsSw8M0GsStDK8nvfSpRv+iWuliEtfTWD3yvbn84s5iaXZbi6kJ53JMQ5K7kNz6Yf+Xek1DFYkZJUfr+yknKDnlzSscgxWBQ8JfFq5Jc/LqQzzvC5LB3IM206v2wMf3J30fn9suqW09nen/44+87FhO+OKFNyRZokso0YyepnKDrmcttXDeAyLKYOZjolXISwp2RnEeFDGpGnFFH7Z2RaqTrut3NR8qnfJejYZCopgJMyQ7ZKI0G5OsP5cSPmwZn3TbtAzjld2z3UqxI1ulso3CWRPIk5liwSuXCplcTVKUGj47JcGX43OgLfZeo6EOO3xMIV66suLUWRhUKlPW0gpsxcKbNa8zDeLazkskCkzRTbMYt2SRzsMnQ34II8h8ylWp/eK3dZvD4XLLJRGmOIN+VVL/yCzyvORYIuO4gxVpCbxvgAuhfpPDD43L9fdKOcu9WJI+fEXNxuJ3bBlQO6B6ANraG2FMixFwrwhI1Bpn6bRYAJ5TnE9Iv+I7799t+a8cCXd/CU03NEDW7SLpt4957KDTEf98vioU1i0rMYcv2Cy+EcMTVS56P98H5iI6h3zLrf02bIF9l5NpfgeaK5/NOrP8j9zzkWkXNKoostXFny36zxH9wUT6CZcHPN72yDaCliLAPAkqiLZFAfcpkMYrjr2PA5/GptwK2CHbfGhySWyyQypdZ3YwUyi8AT89XVz1d/YZ3Dq5ycI9aSChesJPdUyoRK7G5mO2cZSjuaYbSqG5NN8z2dPVh8Bv40oVcd5yxCPA9nI7opcccdaYQbnAeh83PrknI587oABa2YBX+xHi/TqSSaZz1HhHLKLX3L7w/tPbl1nSN3L3Lw13p05hPwSk3BD3jMLM2p9nTwrg+1LiwG/8XjA1vb0KtGK9xRP2gKPmP0/3jsGvdBn0Dv0TJFI1NM7DNwfU6i88s+5krQkxirN/Wzmh6yifbZ5ZBZwtPYQS+D11SCJnAutuNqdIJ+OomZ3YaKGgKNurTz7plyDhxtoG9gTckO5tFR+1BjyhBToOeJrQeuYB32ubQKX/oSZoBi4G2i67zt5+k7Hygz5+ATmJ8wEyEPeFPHp4A3jex6FQm9Z6jLDQr+xwcWvcv9OttmTglcmC+5awJz3QSsF2PgFeYYh7MklsQcjaYZCgafUkpmXm3AOUkLNTX/73rhlYfXOb+OhjvJ4iqolyH+iyB8JIjtSfQ8eAD4AE4ftF9adp3nOZ+DV+g43669e7gDe+E6hoh9HXPMENlf5+SAv9tuSMvcjV6jm07PLmLyGvRSxF6hUQW833uShoH26jtcgeZ2x5SUvBj4fVlb1CTPVFBk1rPWWwqtX/d21m5O/LVnTyngB9y9iMdnuJv1HbkEX1rwvOfgjwju8TQmucadRQ6cR2vvdGzA5IAuz3p/BTFlZjHAg8VTbHx9/HL9H/Dp8cv7fwh/AwAA//8DACl537lYCAAA
+    http_version:
+  recorded_at: Tue, 18 Jul 2017 14:22:40 GMT
+- request:
+    method: post
+    uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/customers
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <customer>
+          <payment-method-nonce>fake-valid-nonce</payment-method-nonce>
+        </customer>
+    headers:
+      Accept-Encoding:
+      - gzip
+      Accept:
+      - application/xml
+      User-Agent:
+      - Braintree Ruby Gem 2.76.0
+      X-Apiversion:
+      - '4'
+      Authorization:
+      - Basic bXdqa2t4d2NwMzJja2huZjphOTI5OGY0M2IzMGM2OTlkYjMwNzJjYzRhMDBmN2Y0OQ==
+      Content-Type:
+      - application/xml
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Tue, 18 Jul 2017 14:22:43 GMT
+      Content-Type:
+      - application/xml; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      X-Frame-Options:
+      - SAMEORIGIN
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Authentication:
+      - basic_auth
+      X-User:
+      - 3v249hqtptsg744y
+      Vary:
+      - Accept-Encoding
+      Content-Encoding:
+      - gzip
+      Etag:
+      - W/"28dc72e5b6154240e13442b0032b668b"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - bd0192de-1a62-440d-81a6-6e28ae6b2adb
+      X-Runtime:
+      - '0.413994'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIALMZblkAA6xVTXObMBC951d4uCsYgms7g8mtx17a9NBLR6DFqBYSlURi//uuMF+OjeNMemPfvpWW3afd+GlfitkLaMOV3HjB/dybgcwU43K78Z5/fCUr7ym5i7PaWFWCTu5ms5izJFjPgzBahg+xj5YD0ZkVVFqC9lKz7Tr8s0zLZb5bFEgaex0759pYImkJM8nFxrO6Bs9vXIJOeTJVVlQeznAoKRdnaFUoeX5GTvdn2CukhtsL92mgFhihdmYPFWw8hqblJXhJOA+WZL4kwepHED2G4WP08Cv2h4Amvq7Yx+KHgOP9TdFJzkEw06fEuCUZ1cy0h1Kt6cFz3lP/EUEs5UJgOwllTIMxHX5spN52HWyxrtPktMtjeCBPt7ElTDazu+1yS1uvsRrAdolPkGBvQTJXtas0oTIquJ26SsMWX8CEs1LGUkHwWUCyjoL5MvbH0Ph3amn1oYEJFVVBw8kff8t8uIUpa+wBz96hXiv45zTdnvJJZTdn+BO6RL3KJELhrVaOI3vciZq465Kf3FDMrLfHjEIJhjKdKoFTnBtGnIrkWe6kepV40oANtGMpVU64MTWVGSSOeI72EZ+v7Ace30B1wrao3eT5+4jZox2fQcrt8MtHc3DmtBZd4qlSAqj0Elc6R22cA7nW2BaCL6YW7gdGh771dCGwr7hu8iGlkrZIgjD2z8AL7ANQjeUL5yf0Bj1hA3ube06FgTZqlEkBVNgChQJD2iOso/GSboHUWiSFtZV59H1qDFhzn2rKpRtLW/zBV3q4R+34FT2UIO3vEmyh2G+htsp/QY3eV3L7BPKFayUdYWOoZKna48jtz+9vRD2515BSuRtSO0E7ajNUoyRYrYLYb43Oh6loJUba7oCeoKGiqKNvCn3t9+BTrM6aJT3ED1hHM3VqMs0r14vTLTQ8M6t2IJMy1Iuoiv2j1flqyf/WzSxLG01jZTguOZ3QfLFYRut8sc6DnD2s2JcszwIE8mixSnPUzGRof/Z/mEwvIEtFDNtNaKr3jyI0pnF8cRcr0rz28WY+AZrZF7dzEC4u9rdD8mx1f2R2XF/b15f2tZV9w8K+aV1fXdZXVvWNi/rWNX3rkr55Rb+7oP/LEvn0E4j9kdp6A9Ac5JTc/QMAAP//AwBBpK6gOwwAAA==
+    http_version:
+  recorded_at: Tue, 18 Jul 2017 14:22:43 GMT
+- request:
+    method: post
+    uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/transactions
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <transaction>
+          <amount>110.00</amount>
+          <order-id>R9999999-123ABC</order-id>
+          <channel>Solidus</channel>
+          <options>
+            <store-in-vault-on-success type="boolean">true</store-in-vault-on-success>
+          </options>
+          <payment-method-token>m2r54p</payment-method-token>
+          <billing>
+            <first-name>John</first-name>
+            <last-name>Doe</last-name>
+            <street-address>PO Box 1337 Northwest</street-address>
+            <locality>Herndon</locality>
+            <postal-code>21088-0255</postal-code>
+            <region>AL</region>
+            <country-code-alpha2>US</country-code-alpha2>
+          </billing>
+          <customer-id>190124723</customer-id>
+          <type>sale</type>
+        </transaction>
+    headers:
+      Accept-Encoding:
+      - gzip
+      Accept:
+      - application/xml
+      User-Agent:
+      - Braintree Ruby Gem 2.76.0
+      X-Apiversion:
+      - '4'
+      Authorization:
+      - Basic bXdqa2t4d2NwMzJja2huZjphOTI5OGY0M2IzMGM2OTlkYjMwNzJjYzRhMDBmN2Y0OQ==
+      Content-Type:
+      - application/xml
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Tue, 18 Jul 2017 14:22:44 GMT
+      Content-Type:
+      - application/xml; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      X-Frame-Options:
+      - SAMEORIGIN
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Authentication:
+      - basic_auth
+      X-User:
+      - 3v249hqtptsg744y
+      Vary:
+      - Accept-Encoding
+      Content-Encoding:
+      - gzip
+      Etag:
+      - W/"7eb6abfa12a23c04cf2bf9f7a0ebd148"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - '09c30c87-94f3-4e77-9856-74972ec2fab4'
+      X-Runtime:
+      - '0.456031'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        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
+    http_version:
+  recorded_at: Tue, 18 Jul 2017 14:22:45 GMT
+- request:
+    method: get
+    uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/transactions/k0hjy7zm
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip
+      Accept:
+      - application/xml
+      User-Agent:
+      - Braintree Ruby Gem 2.76.0
+      X-Apiversion:
+      - '4'
+      Authorization:
+      - Basic bXdqa2t4d2NwMzJja2huZjphOTI5OGY0M2IzMGM2OTlkYjMwNzJjYzRhMDBmN2Y0OQ==
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 18 Jul 2017 14:22:46 GMT
+      Content-Type:
+      - application/xml; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      X-Frame-Options:
+      - SAMEORIGIN
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Authentication:
+      - basic_auth
+      X-User:
+      - 3v249hqtptsg744y
+      Vary:
+      - Accept-Encoding
+      Content-Encoding:
+      - gzip
+      Etag:
+      - W/"b1f0cd0911699c05a5ac5b19a06db9a7"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - cd7ed933-1378-460c-80fb-935c0217587c
+      X-Runtime:
+      - '0.207006'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        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
+    http_version:
+  recorded_at: Tue, 18 Jul 2017 14:22:46 GMT
+- request:
+    method: put
+    uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/transactions/k0hjy7zm/submit_for_settlement
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <transaction>
+          <amount>110.00</amount>
+        </transaction>
+    headers:
+      Accept-Encoding:
+      - gzip
+      Accept:
+      - application/xml
+      User-Agent:
+      - Braintree Ruby Gem 2.76.0
+      X-Apiversion:
+      - '4'
+      Authorization:
+      - Basic bXdqa2t4d2NwMzJja2huZjphOTI5OGY0M2IzMGM2OTlkYjMwNzJjYzRhMDBmN2Y0OQ==
+      Content-Type:
+      - application/xml
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 18 Jul 2017 14:22:47 GMT
+      Content-Type:
+      - application/xml; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      X-Frame-Options:
+      - SAMEORIGIN
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Authentication:
+      - basic_auth
+      X-User:
+      - 3v249hqtptsg744y
+      Vary:
+      - Accept-Encoding
+      Content-Encoding:
+      - gzip
+      Etag:
+      - W/"e6df2921402816ca3e06896ef0881ac7"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - 6006c82f-4ce5-469b-b76d-410cce4096dc
+      X-Runtime:
+      - '0.268542'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        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
+    http_version:
+  recorded_at: Tue, 18 Jul 2017 14:22:47 GMT
+- request:
+    method: get
+    uri: https://api.sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/transactions/k0hjy7zm
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip
+      Accept:
+      - application/xml
+      User-Agent:
+      - Braintree Ruby Gem 2.76.0
+      X-Apiversion:
+      - '4'
+      Authorization:
+      - Basic bXdqa2t4d2NwMzJja2huZjphOTI5OGY0M2IzMGM2OTlkYjMwNzJjYzRhMDBmN2Y0OQ==
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 18 Jul 2017 14:22:48 GMT
+      Content-Type:
+      - application/xml; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      X-Frame-Options:
+      - SAMEORIGIN
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Authentication:
+      - basic_auth
+      X-User:
+      - 3v249hqtptsg744y
+      Vary:
+      - Accept-Encoding
+      Content-Encoding:
+      - gzip
+      Etag:
+      - W/"0e79d5f15b6d5ab0eed5f9c8ca001547"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - 7bc4b918-e383-4c91-af60-fd7e8b67a595
+      X-Runtime:
+      - '0.180692'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        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
+    http_version:
+  recorded_at: Tue, 18 Jul 2017 14:22:48 GMT
+recorded_with: VCR 3.0.3

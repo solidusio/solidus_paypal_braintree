@@ -1,3 +1,5 @@
+require 'solidus_support'
+
 module SolidusPaypalBraintree
   class Engine < Rails::Engine
     isolate_namespace SolidusPaypalBraintree
@@ -10,7 +12,7 @@ module SolidusPaypalBraintree
 
     initializer "register_solidus_paypal_braintree_gateway", after: "spree.register.payment_methods" do |app|
       app.config.spree.payment_methods << SolidusPaypalBraintree::Gateway
-      Spree::PermittedAttributes.source_attributes << :nonce
+      Spree::PermittedAttributes.source_attributes.concat [:nonce, :payment_type]
     end
 
     def self.activate
@@ -19,30 +21,33 @@ module SolidusPaypalBraintree
       end
     end
 
-    config.assets.precompile += ["spree/backend/solidus_paypal_braintree"]
-
     config.to_prepare(&method(:activate).to_proc)
 
-    def self.frontend_available?
-      defined?(Spree::Frontend::Engine) == "constant"
-    end
-
-    def self.backend_available?
-      defined?(Spree::Backend::Engine) == "constant"
-    end
-
-    if frontend_available?
+    if SolidusSupport.frontend_available?
       config.assets.precompile += [
-        'spree/frontend/solidus_paypal_braintree',
-        'spree/frontend/paypal_button',
-        'spree/checkout/braintree'
+        'solidus_paypal_braintree/checkout.js',
+        'solidus_paypal_braintree/frontend.js',
+        'spree/frontend/paypal_button.js',
+        'spree/frontend/apple_pay_button.js'
       ]
       paths["app/controllers"] << "lib/controllers/frontend"
       paths["app/views"] << "lib/views/frontend"
     end
 
-    if backend_available?
+    if SolidusSupport.backend_available?
+      config.assets.precompile += ["spree/backend/solidus_paypal_braintree.js"]
       paths["app/controllers"] << "lib/controllers/backend"
+
+      # We support Solidus v1.2, which requires some different markup in the
+      # source form partial. This will take precedence over lib/views/backend.
+      paths["app/views"] << "lib/views/backend_v1.2" if SolidusSupport.solidus_gem_version < Gem::Version.new('1.3')
+
+      # Solidus v2.4 introduced preference field partials but does not ship a hash field type.
+      # This is solved in Solidus v2.5.
+      if SolidusSupport.solidus_gem_version <= Gem::Version.new('2.5.0')
+        paths["app/views"] << "lib/views/backend_v2.4"
+      end
+
       paths["app/views"] << "lib/views/backend"
     end
   end

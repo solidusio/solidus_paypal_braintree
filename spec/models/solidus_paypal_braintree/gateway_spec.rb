@@ -91,7 +91,20 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       it 'returns a successful billing response', aggregate_failures: true do
         expect(subject).to be_a ActiveMerchant::Billing::Response
         expect(subject).to be_success
-        expect(subject).to be_test
+      end
+    end
+
+    shared_examples "protects against connection errors" do
+      context 'when a timeout error happens' do
+        before do
+          expect_any_instance_of(Braintree::TransactionGateway).to receive(gateway_action) do
+            raise Braintree::BraintreeError
+          end
+        end
+
+        it 'raises ActiveMerchant::ConnectionError' do
+          expect { subject }.to raise_error ActiveMerchant::ConnectionError
+        end
       end
     end
 
@@ -147,19 +160,29 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       it { is_expected.to eq "paypal_braintree" }
     end
 
-    describe '#purchase', vcr: { cassette_name: 'gateway/purchase' } do
+    describe '#purchase' do
       subject(:purchase) { gateway.purchase(1000, source, gateway_options) }
 
-      include_examples "successful response"
+      context 'successful purchase', vcr: { cassette_name: 'gateway/purchase' } do
+        include_examples "successful response"
 
-      it 'submits the transaction for settlement', aggregate_failures: true do
-        expect(purchase.message).to eq 'submitted_for_settlement'
-        expect(purchase.authorization).to be_present
+        it 'submits the transaction for settlement', aggregate_failures: true do
+          expect(purchase.message).to eq 'submitted_for_settlement'
+          expect(purchase.authorization).to be_present
+        end
+      end
+
+      include_examples "protects against connection errors" do
+        let(:gateway_action) { :sale }
       end
     end
 
     describe "#authorize" do
       subject(:authorize) { gateway.authorize(1000, source, gateway_options) }
+
+      include_examples "protects against connection errors" do
+        let(:gateway_action) { :sale }
+      end
 
       context 'successful authorization', vcr: { cassette_name: 'gateway/authorize' } do
         include_examples "successful response"
@@ -245,33 +268,57 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       end
     end
 
-    describe "#capture", vcr: { cassette_name: 'gateway/capture' } do
+    describe "#capture" do
       subject(:capture) { gateway.capture(1000, authorized_id, {}) }
 
-      include_examples "successful response"
+      context 'successful capture', vcr: { cassette_name: 'gateway/capture' } do
+        include_examples "successful response"
 
-      it 'submits the transaction for settlement' do
-        expect(capture.message).to eq "submitted_for_settlement"
+        it 'submits the transaction for settlement' do
+          expect(capture.message).to eq "submitted_for_settlement"
+        end
+      end
+
+      context 'with authorized transaction', vcr: { cassette_name: 'gateway/authorized_transaction' } do
+        include_examples "protects against connection errors" do
+          let(:gateway_action) { :submit_for_settlement }
+        end
       end
     end
 
-    describe "#credit", vcr: { cassette_name: 'gateway/credit' } do
+    describe "#credit" do
       subject(:credit) { gateway.credit(2000, source, settled_id, {}) }
 
-      include_examples "successful response"
+      context 'successful credit', vcr: { cassette_name: 'gateway/credit' } do
+        include_examples "successful response"
 
-      it 'credits the transaction' do
-        expect(credit.message).to eq 'submitted_for_settlement'
+        it 'credits the transaction' do
+          expect(credit.message).to eq 'submitted_for_settlement'
+        end
+      end
+
+      context 'with settled transaction', vcr: { cassette_name: 'gateway/settled_transaction' } do
+        include_examples "protects against connection errors" do
+          let(:gateway_action) { :refund }
+        end
       end
     end
 
-    describe "#void", vcr: { cassette_name: 'gateway/void' } do
+    describe "#void" do
       subject(:void) { gateway.void(authorized_id, source, {}) }
 
-      include_examples "successful response"
+      context 'successful void', vcr: { cassette_name: 'gateway/void' } do
+        include_examples "successful response"
 
-      it 'voids the transaction' do
-        expect(void.message).to eq 'voided'
+        it 'voids the transaction' do
+          expect(void.message).to eq 'voided'
+        end
+      end
+
+      context 'with authorized transaction', vcr: { cassette_name: 'gateway/authorized_transaction' } do
+        include_examples "protects against connection errors" do
+          let(:gateway_action) { :void }
+        end
       end
     end
 
@@ -303,9 +350,83 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       end
 
       context "when the transaction is not found", vcr: { cassette_name: 'gateway/cancel/missing' } do
-        it 'raises an error', aggregate_failures: true do
-          expect{ cancel }.to raise_error Braintree::NotFoundError
+        it 'raises an error' do
+          expect{ cancel }.to raise_error ActiveMerchant::ConnectionError
         end
+      end
+    end
+
+    describe '#try_void' do
+      subject { gateway.try_void(source.token) }
+
+      let(:transaction_request) do
+        class_double('Braintree::Transaction',
+          find: transaction_response)
+      end
+
+      before do
+        client = instance_double('Braintree::Gateway')
+        expect(client).to receive(:transaction) { transaction_request }
+        expect(gateway).to receive(:braintree) { client }
+      end
+
+      context 'for voidable payment' do
+        let(:transaction_response) do
+          instance_double('Braintree::Transaction',
+            status: Braintree::Transaction::Status::Authorized)
+        end
+
+        it 'voids the payment' do
+          expect(gateway).to receive(:void)
+          subject
+        end
+
+        context 'with error response mentioning an unvoidable transaction' do
+          before do
+            expect(gateway).to receive(:void) do
+              raise ActiveMerchant::ConnectionError.new(
+                'Transaction can only be voided if status is authorized',
+                double
+              )
+            end
+          end
+
+          it { is_expected.to be(false) }
+        end
+
+        context 'with other error response' do
+          before do
+            expect(gateway).to receive(:void) do
+              raise ActiveMerchant::ConnectionError.new(
+                'Server unreachable',
+                double
+              )
+            end
+          end
+
+          it { expect { subject }.to raise_error ActiveMerchant::ConnectionError }
+        end
+      end
+
+      context 'for voidable paypal payment' do
+        let(:transaction_response) do
+          instance_double('Braintree::Transaction',
+            status: Braintree::Transaction::Status::SettlementPending)
+        end
+
+        it 'voids the payment' do
+          expect(gateway).to receive(:void)
+          subject
+        end
+      end
+
+      context 'for non-voidable payment' do
+        let(:transaction_response) do
+          instance_double('Braintree::Transaction',
+            status: Braintree::Transaction::Status::Settled)
+        end
+
+        it { is_expected.to be(false) }
       end
     end
 
@@ -358,22 +479,31 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     end
 
     shared_examples "sources_by_order" do
-      let(:order) { FactoryGirl.create :order, user: user, state: "complete", completed_at: DateTime.current }
+      let(:order) { FactoryBot.create :order, user: user, state: "complete", completed_at: Time.current }
       let(:gateway) { new_gateway.tap(&:save!) }
 
-      let(:other_payment_method) { FactoryGirl.create(:payment_method) }
+      let(:other_payment_method) { FactoryBot.create(:payment_method) }
 
       let(:source_without_profile) do
-        SolidusPaypalBraintree::Source.create!(payment_method_id: gateway.id, user_id: user.id)
+        SolidusPaypalBraintree::Source.create!(
+          payment_method_id: gateway.id,
+          payment_type: payment_type,
+          user_id: user.id
+        )
       end
+
       let(:source_with_profile) do
-        SolidusPaypalBraintree::Source.create!(payment_method_id: gateway.id, user_id: user.id).tap do |source|
+        SolidusPaypalBraintree::Source.create!(
+          payment_method_id: gateway.id,
+          payment_type: payment_type,
+          user_id: user.id
+        ).tap do |source|
           source.create_customer!(user: user)
           source.save!
         end
       end
 
-      let!(:source_payment) { FactoryGirl.create(:payment, order: order, payment_method_id: payment_method_id, source: source) }
+      let!(:source_payment) { FactoryBot.create(:payment, order: order, payment_method_id: payment_method_id, source: source) }
 
       context "when the order has payments with the braintree payment method" do
         let(:payment_method_id) { gateway.id }
@@ -397,7 +527,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
 
       context "when the order has no payments with the braintree payment method" do
         let(:payment_method_id) { other_payment_method.id }
-        let(:source) { FactoryGirl.create :credit_card }
+        let(:source) { FactoryBot.create :credit_card }
 
         it "returns no results" do
           expect(subject.to_a).to eql([])
@@ -407,7 +537,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
 
     describe "#sources_by_order" do
       let(:gateway) { new_gateway.tap(&:save!) }
-      let(:order) { FactoryGirl.create :order, user: user, state: "complete", completed_at: DateTime.current }
+      let(:order) { FactoryBot.create :order, user: user, state: "complete", completed_at: Time.current }
 
       subject { gateway.sources_by_order(order) }
 
@@ -415,7 +545,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     end
 
     describe "#reusable_sources" do
-      let(:order) { FactoryGirl.build :order, user: user }
+      let(:order) { FactoryBot.build :order, user: user }
       let(:gateway) { new_gateway.tap(&:save!) }
 
       subject { gateway.reusable_sources(order) }
@@ -426,14 +556,22 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
 
       context "when an order is not completed" do
         context "when the order has a user id" do
-          let(:user) { FactoryGirl.create(:user) }
+          let(:user) { FactoryBot.create(:user) }
 
           let!(:source_without_profile) do
-            SolidusPaypalBraintree::Source.create!(payment_method_id: gateway.id, user_id: user.id)
+            SolidusPaypalBraintree::Source.create!(
+              payment_method_id: gateway.id,
+              payment_type: payment_type,
+              user_id: user.id
+            )
           end
 
           let!(:source_with_profile) do
-            SolidusPaypalBraintree::Source.create!(payment_method_id: gateway.id, user_id: user.id).tap do |source|
+            SolidusPaypalBraintree::Source.create!(
+              payment_method_id: gateway.id,
+              payment_type: payment_type,
+              user_id: user.id
+            ).tap do |source|
               source.create_customer!(user: user)
               source.save!
             end

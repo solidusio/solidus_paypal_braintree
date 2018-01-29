@@ -1,5 +1,7 @@
 <% prefix = "payment_source[#{id}]" %>
 
+<%= render partial: "spree/shared/braintree_errors" %>
+
 <div class="hosted-fields">
   <div class="field" data-hook="card_number">
     <%= label_tag "card_number#{id}", Spree::CreditCard.human_attribute_name(:number), class: "required" %>
@@ -21,5 +23,6 @@
   </div>
 
   <div class="clear"></div>
+  <input type="hidden" name="<%= prefix %>[payment_type]" value="<%= SolidusPaypalBraintree::Source::CREDIT_CARD %>">
   <input type="hidden" id="payment_method_nonce" name="<%= prefix %>[nonce]">
 </div>

@@ -95,7 +95,8 @@ describe SolidusPaypalBraintree::TransactionImport do
     let(:transaction) do
       SolidusPaypalBraintree::Transaction.new nonce: 'fake-valid-nonce',
         payment_method: payment_method, address: transaction_address,
-        payment_type: "ApplePay", phone: '123-456-7890', email: 'user@example.com'
+        payment_type: SolidusPaypalBraintree::Source::PAYPAL,
+        phone: '123-456-7890', email: 'user@example.com'
     end
 
     before do

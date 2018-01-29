@@ -1,6 +1,14 @@
 require 'spec_helper'
 
 RSpec.describe SolidusPaypalBraintree::Source, type: :model do
+  it 'is invalid without a payment_type set' do
+    expect(described_class.new).to be_invalid
+  end
+
+  it 'is invalid with payment_type set to unknown type' do
+    expect(described_class.new(payment_type: 'AndroidPay')).to be_invalid
+  end
+
   describe '#payment_method' do
     it 'uses spree_payment_method' do
       expect(described_class.new.build_payment_method).to be_a Spree::PaymentMethod
@@ -41,25 +49,51 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     end
   end
 
-  describe "#can_void?" do
-    subject { described_class.new.can_void?(payment) }
+  describe '#can_void?' do
+    let(:payment_source) { described_class.new }
+    let(:payment) { build(:payment) }
 
-    context "when the payment failed" do
-      let(:payment) { build(:payment, state: "failed") }
-
-      it { is_expected.not_to be }
+    let(:transaction_response) do
+      double(status: Braintree::Transaction::Status::SubmittedForSettlement)
     end
 
-    context "when the payment is already voided" do
-      let(:payment) { build(:payment, state: "void") }
-
-      it { is_expected.not_to be }
+    let(:transaction_request) do
+      double(find: transaction_response)
     end
 
-    context "when the payment is completed" do
-      let(:payment) { build(:payment, state: "completed") }
+    subject { payment_source.can_void?(payment) }
 
-      it { is_expected.to be }
+    before do
+      allow(payment_source).to receive(:braintree_client) do
+        double(transaction: transaction_request)
+      end
+    end
+
+    context 'when transaction id is not present' do
+      let(:payment) { build(:payment, response_code: nil) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when transaction has voidable status' do
+      it { is_expected.to be(true) }
+    end
+
+    context 'when transaction has non voidable status' do
+      let(:transaction_response) do
+        double(status: Braintree::Transaction::Status::Settled)
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when transaction is not found at Braintreee' do
+      before do
+        allow(transaction_request).to \
+          receive(:find).and_raise(Braintree::NotFoundError)
+      end
+
+      it { is_expected.to be(false) }
     end
   end
 
@@ -163,53 +197,128 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     end
   end
 
-  describe "#last_4", vcr: { cassette_name: "source/last4" } do
-    let(:method) { new_gateway.tap(&:save!) }
-    let(:instance) { described_class.create!(payment_type: "CreditCard", payment_method: method) }
-    let(:braintree_client) { method.braintree }
-
-    subject { instance.last_4 }
+  shared_context 'unknown source token' do
+    let(:braintree_payment_method) { double }
 
     before do
-      customer = braintree_client.customer.create
-      expect(customer.customer.id).to be
-
-      method = braintree_client.payment_method.create({
-        payment_method_nonce: "fake-valid-country-of-issuance-usa-nonce", customer_id: customer.customer.id
-      })
-      expect(method.payment_method.token).to be
-
-      instance.update_attributes!(token: method.payment_method.token)
-    end
-
-    it "delegates to the braintree payment method" do
-      method = braintree_client.payment_method.find(instance.token)
-      expect(subject).to eql(method.last_4)
+      allow(braintree_payment_method).to receive(:find) do
+        raise Braintree::NotFoundError
+      end
+      allow(payment_source).to receive(:braintree_client) do
+        double(payment_method: braintree_payment_method)
+      end
     end
   end
 
-  describe "#card_type", vcr: { cassette_name: "source/card_type" } do
-    let(:method) { new_gateway.tap(&:save!) }
-    let(:instance) { described_class.create!(payment_type: "CreditCard", payment_method: method) }
-    let(:braintree_client) { method.braintree }
-
-    subject { instance.card_type }
+  shared_context 'nil source token' do
+    let(:braintree_payment_method) { double }
 
     before do
-      customer = braintree_client.customer.create
-      expect(customer.customer.id).to be
+      allow(braintree_payment_method).to receive(:find) do
+        raise ArgumentError
+      end
+      allow(payment_source).to receive(:braintree_client) do
+        double(payment_method: braintree_payment_method)
+      end
+    end
+  end
 
-      method = braintree_client.payment_method.create({
-        payment_method_nonce: "fake-valid-country-of-issuance-usa-nonce", customer_id: customer.customer.id
-      })
-      expect(method.payment_method.token).to be
+  describe "#last_4" do
+    let(:method) { new_gateway.tap(&:save!) }
+    let(:payment_source) { described_class.create!(payment_type: "CreditCard", payment_method: method) }
+    let(:braintree_client) { method.braintree }
 
-      instance.update_attributes!(token: method.payment_method.token)
+    subject { payment_source.last_4 }
+
+    context 'when token is known at braintree', vcr: { cassette_name: "source/last4" } do
+      before do
+        customer = braintree_client.customer.create
+        expect(customer.customer.id).to be
+
+        method = braintree_client.payment_method.create({
+          payment_method_nonce: "fake-valid-country-of-issuance-usa-nonce", customer_id: customer.customer.id
+        })
+        expect(method.payment_method.token).to be
+
+        payment_source.update_attributes!(token: method.payment_method.token)
+      end
+
+      it "delegates to the braintree payment method" do
+        method = braintree_client.payment_method.find(payment_source.token)
+        expect(subject).to eql(method.last_4)
+      end
     end
 
-    it "delegates to the braintree payment method" do
-      method = braintree_client.payment_method.find(instance.token)
-      expect(subject).to eql(method.card_type)
+    context 'when the source token is not known at Braintree' do
+      include_context 'unknown source token'
+
+      it { is_expected.to be(nil) }
+    end
+
+    context 'when the source token is nil' do
+      include_context 'nil source token'
+
+      it { is_expected.to be(nil) }
+    end
+  end
+
+  describe "#display_number" do
+    let(:payment_source) { described_class.new }
+    subject { payment_source.display_number }
+
+    context "when last_digits is a number" do
+      before do
+        allow(payment_source).to receive(:last_digits).and_return('1234')
+      end
+
+      it { is_expected.to eq 'XXXX-XXXX-XXXX-1234' }
+    end
+
+    context "when last_digits is nil" do
+      before do
+        allow(payment_source).to receive(:last_digits).and_return(nil)
+      end
+
+      it { is_expected.to eq 'XXXX-XXXX-XXXX-XXXX' }
+    end
+  end
+
+  describe "#card_type" do
+    let(:method) { new_gateway.tap(&:save!) }
+    let(:payment_source) { described_class.create!(payment_type: "CreditCard", payment_method: method) }
+    let(:braintree_client) { method.braintree }
+
+    subject { payment_source.card_type }
+
+    context "when the token is known at braintree", vcr: { cassette_name: "source/card_type" } do
+      before do
+        customer = braintree_client.customer.create
+        expect(customer.customer.id).to be
+
+        method = braintree_client.payment_method.create({
+          payment_method_nonce: "fake-valid-country-of-issuance-usa-nonce", customer_id: customer.customer.id
+        })
+        expect(method.payment_method.token).to be
+
+        payment_source.update_attributes!(token: method.payment_method.token)
+      end
+
+      it "delegates to the braintree payment method" do
+        method = braintree_client.payment_method.find(payment_source.token)
+        expect(subject).to eql(method.card_type)
+      end
+    end
+
+    context 'when the source token is not known at Braintree' do
+      include_context 'unknown source token'
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the source token is nil' do
+      include_context 'nil source token'
+
+      it { is_expected.to be_nil }
     end
   end
 end

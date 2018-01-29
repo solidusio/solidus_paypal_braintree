@@ -15,7 +15,7 @@ shared_context "checkout setup" do
     user = create(:user)
     order.user = user
     order.number = "R9999999"
-    order.update!
+    recalculate(order)
 
     allow_any_instance_of(Spree::CheckoutController).to receive_messages(current_order: order)
     allow_any_instance_of(Spree::CheckoutController).to receive_messages(try_spree_current_user: user)
@@ -65,7 +65,7 @@ describe 'entering credit card details', type: :feature, js: true do
     before(:each) do
       expect(page).to have_selector("iframe[type='number']")
       click_button "Save and Continue"
-      expect(page).to have_text "BraintreeError: All fields are empty. Cannot tokenize empty card fields."
+      expect(page).to have_text I18n.t("solidus_paypal_braintree.errors.empty_fields")
       expect(page).to have_selector("input[type='submit']:enabled")
     end
 
@@ -75,7 +75,7 @@ describe 'entering credit card details', type: :feature, js: true do
         expect(page).to have_selector("input[type='submit']:enabled")
 
         click_button "Save and Continue"
-        expect(page).to have_text "BraintreeError: All fields are empty. Cannot tokenize empty card fields."
+        expect(page).to have_text I18n.t("solidus_paypal_braintree.errors.empty_fields")
       end
     end
 

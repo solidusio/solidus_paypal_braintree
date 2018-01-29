@@ -1,12 +1,34 @@
 en:
+  activerecord:
+    models:
+      solidus_paypal_braintree/gateway: Braintree
   spree:
     admin:
       tab:
         braintree: Braintree
+    client_sdk_enabled: Client SDK enabled?
+    environment: Environment
+    merchant_currency_map: Merchant currency map
+    merchant_id: Merchant ID
+    paypal_payee_email_map: Paypal payee email map
+    private_key: Private key
+    public_key: Public key
+    token_generation_enabled: Token generation enabled?
   solidus_paypal_braintree:
+    braintree: Braintree
     nonce: Nonce
     token: Token
+    errors:
+      default_error: "Something bad happened!"
+      empty_fields: "All fields are empty! Please fill out the form."
+      invalid_fields: "Some payment input fields are invalid."
+      invalid_card: "Credit card data is incorrect."
+      network_error: "Network error occurred."
+      duplicate_iframe: "Duplicate Braintree iframe."
+      fail_on_duplicate: "This payment method already exists in your vault."
+      cvv_verification_failed: "CVV did not pass verification."
     payment_type:
+      label: Payment Type
       apple_pay_card: Apple Pay
       credit_card: Credit Card
       pay_pal_account: PayPal
@@ -15,3 +37,16 @@ en:
       tab: Braintree
       update_success: Successfully updated Braintree configurations.
       update_error: An error occurred while updating Braintree configurations.
+    gateway_rejection_reasons:
+      avs: AVS check failed.
+      avs_and_cvv: AVS and CVV check failed.
+      cvv: CVV check failed.
+      duplicate: Duplicate transaction.
+      fraud: Credit card was rejected because of potential fraud.
+      three_d_secure: 3D Secure check failed.
+    transaction_statuses:
+      authorization_expired: Payment authorization has expired.
+      failed: An error occurred when sending the transaction to the processor.
+      gateway_rejected: Gateway rejected this transaction.
+      processor_declined: Processor declined this transaction.
+      settlement_declined: Settlement was declined by processor.

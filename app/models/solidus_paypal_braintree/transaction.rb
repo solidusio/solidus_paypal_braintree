@@ -9,7 +9,6 @@ module SolidusPaypalBraintree
     validates :nonce, presence: true
     validates :payment_method, presence: true
     validates :payment_type, presence: true
-    validates :phone, presence: true
     validates :email, presence: true
 
     validate do
