@@ -35,6 +35,8 @@ $(function() {
 
       if ($field.is(":visible") && !$field.data("submitting")) {
         var $nonce = $("#payment_method_nonce", $field);
+        var $ccType = $("#payment_source_cc_type", $field);
+        var $lastDigits = $("#payment_source_last_digits", $field);
 
         if ($nonce.length > 0 && $nonce.val() === "") {
           event.preventDefault();
@@ -45,6 +47,8 @@ $(function() {
               braintreeError(error);
             } else {
               $nonce.val(payload.nonce);
+              $ccType.val(payload.details.cardType);
+              $lastDigits.val(payload.details.lastFour);
               $paymentForm.submit();
             }
           });

@@ -25,4 +25,6 @@
   <div class="clear"></div>
   <input type="hidden" name="<%= prefix %>[payment_type]" value="<%= SolidusPaypalBraintree::Source::CREDIT_CARD %>">
   <input type="hidden" id="payment_method_nonce" name="<%= prefix %>[nonce]">
+  <input type="hidden" id="payment_source_cc_type" name="<%= prefix %>[cc_type]">
+  <input type="hidden" id="payment_source_last_digits" name="<%= prefix %>[last_digits]">
 </div>
