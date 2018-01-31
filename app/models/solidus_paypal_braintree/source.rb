@@ -73,16 +73,6 @@ module SolidusPaypalBraintree
 
     private
 
-    def braintree_payment_method
-      return unless braintree_client && credit_card?
-      @braintree_payment_method ||= protected_request do
-        braintree_client.payment_method.find(token)
-      end
-    rescue ActiveMerchant::ConnectionError, ArgumentError => e
-      Rails.logger.warn("#{e}: token unknown or missing for #{inspect}")
-      nil
-    end
-
     def braintree_client
       @braintree_client ||= payment_method.try(:braintree)
     end
