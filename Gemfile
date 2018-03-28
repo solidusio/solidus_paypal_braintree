@@ -29,7 +29,6 @@ group :development, :test do
   gem 'listen'
   gem "pry-rails"
   gem 'selenium-webdriver', require: false
-  gem 'chromedriver-helper', require: false
   gem 'ffaker'
 
   gem 'pg', '~> 0.21'
@@ -37,3 +36,5 @@ group :development, :test do
 end
 
 gemspec
+
+gem 'solidus_support', github: 'tvdeyen/solidus_support', branch: 'cast-out-poltergeist'

@@ -32,18 +32,8 @@ Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each { |f| require f }
 # Requires factories defined in lib/solidus_paypal_braintree/factories.rb
 require 'solidus_paypal_braintree/factories'
 
-Capybara.register_driver :poltergeist do |app|
-  # Paypal requires TLS v1.2 for ssl connections
-  Capybara::Poltergeist::Driver.new(app, {
-    phantomjs_logger: Rails.logger,
-    phantomjs_options: ['--ssl-protocol=any'],
-    timeout: 2.minutes
-  })
-end
-
-Capybara.register_driver :chrome do |app|
-  Capybara::Selenium::Driver.new(app, browser: :chrome)
-end
+require "selenium/webdriver"
+Capybara.javascript_driver = :selenium_chrome_headless
 
 VCR.configure do |c|
   c.cassette_library_dir = "spec/fixtures/cassettes"
@@ -67,8 +57,4 @@ RSpec.configure do |config|
   config.example_status_persistence_file_path = "tmp/failed_examples.txt"
 
   config.include SolidusPaypalBraintree::GatewayHelpers
-
-  config.before(:each, type: :feature, js: true) do |ex|
-    Capybara.current_driver = ex.metadata[:driver] || :poltergeist
-  end
 end
