@@ -9,11 +9,13 @@ SolidusPaypalBraintree.PaypalButton = function(element, paypalOptions, options) 
   this._paypalOptions = paypalOptions || {};
   this._options = options || {};
   this._client = null;
+  this._environment = this._paypalOptions.environment || 'sandbox';
+  delete this._paypalOptions.environment;
 
   if(!this._element) {
     throw new Error("Element for the paypal button must be present on the page");
   }
-}
+};
 
 /**
  * Creates the PayPal session using the provided options and enables the button
@@ -32,10 +34,17 @@ SolidusPaypalBraintree.PaypalButton.prototype.initialize = function() {
 SolidusPaypalBraintree.PaypalButton.prototype.initializeCallback = function() {
   this._paymentMethodId = this._client.paymentMethodId;
 
-  this._element.removeAttribute('disabled');
-  this._element.addEventListener('click', function(event) {
-    this._client.getPaypalInstance().tokenize(this._paypalOptions, this._tokenizeCallback.bind(this));
-  }.bind(this), false);
+  paypal.Button.render({
+    env: this._environment,
+
+    payment: function () {
+      return this._client.getPaypalInstance().createPayment(this._paypalOptions);
+    }.bind(this),
+
+    onAuthorize: function (data, actions) {
+      return this._client.getPaypalInstance().tokenizePayment(data, this._tokenizeCallback.bind(this));
+    }.bind(this)
+  }, this._element);
 };
 
 /**
@@ -61,7 +70,7 @@ SolidusPaypalBraintree.PaypalButton.prototype._tokenizeCallback = function(token
       window.location.href = response.redirectUrl;
     },
     error: function(xhr) {
-      console.error("Error submitting transaction")
+      console.error("Error submitting transaction");
     },
   });
 };
@@ -83,7 +92,7 @@ SolidusPaypalBraintree.PaypalButton.prototype._transactionParams = function(payl
       "payment_type" : payload.type,
       "address_attributes" : this._addressParams(payload)
     }
-  }
+  };
 };
 
 /**

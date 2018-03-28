@@ -39,7 +39,6 @@ describe "Checkout", type: :feature, js: true do
     end
 
     it "should check out successfully through regular checkout" do
-      expect(page).to have_button("paypal-button")
       click_button("Checkout")
       fill_in("order_email", with: "stembolt_buyer@stembolttest.com")
       click_button("Continue")
@@ -67,9 +66,9 @@ describe "Checkout", type: :feature, js: true do
   # this greatly increases the test time, so it is left out since CI runs
   # these with poltergeist.
   def move_through_paypal_popup
-    expect(page).to have_button("paypal-button")
+    expect(page).to have_css('#paypal-button .paypal-button')
     popup = page.window_opened_by do
-      click_button("paypal-button")
+      find('#paypal-button .paypal-button').click
     end
     page.switch_to_window(popup)
 

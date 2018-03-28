@@ -6,7 +6,7 @@
   <script src="https://js.braintreegateway.com/web/3.31.0/js/data-collector.min.js"></script>
 
   <% if current_store.braintree_configuration.paypal? %>
-    <script src="https://js.braintreegateway.com/web/3.31.0/js/paypal.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/3.31.0/js/paypal-checkout.min.js"></script>
   <% end %>
 
   <% if current_store.braintree_configuration.credit_card? %>
@@ -21,16 +21,8 @@
 <% end %>
 
 <% if current_store.braintree_configuration.paypal? %>
-  <script src="https://www.paypalobjects.com/api/button.js?"
-          data-merchant="braintree"
-          data-id="paypal-button"
-          data-button="checkout"
-          data-color="blue"
-          data-size="medium"
-          data-shape="pill"
-          data-button_type="button"
-          data-button_disabled="true"
-          ></script>
+  <div id="paypal-button"></div>
+  <script src="https://www.paypalobjects.com/api/checkout.js" data-version-4></script>
 
   <script>
     var address = {
@@ -48,7 +40,9 @@
       flow: 'vault',
       enableShippingAddress: true,
       shippingAddressOverride: address,
-      shippingAddressEditable: false
+      shippingAddressEditable: false,
+      shippingAddressEditable: false,
+      environment: '<%= Rails.env.production? ? "production" : "sandbox" %>'
     }
 
     var button = new SolidusPaypalBraintree.createPaypalButton(document.querySelector("#paypal-button"), paypalOptions);
