@@ -37,7 +37,7 @@ module SolidusPaypalBraintree
         return {} if transaction.nil?
         {
           authorization: transaction.id,
-          avs_result: AVSResult.build(transaction),
+          avs_result: SolidusPaypalBraintree::AVSResult.build(transaction),
           # As we do not provide the CVV while submitting the transaction (for PCI compliance reasons),
           # we need to ignore the only response we get back (I = not provided).
           # Otherwise Solidus thinks this payment is risky.
