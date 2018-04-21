@@ -2,6 +2,11 @@ require 'braintree'
 
 module SolidusPaypalBraintree
   class Gateway < ::Spree::PaymentMethod
+    include RequestProtection
+
+    # Error message from Braintree that gets returned by a non voidable transaction
+    NON_VOIDABLE_STATUS_ERROR_REGEXP = /can only be voided if status is authorized/
+
     TOKEN_GENERATION_DISABLED_MESSAGE = 'Token generation is disabled.' \
       ' To re-enable set the `token_generation_enabled` preference on the' \
       ' gateway to `true`.'.freeze
@@ -15,6 +20,7 @@ module SolidusPaypalBraintree
 
     VOIDABLE_STATUSES = [
       Braintree::Transaction::Status::SubmittedForSettlement,
+      Braintree::Transaction::Status::SettlementPending,
       Braintree::Transaction::Status::Authorized
     ].freeze
 
@@ -64,12 +70,14 @@ module SolidusPaypalBraintree
     #   extra options to send along. e.g.: device data for fraud prevention
     # @return [Response]
     def purchase(money_cents, source, gateway_options)
-      result = braintree.transaction.sale(
-        amount: dollars(money_cents),
-        **transaction_options(source, gateway_options, true)
-      )
+      protected_request do
+        result = braintree.transaction.sale(
+          amount: dollars(money_cents),
+          **transaction_options(source, gateway_options, true)
+        )
 
-      Response.build(result)
+        Response.build(result)
+      end
     end
 
     # Authorize a payment to be captured later.
@@ -81,12 +89,14 @@ module SolidusPaypalBraintree
     #   extra options to send along. e.g.: device data for fraud prevention
     # @return [Response]
     def authorize(money_cents, source, gateway_options)
-      result = braintree.transaction.sale(
-        amount: dollars(money_cents),
-        **transaction_options(source, gateway_options)
-      )
+      protected_request do
+        result = braintree.transaction.sale(
+          amount: dollars(money_cents),
+          **transaction_options(source, gateway_options)
+        )
 
-      Response.build(result)
+        Response.build(result)
+      end
     end
 
     # Collect funds from an authorized payment.
@@ -97,11 +107,13 @@ module SolidusPaypalBraintree
     # @param response_code [String] the transaction id of the payment to capture
     # @return [Response]
     def capture(money_cents, response_code, _gateway_options)
-      result = braintree.transaction.submit_for_settlement(
-        response_code,
-        dollars(money_cents)
-      )
-      Response.build(result)
+      protected_request do
+        result = braintree.transaction.submit_for_settlement(
+          response_code,
+          dollars(money_cents)
+        )
+        Response.build(result)
+      end
     end
 
     # Used to refeund a customer for an already settled transaction.
@@ -111,11 +123,13 @@ module SolidusPaypalBraintree
     # @param response_code [String] the transaction id of the payment to refund
     # @return [Response]
     def credit(money_cents, _source, response_code, _gateway_options)
-      result = braintree.transaction.refund(
-        response_code,
-        dollars(money_cents)
-      )
-      Response.build(result)
+      protected_request do
+        result = braintree.transaction.refund(
+          response_code,
+          dollars(money_cents)
+        )
+        Response.build(result)
+      end
     end
 
     # Used to cancel a transaction before it is settled.
@@ -124,8 +138,10 @@ module SolidusPaypalBraintree
     # @param response_code [String] the transaction id of the payment to void
     # @return [Response]
     def void(response_code, _source, _gateway_options)
-      result = braintree.transaction.void(response_code)
-      Response.build(result)
+      protected_request do
+        result = braintree.transaction.void(response_code)
+        Response.build(result)
+      end
     end
 
     # Will either refund or void the payment depending on its state.
@@ -137,11 +153,39 @@ module SolidusPaypalBraintree
     # @param response_code [String] the transaction id of the payment to void
     # @return [Response]
     def cancel(response_code)
-      transaction = braintree.transaction.find(response_code)
+      transaction = protected_request do
+        braintree.transaction.find(response_code)
+      end
       if VOIDABLE_STATUSES.include?(transaction.status)
         void(response_code, nil, {})
       else
         credit(cents(transaction.amount), nil, response_code, {})
+      end
+    end
+
+    # Will void the payment depending on its state or return false
+    #
+    # Used by Solidus >= 2.4 instead of +cancel+
+    #
+    # If the transaction has not yet been settled, we can void the transaction.
+    # Otherwise, we return false so Solidus creates a refund instead.
+    #
+    # @api public
+    # @param response_code [String] the transaction id of the payment to void
+    # @return [Response|FalseClass]
+    def try_void(response_code)
+      transaction = braintree.transaction.find(response_code)
+      if transaction.status.in? SolidusPaypalBraintree::Gateway::VOIDABLE_STATUSES
+        # Sometimes Braintree returns a voidable status although it is not voidable anymore.
+        # When we try to void that transaction we receive an error and need to return false
+        # so Solidus can create a refund instead.
+        begin
+          void(response_code, nil, {})
+        rescue ActiveMerchant::ConnectionError => e
+          e.message.match(NON_VOIDABLE_STATUS_ERROR_REGEXP) ? false : raise(e)
+        end
+      else
+        false
       end
     end
 

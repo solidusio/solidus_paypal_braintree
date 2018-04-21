@@ -6,8 +6,6 @@ cache:
   directories:
     - travis_phantomjs
 before_install:
-  - "gem install bundler -v 1.14.6"
-  - "bundler -v"
   - "phantomjs --version"
   - "export PATH=$PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64/bin:$PATH"
   - "if [ $(phantomjs --version) != '2.1.1' ]; then rm -rf $PWD/travis_phantomjs; mkdir -p $PWD/travis_phantomjs; fi"
@@ -18,10 +16,23 @@ rvm:
   - 2.3.1
 env:
   matrix:
-    - SOLIDUS_BRANCH=v1.2
-    - SOLIDUS_BRANCH=v1.3
-    - SOLIDUS_BRANCH=v1.4
-    - SOLIDUS_BRANCH=v2.0
-    - SOLIDUS_BRANCH=v2.1
-    - SOLIDUS_BRANCH=v2.2
-    - SOLIDUS_BRANCH=master
+    - SOLIDUS_BRANCH=v1.2 DB=postgres
+    - SOLIDUS_BRANCH=v1.3 DB=postgres
+    - SOLIDUS_BRANCH=v1.4 DB=postgres
+    - SOLIDUS_BRANCH=v2.0 DB=postgres
+    - SOLIDUS_BRANCH=v2.1 DB=postgres
+    - SOLIDUS_BRANCH=v2.2 DB=postgres
+    - SOLIDUS_BRANCH=v2.3 DB=postgres
+    - SOLIDUS_BRANCH=v2.4 DB=postgres
+    - SOLIDUS_BRANCH=v2.5 DB=postgres
+    - SOLIDUS_BRANCH=master DB=postgres
+    - SOLIDUS_BRANCH=v1.2 DB=mysql
+    - SOLIDUS_BRANCH=v1.3 DB=mysql
+    - SOLIDUS_BRANCH=v1.4 DB=mysql
+    - SOLIDUS_BRANCH=v2.0 DB=mysql
+    - SOLIDUS_BRANCH=v2.1 DB=mysql
+    - SOLIDUS_BRANCH=v2.2 DB=mysql
+    - SOLIDUS_BRANCH=v2.3 DB=mysql
+    - SOLIDUS_BRANCH=v2.4 DB=mysql
+    - SOLIDUS_BRANCH=v2.5 DB=mysql
+    - SOLIDUS_BRANCH=master DB=mysql

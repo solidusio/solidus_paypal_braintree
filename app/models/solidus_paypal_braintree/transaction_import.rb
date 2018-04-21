@@ -82,10 +82,10 @@ module SolidusPaypalBraintree
 
     def update_payment_total(payment)
       payment_total = order.payments.where(state: %w[checkout pending]).sum(:amount)
-      remaining_total = order.outstanding_balance - payment_total
+      payment_difference = order.outstanding_balance - payment_total
 
-      if remaining_total > 0
-        payment.update!(amount: payment.amount + remaining_total)
+      if payment_difference != 0
+        payment.update!(amount: payment.amount + payment_difference)
       end
     end
   end

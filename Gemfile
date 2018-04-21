@@ -18,15 +18,22 @@ end
 gem 'solidus_auth_devise', '~> 1.0'
 
 # Asset compilation speed
-gem 'execjs-fastnode'
+gem 'mini_racer'
 gem 'sassc-rails', platforms: :mri
+
+# bourbon 5 doesn't work under sassc
+# https://github.com/thoughtbot/bourbon/issues/1047
+gem 'bourbon', '<5'
 
 group :development, :test do
   gem 'listen'
-  gem 'launchy'
   gem "pry-rails"
   gem 'selenium-webdriver', require: false
   gem 'chromedriver-helper', require: false
+  gem 'ffaker'
+
+  gem 'pg', '~> 0.21'
+  gem 'mysql2'
 end
 
 gemspec
