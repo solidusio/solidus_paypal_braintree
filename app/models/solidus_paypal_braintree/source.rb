@@ -17,7 +17,7 @@ module SolidusPaypalBraintree
     scope(:with_payment_profile, -> { joins(:customer) })
     scope(:credit_card, -> { where(payment_type: CREDIT_CARD) })
 
-    delegate :last_4, :card_type, :cardholder_name, :expiration_month, :expiration_year, to: :braintree_payment_method, allow_nil: true
+    delegate :last_4, :card_type, :cardholder_name, :expiration_month, :expiration_year, :email, to: :braintree_payment_method, allow_nil: true
     alias_method :last_digits, :last_4
 
     # we are not currenctly supporting an "imported" flag
@@ -74,7 +74,7 @@ module SolidusPaypalBraintree
     private
 
     def braintree_payment_method
-      return unless braintree_client && credit_card?
+      return unless braintree_client && (credit_card? || paypal?)
       @braintree_payment_method ||= protected_request do
         braintree_client.payment_method.find(token)
       end

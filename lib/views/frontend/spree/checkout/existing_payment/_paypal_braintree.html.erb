@@ -3,9 +3,14 @@
     <%= radio_button_tag "order[wallet_payment_source_id]", wallet_payment_source.id, default, class: "existing-cc-radio" %>
   </td>
   <td>
-    <div><%= wallet_payment_source.payment_source.cardholder_name %></div>
-    <div><%= wallet_payment_source.payment_source.card_type %> - <%= wallet_payment_source.payment_source.display_number %></div>
-    <div><%= wallet_payment_source.payment_source.expiration_month %>/<%= wallet_payment_source.payment_source.expiration_year %></div>
+    <%- if wallet_payment_source.payment_source.credit_card? %>
+      <div><%= wallet_payment_source.payment_source.cardholder_name %></div>
+      <div><%= wallet_payment_source.payment_source.card_type %> - <%= wallet_payment_source.payment_source.display_number %></div>
+      <div><%= wallet_payment_source.payment_source.expiration_month %>/<%= wallet_payment_source.payment_source.expiration_year %></div>
+    <%- elsif wallet_payment_source.payment_source.paypal? %>
+      <div>Paypal</div>
+      <div><%= wallet_payment_source.payment_source.email %></div>
+    <% end %>
   </td>
   
 </tr>
