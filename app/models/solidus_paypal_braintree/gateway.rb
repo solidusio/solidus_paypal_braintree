@@ -306,11 +306,11 @@ module SolidusPaypalBraintree
         params[:payment_method_nonce] = source.nonce
       end
 
-      if source.paypal?
+      if source.paypal? && options[:billing_address].present?
         params[:shipping] = braintree_shipping_address(options)
       end
 
-      if source.credit_card? && options[:bliing_address].present?
+      if source.credit_card? && options[:billing_address].present?
         params[:billing] = braintree_billing_address(options)
       end
 
