@@ -168,7 +168,7 @@ SolidusPaypalBraintree.Client.prototype._createDataCollector = function() {
 };
 
 SolidusPaypalBraintree.Client.prototype._createPaypal = function() {
-  return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.paypal.create, [{
+  return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.paypalCheckout.create, [{
     client: this._braintreeInstance
   }]).then(function (paypalInstance) {
     this._paypalInstance = paypalInstance;
