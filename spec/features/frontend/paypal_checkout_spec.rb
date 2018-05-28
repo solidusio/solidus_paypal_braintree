@@ -67,8 +67,13 @@ describe "Checkout", type: :feature, js: true do
   # these with poltergeist.
   def move_through_paypal_popup
     expect(page).to have_css('#paypal-button .paypal-button')
+
+    sleep 2 # the PayPal button is not immediately ready
+
     popup = page.window_opened_by do
-      find('#paypal-button .paypal-button').click
+      within_frame find('#paypal-button iframe') do
+        find('div.paypal-button').click
+      end
     end
     page.switch_to_window(popup)
 
@@ -76,17 +81,12 @@ describe "Checkout", type: :feature, js: true do
     # So javascript errors are not our errors.
     begin
       expect(page).to_not have_selector('body.loading')
-      page.within_frame("injectedUl") do
-        fill_in("email", with: "stembolt_buyer@stembolttest.com")
-        fill_in("password", with: "test1234")
-      end
+      fill_in("login_email", with: "stembolt_buyer@stembolttest.com")
+      click_on "Next"
+      fill_in("login_password", with: "test1234")
 
-      # The check for 'body.loading' check doesn't work well from the within_frame
-      # context, so we need to jump out before performing that check.
       expect(page).to_not have_selector('body.loading')
-      page.within_frame("injectedUl") do
-        click_button("btnLogin")
-      end
+      click_button("btnLogin")
 
       expect(page).to_not have_selector('body.loading')
       click_button("Agree & Continue")
