@@ -89,13 +89,13 @@ describe "Checkout", type: :feature, js: true do
 
       expect(page).to_not have_selector('body.loading')
       click_button("Agree & Continue")
-    rescue Capybara::Poltergeist::JavascriptError => e
+    rescue Selenium::WebDriver::Error::JavascriptError => e
       pending "PayPal had javascript errors in their popup window."
       raise e
-    rescue Capybara::ElementNotFound => e
+    rescue Selenium::WebDriver::Error::NoSuchElementError => e
       pending "PayPal delivered unkown HTML in their popup window."
       raise e
-    rescue Capybara::Poltergeist::NoSuchWindowError => e
+    rescue Selenium::WebDriver::Error::NoSuchWindowError => e
       pending "PayPal popup not available."
       raise e
     end
@@ -126,7 +126,7 @@ describe "Checkout", type: :feature, js: true do
   rescue RSpec::Expectations::ExpectationNotMetError => e
     pending "PayPal did not answer in #{Capybara.default_max_wait_time} seconds."
     raise e
-  rescue Capybara::Poltergeist::JavascriptError => e
+  rescue Selenium::WebDriver::Error::JavascriptError => e
     pending "PayPal delivered wrong payload because of errors in their popup window."
     raise e
   end
