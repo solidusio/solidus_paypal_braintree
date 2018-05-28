@@ -1,6 +1,8 @@
 sudo: false
 language: ruby
 dist: trusty
+addons:
+  chrome: stable
 cache:
   bundler: true
   directories:

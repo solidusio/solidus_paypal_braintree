@@ -24,6 +24,7 @@ require 'spree/testing_support/controller_requests'
 
 require 'vcr'
 require 'webmock'
+require 'selenium-webdriver'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -32,17 +33,23 @@ Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each { |f| require f }
 # Requires factories defined in lib/solidus_paypal_braintree/factories.rb
 require 'solidus_paypal_braintree/factories'
 
-Capybara.register_driver :poltergeist do |app|
-  # Paypal requires TLS v1.2 for ssl connections
-  Capybara::Poltergeist::Driver.new(app, {
-    phantomjs_logger: Rails.logger,
-    phantomjs_options: ['--ssl-protocol=any'],
-    timeout: 2.minutes
-  })
-end
-
 Capybara.register_driver :chrome do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome)
+end
+
+Capybara.register_driver(:headless_chrome) do |app|
+  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome \
+    chromeOptions: { args: %w[headless disable-gpu] }
+  capybara_options = {
+    browser: :chrome,
+    desired_capabilities: capabilities
+  }
+
+  Capybara::Selenium::Driver.new(app, capybara_options)
+end
+
+Capybara::Screenshot.register_driver(:headless_chrome) do |driver, path|
+  driver.browser.save_screenshot(path)
 end
 
 VCR.configure do |c|
@@ -69,6 +76,6 @@ RSpec.configure do |config|
   config.include SolidusPaypalBraintree::GatewayHelpers
 
   config.before(:each, type: :feature, js: true) do |ex|
-    Capybara.current_driver = ex.metadata[:driver] || :poltergeist
+    Capybara.current_driver = ex.metadata[:driver] || :headless_chrome
   end
 end
