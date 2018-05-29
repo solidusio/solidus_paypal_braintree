@@ -33,6 +33,8 @@ Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each { |f| require f }
 # Requires factories defined in lib/solidus_paypal_braintree/factories.rb
 require 'solidus_paypal_braintree/factories'
 
+ApplicationController.prepend_view_path "spec/fixtures/views"
+
 Capybara.register_driver :chrome do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome)
 end
