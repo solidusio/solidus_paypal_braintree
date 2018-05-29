@@ -15,13 +15,13 @@ describe "Checkout", type: :feature, js: true do
   let!(:payment_method) { create_gateway }
   let!(:zone) { create(:zone) }
 
-  context "goes through checkout using paypal one touch", vcr: { cassette_name: 'paypal/one_touch_checkout', match_requests_on: [:method, :uri] } do
+  context "goes through express checkout using paypal cart button", vcr: { cassette_name: 'paypal/cart_checkout', match_requests_on: [:method, :uri] } do
     before do
       payment_method
       add_mug_to_cart
     end
 
-    it "should check out successfully using one touch" do
+    it "should check out successfully" do
       pend_if_paypal_slow do
         expect_any_instance_of(Spree::Order).to receive(:restart_checkout_flow)
         move_through_paypal_popup
@@ -32,13 +32,13 @@ describe "Checkout", type: :feature, js: true do
     end
   end
 
-  context "goes through checkout using paypal", vcr: { cassette_name: 'paypal/checkout', match_requests_on: [:method, :uri] } do
+  context "goes through regular checkout using paypal payment method", vcr: { cassette_name: 'paypal/checkout', match_requests_on: [:method, :uri] } do
     before do
       payment_method
       add_mug_to_cart
     end
 
-    it "should check out successfully through regular checkout" do
+    it "should check out successfully" do
       click_button("Checkout")
       fill_in("order_email", with: "stembolt_buyer@stembolttest.com")
       click_button("Continue")
