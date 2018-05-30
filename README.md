@@ -180,6 +180,13 @@ var button = new PaypalButton(document.querySelector("#your-button-id"));
 button.setTokenizeCallback(your-callback);
 ```
 
+### Express checkout from the cart
+
+A PayPal button can also be included on the cart view to enable express checkouts:
+```ruby
+render "spree/shared/paypal_cart_button"
+```
+
 ## Optional configuration
 
 ### Accepting multiple currencies

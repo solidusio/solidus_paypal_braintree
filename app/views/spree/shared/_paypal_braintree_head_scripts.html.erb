@@ -1,0 +1,19 @@
+<% content_for :head do %>
+  <script src="https://js.braintreegateway.com/web/3.31.0/js/client.min.js"></script>
+  <script src="https://js.braintreegateway.com/web/3.31.0/js/data-collector.min.js"></script>
+
+  <% if current_store.braintree_configuration.paypal? %>
+    <script src="https://js.braintreegateway.com/web/3.31.0/js/paypal-checkout.min.js"></script>
+    <script src="https://www.paypalobjects.com/api/checkout.js" data-version-4></script>
+  <% end %>
+
+  <% if current_store.braintree_configuration.credit_card? %>
+    <script src="https://js.braintreegateway.com/web/3.31.0/js/hosted-fields.min.js"></script>
+  <% end %>
+
+  <% if current_store.braintree_configuration.apple_pay? %>
+    <script src="https://js.braintreegateway.com/web/3.31.0/js/apple-pay.min.js"></script>
+  <% end %>
+
+  <%= javascript_include_tag "solidus_paypal_braintree/checkout" %>
+<% end %>
