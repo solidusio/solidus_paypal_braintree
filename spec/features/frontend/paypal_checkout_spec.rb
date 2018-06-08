@@ -15,13 +15,13 @@ describe "Checkout", type: :feature, js: true do
   let!(:payment_method) { create_gateway }
   let!(:zone) { create(:zone) }
 
-  context "goes through checkout using paypal one touch", vcr: { cassette_name: 'paypal/one_touch_checkout', match_requests_on: [:method, :uri] } do
+  context "goes through express checkout using paypal cart button", vcr: { cassette_name: 'paypal/cart_checkout', match_requests_on: [:method, :uri] } do
     before do
       payment_method
       add_mug_to_cart
     end
 
-    it "should check out successfully using one touch" do
+    it "should check out successfully" do
       pend_if_paypal_slow do
         expect_any_instance_of(Spree::Order).to receive(:restart_checkout_flow)
         move_through_paypal_popup
@@ -32,14 +32,13 @@ describe "Checkout", type: :feature, js: true do
     end
   end
 
-  context "goes through checkout using paypal", vcr: { cassette_name: 'paypal/checkout', match_requests_on: [:method, :uri] } do
+  context "goes through regular checkout using paypal payment method", vcr: { cassette_name: 'paypal/checkout', match_requests_on: [:method, :uri] } do
     before do
       payment_method
       add_mug_to_cart
     end
 
-    it "should check out successfully through regular checkout" do
-      expect(page).to have_button("paypal-button")
+    it "should check out successfully" do
       click_button("Checkout")
       fill_in("order_email", with: "stembolt_buyer@stembolttest.com")
       click_button("Continue")
@@ -67,9 +66,14 @@ describe "Checkout", type: :feature, js: true do
   # this greatly increases the test time, so it is left out since CI runs
   # these with poltergeist.
   def move_through_paypal_popup
-    expect(page).to have_button("paypal-button")
+    expect(page).to have_css('#paypal-button .paypal-button')
+
+    sleep 2 # the PayPal button is not immediately ready
+
     popup = page.window_opened_by do
-      click_button("paypal-button")
+      within_frame find('#paypal-button iframe') do
+        find('div.paypal-button').click
+      end
     end
     page.switch_to_window(popup)
 
@@ -77,27 +81,22 @@ describe "Checkout", type: :feature, js: true do
     # So javascript errors are not our errors.
     begin
       expect(page).to_not have_selector('body.loading')
-      page.within_frame("injectedUl") do
-        fill_in("email", with: "stembolt_buyer@stembolttest.com")
-        fill_in("password", with: "test1234")
-      end
+      fill_in("login_email", with: "stembolt_buyer@stembolttest.com")
+      click_on "Next"
+      fill_in("login_password", with: "test1234")
 
-      # The check for 'body.loading' check doesn't work well from the within_frame
-      # context, so we need to jump out before performing that check.
       expect(page).to_not have_selector('body.loading')
-      page.within_frame("injectedUl") do
-        click_button("btnLogin")
-      end
+      click_button("btnLogin")
 
       expect(page).to_not have_selector('body.loading')
       click_button("Agree & Continue")
-    rescue Capybara::Poltergeist::JavascriptError => e
+    rescue Selenium::WebDriver::Error::JavascriptError => e
       pending "PayPal had javascript errors in their popup window."
       raise e
     rescue Capybara::ElementNotFound => e
       pending "PayPal delivered unkown HTML in their popup window."
       raise e
-    rescue Capybara::Poltergeist::NoSuchWindowError => e
+    rescue Selenium::WebDriver::Error::NoSuchWindowError => e
       pending "PayPal popup not available."
       raise e
     end
@@ -128,7 +127,7 @@ describe "Checkout", type: :feature, js: true do
   rescue RSpec::Expectations::ExpectationNotMetError => e
     pending "PayPal did not answer in #{Capybara.default_max_wait_time} seconds."
     raise e
-  rescue Capybara::Poltergeist::JavascriptError => e
+  rescue Selenium::WebDriver::Error::JavascriptError => e
     pending "PayPal delivered wrong payload because of errors in their popup window."
     raise e
   end

@@ -1,0 +1,27 @@
+<% address = current_order.ship_address %>
+
+<div id="paypal-button"></div>
+
+<script>
+  var address = {
+    line1: '<%= address.address1 %>',
+    line2: '<%= address.address2 %>',
+    city: '<%= address.city %>',
+    state: '<%= address.state.name %>',
+    postalCode: '<%= address.zipcode %>',
+    countryCode: '<%= address.country.iso %>',
+    phone: '<%= address.phone %>',
+    recipientName: '<%= "#{address.firstname} #{address.lastname}" %>'
+  }
+
+  var paypalOptions = {
+    flow: 'vault',
+    enableShippingAddress: true,
+    shippingAddressOverride: address,
+    shippingAddressEditable: false,
+    environment: '<%= Rails.env.production? ? "production" : "sandbox" %>'
+  }
+
+  var button = new SolidusPaypalBraintree.createPaypalButton(document.querySelector("#paypal-button"), paypalOptions);
+  button.initialize();
+</script>
