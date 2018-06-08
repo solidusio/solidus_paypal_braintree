@@ -57,7 +57,7 @@ module SolidusPaypalBraintree
         merchant_id: preferred_merchant_id,
         public_key: preferred_public_key,
         private_key: preferred_private_key,
-        logger: Braintree::Configuration.logger.clone
+        logger: logger
       }
     end
 
@@ -260,6 +260,12 @@ module SolidusPaypalBraintree
     end
 
     private
+
+    def logger
+      Braintree::Configuration.logger.clone.tap do |logger|
+        logger.level = Rails.logger.level
+      end
+    end
 
     def dollars(cents)
       Money.new(cents).dollars
