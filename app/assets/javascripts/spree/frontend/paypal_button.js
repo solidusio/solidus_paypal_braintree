@@ -1,5 +1,6 @@
 //= require solidus_paypal_braintree/paypal_button
 
+// This is the PayPal button on the cart page
 $(document).ready(function() {
   if (document.getElementById("empty-cart")) {
     $.when(
@@ -22,7 +23,14 @@ $(document).ready(function() {
           flow: 'vault',
           enableShippingAddress: true
         }
-        var button = new SolidusPaypalBraintree.createPaypalButton(document.querySelector("#paypal-button"), paypalOptions);
+        var options = {
+          restart_checkout: true
+        }
+        var button = new SolidusPaypalBraintree.createPaypalButton(
+          document.querySelector("#paypal-button"),
+          paypalOptions,
+          options
+        );
         return button.initialize();
       }).
       insertAfter("#content").

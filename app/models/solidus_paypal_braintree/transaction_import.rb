@@ -35,7 +35,7 @@ module SolidusPaypalBraintree
       order.user
     end
 
-    def import!(end_state)
+    def import!(end_state, restart_checkout: false)
       if valid?
         order.email = user.try!(:email) || transaction.email
 
@@ -51,6 +51,7 @@ module SolidusPaypalBraintree
           amount: order.total
 
         order.save!
+        order.restart_checkout_flow if restart_checkout
         advance_order(payment, end_state)
       else
         raise InvalidImportError,
