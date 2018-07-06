@@ -263,7 +263,8 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
   end
 
   describe "#display_number" do
-    let(:payment_source) { described_class.new }
+    let(:type) { nil }
+    let(:payment_source) { described_class.new(payment_type: type) }
     subject { payment_source.display_number }
 
     context "when last_digits is a number" do
@@ -280,6 +281,16 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
       end
 
       it { is_expected.to eq 'XXXX-XXXX-XXXX-XXXX' }
+    end
+
+    context "when is a PayPal source" do
+      let(:type) { "PayPalAccount" }
+
+      before do
+        allow(payment_source).to receive(:email).and_return('user@example.com')
+      end
+
+      it { is_expected.to eq 'user@example.com' }
     end
   end
 
