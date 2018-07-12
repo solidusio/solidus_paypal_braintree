@@ -35,25 +35,6 @@ require 'solidus_paypal_braintree/factories'
 
 ApplicationController.prepend_view_path "spec/fixtures/views"
 
-Capybara.register_driver :chrome do |app|
-  Capybara::Selenium::Driver.new(app, browser: :chrome)
-end
-
-Capybara.register_driver(:headless_chrome) do |app|
-  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome \
-    chromeOptions: { args: %w[headless disable-gpu window-size=1600,1024] }
-  capybara_options = {
-    browser: :chrome,
-    desired_capabilities: capabilities
-  }
-
-  Capybara::Selenium::Driver.new(app, capybara_options)
-end
-
-Capybara::Screenshot.register_driver(:headless_chrome) do |driver, path|
-  driver.browser.save_screenshot(path)
-end
-
 VCR.configure do |c|
   c.cassette_library_dir = "spec/fixtures/cassettes"
   c.hook_into :webmock
@@ -78,6 +59,7 @@ RSpec.configure do |config|
   config.include SolidusPaypalBraintree::GatewayHelpers
 
   config.before(:each, type: :feature, js: true) do |ex|
-    Capybara.current_driver = ex.metadata[:driver] || :headless_chrome
+    Capybara.current_driver = ex.metadata[:driver] || :selenium_chrome_headless
+    page.driver.browser.manage.window.resize_to(1600, 1024)
   end
 end
