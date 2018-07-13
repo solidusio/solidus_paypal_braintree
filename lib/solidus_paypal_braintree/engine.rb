@@ -48,6 +48,17 @@ module SolidusPaypalBraintree
       end
 
       paths["app/views"] << "lib/views/backend"
+
+      initializer "solidus_paypal_braintree_admin_menu_item", after: "register_solidus_paypal_braintree_gateway" do |app|
+        Spree::Backend::Config.configure do |config|
+          config.menu_items << config.class::MenuItem.new(
+            [:braintree],
+            'cc-paypal',
+            url: '/solidus_paypal_braintree/configurations/list',
+            condition: -> { can?(:list, SolidusPaypalBraintree::Configuration) }
+          )
+        end
+      end
     end
   end
 end
