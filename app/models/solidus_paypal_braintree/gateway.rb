@@ -174,6 +174,9 @@ module SolidusPaypalBraintree
     # @param response_code [String] the transaction id of the payment to void
     # @return [Response|FalseClass]
     def try_void(response_code)
+      # If response_code is an instance of Spree::Payment
+      response_code = response_code.response_code if response_code.respond_to?(:response_code)
+
       transaction = braintree.transaction.find(response_code)
       if transaction.status.in? SolidusPaypalBraintree::Gateway::VOIDABLE_STATUSES
         # Sometimes Braintree returns a voidable status although it is not voidable anymore.
