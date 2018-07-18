@@ -30,21 +30,18 @@ module SolidusPaypalBraintree
     end
 
     def can_capture?(payment)
-      payment.pending? || payment.checkout?
+      return false unless payment && braintree_transaction(payment)
+      Gateway::CAPTURABLE_STATUSES.include?(braintree_transaction(payment).status)
     end
 
     def can_void?(payment)
-      return false unless payment.response_code
-      transaction = protected_request do
-        braintree_client.transaction.find(payment.response_code)
-      end
-      Gateway::VOIDABLE_STATUSES.include?(transaction.status)
-    rescue ActiveMerchant::ConnectionError
-      false
+      return false unless payment && braintree_transaction(payment)
+      Gateway::VOIDABLE_STATUSES.include?(braintree_transaction(payment).status)
     end
 
     def can_credit?(payment)
-      payment.completed? && payment.credit_allowed > 0
+      return false unless payment && braintree_transaction(payment)
+      Gateway::REFUNDABLE_STATUSES.include?(braintree_transaction(payment).status)
     end
 
     def friendly_payment_type
@@ -74,9 +71,20 @@ module SolidusPaypalBraintree
     private
 
     def braintree_payment_method
-      return unless braintree_client && credit_card?
+      return unless braintree_client
       @braintree_payment_method ||= protected_request do
         braintree_client.payment_method.find(token)
+      end
+    rescue ActiveMerchant::ConnectionError, ArgumentError => e
+      Rails.logger.warn("#{e}: token unknown or missing for #{inspect}")
+      nil
+    end
+
+    def braintree_transaction(payment)
+      response_code = payment.response_code
+      return unless braintree_client && response_code
+      @braintree_transaction ||= protected_request do
+        braintree_client.transaction.find(response_code)
       end
     rescue ActiveMerchant::ConnectionError, ArgumentError => e
       Rails.logger.warn("#{e}: token unknown or missing for #{inspect}")
