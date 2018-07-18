@@ -171,16 +171,16 @@ module SolidusPaypalBraintree
     # Otherwise, we return false so Solidus creates a refund instead.
     #
     # @api public
-    # @param response_code [String] the transaction id of the payment to void
+    # @param payment [Spree::Payment] the payment to void
     # @return [Response|FalseClass]
-    def try_void(response_code)
-      transaction = braintree.transaction.find(response_code)
+    def try_void(payment)
+      transaction = braintree.transaction.find(payment.response_code)
       if transaction.status.in? SolidusPaypalBraintree::Gateway::VOIDABLE_STATUSES
         # Sometimes Braintree returns a voidable status although it is not voidable anymore.
         # When we try to void that transaction we receive an error and need to return false
         # so Solidus can create a refund instead.
         begin
-          void(response_code, nil, {})
+          void(payment.response_code, nil, {})
         rescue ActiveMerchant::ConnectionError => e
           e.message.match(NON_VOIDABLE_STATUS_ERROR_REGEXP) ? false : raise(e)
         end

@@ -357,7 +357,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     end
 
     describe '#try_void' do
-      subject { gateway.try_void(source.token) }
+      subject { gateway.try_void(instance_double('Spree::Payment', response_code: source.token)) }
 
       let(:transaction_request) do
         class_double('Braintree::Transaction',
