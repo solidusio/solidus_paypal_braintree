@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2018-07-18
+### Changed
+- Use headless Chrome to run feature specs instead of poltergeist
+- Upgrade PayPal integration to use `paypal-checkout.js`
+- Upgrade Braintree integration to v3.34.0
+- Move buttons inside partials. The PayPal cart button is not automatically inserted anymore. 
+- The PayPal cart button always restarts the Solidus checkout
+- Insert the admin interface menu item without using Deface
+
+### Removed
+- Implicit Deface dependency
+
 ## [0.2.0] - 2017-07-18
 ### Added
 - Overhauled JS
