@@ -20,6 +20,7 @@ en:
     token: Token
     errors:
       default_error: "Something bad happened!"
+      paypal_popup_closed: "PayPal popup has been closed before payment completion."
       empty_fields: "All fields are empty! Please fill out the form."
       invalid_fields: "Some payment input fields are invalid."
       invalid_card: "Credit card data is incorrect."
