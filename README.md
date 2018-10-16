@@ -187,6 +187,19 @@ A PayPal button can also be included on the cart view to enable express checkout
 render "spree/shared/paypal_cart_button"
 ```
 
+#### PayPal configuration
+
+If your store requires the [phone number into user addresses](https://github.com/solidusio/solidus/blob/859143f3f061de79cc1b385234599422b8ae8e21/core/app/models/spree/address.rb#L151-L153)
+you'll need to configure PayPal to return the phone back when it returns the
+address used by the user:
+
+1. Log into your PayPal account
+2. Go to Profile -> My Selling Tools -> Website preferences
+3. Set Contact Telephone to `On (Required Field)` or `On (Optional Field)`
+
+Using the option `Off` will not make the address valid and will raise a
+validation error.
+
 ## Optional configuration
 
 ### Accepting multiple currencies
