@@ -70,7 +70,22 @@ SolidusPaypalBraintree.PaypalButton.prototype._tokenizeCallback = function(token
       window.location.href = response.redirectUrl;
     },
     error: function(xhr) {
-      console.error("Error submitting transaction");
+      var errorText = BraintreeError.DEFAULT;
+
+      if (xhr.responseJSON && xhr.responseJSON.errors) {
+        var errors = [];
+        $.each(xhr.responseJSON.errors, function(key, values) {
+          $.each(values, function(index, value) {
+            errors.push(key + " " + value)
+          });
+        });
+
+        if (errors.length > 0)
+          errorText = errors.join(", ");
+      }
+
+      console.error("Error submitting transaction: " + errorText);
+      SolidusPaypalBraintree.showError(errorText);
     },
   });
 };
