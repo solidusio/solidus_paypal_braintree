@@ -3,6 +3,11 @@ language: ruby
 dist: trusty
 addons:
   chrome: stable
+  apt:
+    packages:
+      - chromium-chromedriver
+before_script:
+  - ln -s /usr/lib/chromium-browser/chromedriver ~/bin/chromedriver
 cache:
   bundler: true
 rvm:
