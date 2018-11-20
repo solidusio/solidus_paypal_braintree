@@ -27,19 +27,17 @@ describe SolidusPaypalBraintree::ClientTokensController do
       context "when there's two gateway's for different stores" do
         let!(:store1) { create(:store, code: 'store_1') }
         let!(:store2) { create(:store, code: 'store_2') }
-
-        before do
-          create_gateway(id: 10).tap{ |gw| store1.payment_methods << gw }
-          create_gateway(id: 11).tap{ |gw| store2.payment_methods << gw }
-        end
+        let!(:gateway_for_store1) { create_gateway.tap{ |gw| store1.payment_methods << gw } }
+        let!(:gateway_for_store2) { create_gateway.tap{ |gw| store2.payment_methods << gw } }
 
         it "returns the correct gateway for store1" do
           allow_any_instance_of(described_class).to receive(:current_store).and_return store1
-          expect(json["payment_method_id"]).to eq 10
+          expect(json["payment_method_id"]).to eq gateway_for_store1.id
         end
+
         it "returns the correct gateway for store1" do
           allow_any_instance_of(described_class).to receive(:current_store).and_return store2
-          expect(json["payment_method_id"]).to eq 11
+          expect(json["payment_method_id"]).to eq gateway_for_store2.id
         end
       end
     end

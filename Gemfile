@@ -14,6 +14,14 @@ else
   gem "rails_test_params_backport", group: :test
 end
 
+group :test do
+  if branch < "v2.5"
+    gem 'factory_bot', '4.10.0'
+  else
+    gem 'factory_bot', '> 4.10.0'
+  end
+end
+
 # Provides basic authentication functionality for testing parts of your engine
 gem 'solidus_auth_devise', '~> 1.0'
 
