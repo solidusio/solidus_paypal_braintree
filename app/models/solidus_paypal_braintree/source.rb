@@ -17,7 +17,7 @@ module SolidusPaypalBraintree
     scope(:with_payment_profile, -> { joins(:customer) })
     scope(:credit_card, -> { where(payment_type: CREDIT_CARD) })
 
-    delegate :last_4, :card_type, :expiration_month, :expiration_year,
+    delegate :last_4, :card_type, :expiration_month, :expiration_year, :email,
       to: :braintree_payment_method, allow_nil: true
 
     # Aliases to match Spree::CreditCard's interface
@@ -75,13 +75,17 @@ module SolidusPaypalBraintree
     end
 
     def display_number
-      "XXXX-XXXX-XXXX-#{last_digits.to_s.rjust(4, 'X')}"
+      if paypal?
+        email
+      else
+        "XXXX-XXXX-XXXX-#{last_digits.to_s.rjust(4, 'X')}"
+      end
     end
 
     private
 
     def braintree_payment_method
-      return unless braintree_client && credit_card?
+      return unless braintree_client
       @braintree_payment_method ||= protected_request do
         braintree_client.payment_method.find(token)
       end
