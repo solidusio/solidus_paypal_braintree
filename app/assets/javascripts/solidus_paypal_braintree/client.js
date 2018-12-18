@@ -173,7 +173,9 @@ SolidusPaypalBraintree.Client.prototype._createPaypal = function() {
   }]).then(function (paypalInstance) {
     this._paypalInstance = paypalInstance;
     return paypalInstance;
-  }.bind(this));
+  }.bind(this), function(error) {
+    console.error(error.name + ':', error.message);
+  });
 };
 
 SolidusPaypalBraintree.Client.prototype._createApplepay = function() {
