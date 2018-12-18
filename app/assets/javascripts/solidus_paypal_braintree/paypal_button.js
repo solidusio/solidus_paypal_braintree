@@ -119,6 +119,7 @@ SolidusPaypalBraintree.PaypalButton.prototype._transactionParams = function(payl
 SolidusPaypalBraintree.PaypalButton.prototype._addressParams = function(payload) {
   var first_name, last_name;
   var payload_address = payload.details.shippingAddress || payload.details.billingAddress;
+  if (!payload_address) return {};
 
   if (payload_address.recipientName) {
     first_name = payload_address.recipientName.split(" ")[0];
