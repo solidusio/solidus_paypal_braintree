@@ -28,7 +28,11 @@ SolidusPaypalBraintree.PaypalButton = function(element, paypalOptions, options) 
 SolidusPaypalBraintree.PaypalButton.prototype.initialize = function() {
   this._client = new SolidusPaypalBraintree.createClient({useDataCollector: true, usePaypal: true});
 
-  return this._client.initialize().then(this.initializeCallback.bind(this));
+  return this._client.initialize()
+    .then(
+      this.initializeCallback.bind(this),
+      function(err){ console.log("yeet!!", err)}
+    );
 };
 
 SolidusPaypalBraintree.PaypalButton.prototype.initializeCallback = function() {
