@@ -106,7 +106,7 @@ SolidusPaypalBraintree.PaypalButton.prototype._transactionParams = function(payl
     "options": this._options,
     "transaction" : {
       "email" : payload.details.email,
-      "phone" : payload.details.phone,
+      "phone" : payload.details.phone || this._paypalOptions.shippingAddressOverride.phone,
       "nonce" : payload.nonce,
       "payment_type" : payload.type,
       "address_attributes" : this._addressParams(payload)
