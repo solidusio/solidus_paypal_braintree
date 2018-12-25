@@ -48,6 +48,8 @@ $(function() {
               $paymentForm.submit();
             }
           });
+        } else {
+          $paymentForm[0].submit() //https://stackoverflow.com/a/22982816/5837307
         }
       }
     });
