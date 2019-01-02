@@ -15,9 +15,16 @@ $(function() {
      * https://github.com/rails/jquery-rails/blob/master/vendor/assets/javascripts/jquery_ujs.js#L517
      * The only way we can re-enable it is by delaying longer than that timeout
      * or stopping propagation so their submit handler doesn't run. */
-    if ($.rails) {
+    if ($.rails && typeof $.rails.enableFormElement !== 'undefined') {
       setTimeout(function () {
         $.rails.enableFormElement($submitButton);
+        $submitButton.attr("disabled", false).removeClass("disabled").addClass("primary");
+      }, 100);
+    } else if (typeof Rails !== 'undefined' && typeof Rails.enableElement !== 'undefined') {
+      /* Indicates that we have rails-ujs instead of jquery-ujs. Rails-ujs was added to rails
+       * core in Rails 5.1.0 */
+      setTimeout(function () {
+        Rails.enableElement($submitButton[0]);
         $submitButton.attr("disabled", false).removeClass("disabled").addClass("primary");
       }, 100);
     } else {
