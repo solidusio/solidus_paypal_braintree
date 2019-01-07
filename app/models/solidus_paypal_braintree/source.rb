@@ -67,7 +67,7 @@ module SolidusPaypalBraintree
     end
 
     def reusable?
-      true
+      token.present?
     end
 
     def credit_card?
