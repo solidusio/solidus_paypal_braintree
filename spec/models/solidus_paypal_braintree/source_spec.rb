@@ -332,4 +332,20 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
       it { is_expected.to be_nil }
     end
   end
+
+  describe '#reusable?' do
+    let(:payment_source) { described_class.new(token: token, nonce: nonce) }
+    let(:nonce) { 'nonce67890' }
+    subject { payment_source.reusable? }
+
+    context 'when source token is present' do
+      let(:token) { 'token12345' }
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when source token is nil' do
+      let(:token) { nil }
+      it { is_expected.to be_falsy }
+    end
+  end
 end
