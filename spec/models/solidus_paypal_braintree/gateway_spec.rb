@@ -686,7 +686,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
         gateway
       end
 
-      it { is_expected.to match(/Token generation is disabled/) }
+      it { expect { subject }.to raise_error SolidusPaypalBraintree::Gateway::TokenGenerationDisabledError }
     end
   end
 end

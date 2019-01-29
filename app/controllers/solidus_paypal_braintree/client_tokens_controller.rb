@@ -7,7 +7,7 @@ module SolidusPaypalBraintree
     before_action :load_gateway
 
     def create
-      render json: { client_token: @gateway.generate_token, payment_method_id: @gateway.id }
+      render json: { client_token: generate_token, payment_method_id: @gateway.id }
     end
 
     private
@@ -24,6 +24,13 @@ module SolidusPaypalBraintree
           end
         @gateway = ::SolidusPaypalBraintree::Gateway.where(active: true).merge(store_payment_methods_scope).first!
       end
+    end
+
+    def generate_token
+      @gateway.generate_token
+    rescue ::SolidusPaypalBraintree::Gateway::TokenGenerationDisabledError => error
+      Rails.logger.error error
+      nil
     end
   end
 end
