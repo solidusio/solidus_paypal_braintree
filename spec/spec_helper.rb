@@ -58,6 +58,7 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = false
   config.example_status_persistence_file_path = "tmp/failed_examples.txt"
 
+  config.include Devise::Test::ControllerHelpers, type: :controller
   config.include SolidusPaypalBraintree::GatewayHelpers
 
   config.before(:each, type: :feature, js: true) do |ex|

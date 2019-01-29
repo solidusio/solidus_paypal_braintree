@@ -4,6 +4,8 @@ module SolidusPaypalBraintree
   class Gateway < ::Spree::PaymentMethod
     include RequestProtection
 
+    class TokenGenerationDisabledError < StandardError; end
+
     # Error message from Braintree that gets returned by a non voidable transaction
     NON_VOIDABLE_STATUS_ERROR_REGEXP = /can only be voided if status is authorized/
 
@@ -196,18 +198,33 @@ module SolidusPaypalBraintree
     #
     # @api public
     # @param payment [Spree::Payment]
-    # @return [SolidusPaypalBraintree::Customer]
+    # @return [SolidusPaypalBraintree::Customer, NilClass]
     def create_profile(payment)
       source = payment.source
+      user = source.user
+      source.customer = user&.braintree_customer
 
-      return if source.token.present? || source.customer.present? || source.nonce.nil?
+      return if source.token.present? || source.nonce.nil?
+
+      if source.customer.present?
+        # Add new payment method to existing customer
+        result = braintree.payment_method.create(
+          braintree_payment_method_params_for(payment)
+        )
+        fail Spree::Core::GatewayError, result.message unless result.success?
+
+        source.token = result.payment_method.token
+        source.save!
+
+        return source.customer
+      end
 
       result = braintree.customer.create(customer_profile_params(payment))
       fail Spree::Core::GatewayError, result.message unless result.success?
 
       customer = result.customer
 
-      source.create_customer!(braintree_customer_id: customer.id).tap do
+      source.create_customer!(user_id: user&.id, braintree_customer_id: customer.id).tap do
         if customer.payment_methods.any?
           source.token = customer.payment_methods.last.token
         end
@@ -216,11 +233,15 @@ module SolidusPaypalBraintree
       end
     end
 
+    # @raise [TokenGenerationDisabledError]
+    #   If `preferred_token_generation_enabled` is false
+    #
+    # @param options [Hash]
+    #   The options for braintree.
+    #   See: https://developers.braintreepayments.com/reference/request/client-token/generate/ruby
+    #
     # @return [String]
     #   The token that should be used along with the Braintree js-client sdk.
-    #
-    #   returns an error message if `preferred_token_generation_enabled` is
-    #   set to false.
     #
     # @example
     #   <script>
@@ -235,9 +256,12 @@ module SolidusPaypalBraintree
     #       }
     #     );
     #   </script>
-    def generate_token
-      return TOKEN_GENERATION_DISABLED_MESSAGE unless preferred_token_generation_enabled
-      braintree.client_token.generate
+    def generate_token(options = {})
+      unless preferred_token_generation_enabled
+        raise TokenGenerationDisabledError, TOKEN_GENERATION_DISABLED_MESSAGE
+      end
+
+      braintree.client_token.generate(options)
     end
 
     def payment_profiles_supported?
@@ -375,6 +399,17 @@ module SolidusPaypalBraintree
       if store_in_vault && payment.source.try(:nonce)
         params[:payment_method_nonce] = payment.source.nonce
       end
+
+      params
+    end
+
+    def braintree_payment_method_params_for(payment)
+      source = payment.source
+      user = source.user
+
+      params = {}
+      params[:payment_method_nonce] = source.nonce
+      params[:customer_id] = user.braintree_customer.braintree_customer_id
 
       params
     end
