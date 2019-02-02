@@ -15,7 +15,9 @@
   }
 
   var paypalOptions = {
-    flow: 'vault',
+    flow: '<%= SolidusPaypalBraintree::Gateway.first.preferred_paypal_flow %>',
+    amount: '<%= current_order.total %>',
+    currency: '<%= current_order.currency %>',
     enableShippingAddress: true,
     shippingAddressOverride: address,
     shippingAddressEditable: false,

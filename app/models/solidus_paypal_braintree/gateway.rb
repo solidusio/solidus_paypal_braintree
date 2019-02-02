@@ -38,6 +38,9 @@ module SolidusPaypalBraintree
     preference(:merchant_currency_map, :hash, default: {})
     preference(:paypal_payee_email_map, :hash, default: {})
 
+    # Which checkout flow to use (vault/checkout)
+    preference(:paypal_flow, :string, default: 'vault')
+
     def partial_name
       "paypal_braintree"
     end
@@ -261,6 +264,12 @@ module SolidusPaypalBraintree
 
     private
 
+    # Whether to store this payment method in the PayPal Vault. This only works when the checkout
+    # flow is "vault", so make sure to call +super+ if you override it.
+    def store_in_vault
+      preferred_paypal_flow == 'vault'
+    end
+
     def logger
       Braintree::Configuration.logger.clone.tap do |logger|
         logger.level = Rails.logger.level
@@ -292,7 +301,7 @@ module SolidusPaypalBraintree
       end
 
       params[:channel] = "Solidus"
-      params[:options] = { store_in_vault_on_success: true }
+      params[:options] = { store_in_vault_on_success: store_in_vault }
 
       if submit_for_settlement
         params[:options][:submit_for_settlement] = true
@@ -363,7 +372,7 @@ module SolidusPaypalBraintree
     def customer_profile_params(payment)
       params = {}
 
-      if payment.source.try(:nonce)
+      if store_in_vault && payment.source.try(:nonce)
         params[:payment_method_nonce] = payment.source.nonce
       end
 

@@ -46,7 +46,8 @@ Payment methods can accept preferences either directly entered in admin, or from
         environment: Rails.env.production? ? 'production' : 'sandbox',
         merchant_id: ENV['BRAINTREE_MERCHANT_ID'],
         public_key: ENV['BRAINTREE_PUBLIC_KEY'],
-        private_key: ENV['BRAINTREE_PRIVATE_KEY']
+        private_key: ENV['BRAINTREE_PRIVATE_KEY'],
+        paypal_flow: 'vault', # 'checkout' is accepted too
       }
     )
   end
@@ -155,8 +156,10 @@ store's configuration.
 The checkout view
 [initializes the PayPal button](/lib/views/frontend/spree/checkout/payment/_paypal_braintree.html.erb)
 using the
-[vault flow](https://developers.braintreepayments.com/guides/paypal/overview/javascript/v3),
-which allows the source to be reused.
+[Vault flow](https://developers.braintreepayments.com/guides/paypal/overview/javascript/v3),
+which allows the source to be reused. If you want, you can use [Checkout with PayPal](https://developers.braintreepayments.com/guides/paypal/checkout-with-paypal/javascript/v3)
+instead, which doesn't allow you to reuse sources but allows your customers to pay with their PayPal
+balance (see setup instructions).
 
 If you are creating your own checkout view or would like to customize the
 [options that get passed to tokenize](https://braintree.github.io/braintree-web/3.6.3/PayPal.html#tokenize)
