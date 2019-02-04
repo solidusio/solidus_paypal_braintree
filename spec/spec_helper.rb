@@ -22,6 +22,7 @@ require File.expand_path('dummy/config/environment.rb', __dir__)
 require "solidus_support/extension/feature_helper"
 require 'spree/testing_support/controller_requests'
 
+require 'byebug'
 require 'vcr'
 require 'webmock'
 require 'selenium-webdriver'
