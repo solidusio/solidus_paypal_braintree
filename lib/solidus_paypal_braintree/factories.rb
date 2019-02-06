@@ -12,7 +12,7 @@ FactoryBot.modify do
   # As we match the body in our VCR settings VCR can not match the request anymore and therefore cannot replay existing cassettes.
   #
   factory :address do
-    zipcode '21088-0255'
-    lastname "Doe"
+    zipcode { '21088-0255' }
+    lastname { 'Doe' }
   end
 end
