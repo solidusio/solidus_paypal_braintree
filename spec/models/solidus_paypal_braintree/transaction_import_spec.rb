@@ -190,7 +190,7 @@ describe SolidusPaypalBraintree::TransactionImport do
             # new address is NY
             ny_zone = Spree::Zone.create name: 'nyc tax'
             ny_zone.members << Spree::ZoneMember.new(zoneable: new_york)
-            create :tax_rate, tax_category: original_tax_rate.tax_category, zone: ny_zone, amount: 0.1
+            create :tax_rate, tax_categories: [original_tax_rate.tax_categories.first], zone: ny_zone, amount: 0.1
           end
 
           it 'includes the lower tax in the payment' do

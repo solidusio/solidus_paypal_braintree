@@ -6,7 +6,7 @@
       <% previous_cards.each do |card| %>
         <label><%= radio_button_tag :card, card.id, card == previous_cards.first %> <%= card.display_number %><br /></label>
       <% end %>
-      <label><%= radio_button_tag :card, "new", false, { id: "card_new#{id}" } %> <%= Spree.t(:use_new_cc) %></label>
+      <label><%= radio_button_tag :card, "new", false, { id: "card_new#{id}" } %> <%= I18n.t("spree.use_new_cc") %></label>
     <% end %>
   </div>
 

@@ -35,6 +35,8 @@ require 'solidus_paypal_braintree/factories'
 
 ApplicationController.prepend_view_path "spec/fixtures/views"
 
+FactoryBot.use_parent_strategy = false
+
 VCR.configure do |c|
   c.cassette_library_dir = "spec/fixtures/cassettes"
   c.hook_into :webmock

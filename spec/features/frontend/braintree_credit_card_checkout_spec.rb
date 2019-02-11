@@ -10,7 +10,12 @@ shared_context "checkout setup" do
     create(:store, payment_methods: [gateway, braintree]).tap do |store|
       store.braintree_configuration.update!(credit_card: true)
     end
-    order = OrderWalkthrough.up_to(:delivery)
+
+    if SolidusSupport.solidus_gem_version >= Gem::Version.new('2.6.0')
+      order = Spree::TestingSupport::OrderWalkthrough.up_to(:delivery)
+    else
+      order = OrderWalkthrough.up_to(:delivery)
+    end
 
     user = create(:user)
     order.user = user
