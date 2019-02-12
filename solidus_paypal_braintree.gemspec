@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
   s.add_dependency "braintree", '~> 2.65'
   s.add_dependency 'activemerchant', '~> 1.48'
 
+  s.add_development_dependency 'byebug'
   s.add_development_dependency 'capybara'
   s.add_development_dependency 'puma'
   s.add_development_dependency 'capybara-screenshot'
