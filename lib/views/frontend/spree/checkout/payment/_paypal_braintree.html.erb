@@ -13,7 +13,7 @@
 <% end %>
 
 <% if current_store.braintree_configuration.apple_pay? %>
-  <%= render "spree/shared/apple_pay_button" %>
+  <%= render "spree/shared/apple_pay_button", id: id %>
 <% end %>
 
 <%= render "spree/shared/braintree_errors" %>
