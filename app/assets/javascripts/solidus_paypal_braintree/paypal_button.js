@@ -104,41 +104,7 @@ SolidusPaypalBraintree.PaypalButton.prototype._transactionParams = function(payl
       "email" : payload.details.email,
       "phone" : payload.details.phone,
       "nonce" : payload.nonce,
-      "payment_type" : payload.type,
-      "address_attributes" : this._addressParams(payload)
+      "payment_type" : payload.type
     }
-  };
-};
-
-/**
- * Builds the address parameters to submit to Solidus using the payload
- * returned by Braintree
- *
- * @param {object} payload - The payload returned by Braintree after tokenization
- */
-SolidusPaypalBraintree.PaypalButton.prototype._addressParams = function(payload) {
-  var first_name, last_name;
-  var payload_address = payload.details.shippingAddress || payload.details.billingAddress;
-  if (!payload_address) return {};
-
-  if (payload_address.recipientName) {
-    first_name = payload_address.recipientName.split(" ")[0];
-    last_name = payload_address.recipientName.split(" ")[1];
-  }
-
-  if (!first_name || !last_name) {
-    first_name = payload.details.firstName;
-    last_name = payload.details.lastName;
-  }
-
-  return {
-    "first_name" : first_name,
-    "last_name" : last_name,
-    "address_line_1" : payload_address.line1,
-    "address_line_2" : payload_address.line2,
-    "city" : payload_address.city,
-    "state_code" : payload_address.state,
-    "zip" : payload_address.postalCode,
-    "country_code" : payload_address.countryCode
   };
 };

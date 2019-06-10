@@ -161,23 +161,47 @@ describe SolidusPaypalBraintree::TransactionImport do
             state_code: 'NY', address_line_1: '350 5th Ave', zip: '10118'
         end
 
-        it 'uses the new address', aggregate_failures: true do
-          subject
-          expect(order.shipping_address.address1).to eq '350 5th Ave'
-          expect(order.shipping_address.country).to eq country
-          expect(order.shipping_address.state).to eq new_york
-        end
-
-        context 'with a tax category' do
-          before do
-            zone = Spree::Zone.create name: 'nyc tax'
-            zone.members << Spree::ZoneMember.new(zoneable: new_york)
-            create :tax_rate, zone: zone
+        context 'when the transaction payment method is ApplePay' do
+          let(:transaction) do
+            SolidusPaypalBraintree::Transaction.new nonce: 'fake-valid-nonce',
+              payment_method: payment_method, address: transaction_address,
+              payment_type: SolidusPaypalBraintree::Source::APPLE_PAY,
+              phone: '123-456-7890', email: 'user@example.com'
           end
 
-          it 'includes the tax in the payment' do
+          it 'uses the new address', aggregate_failures: true do
             subject
-            expect(order.payments.first.amount).to eq 16
+            expect(order.shipping_address.address1).to eq '350 5th Ave'
+            expect(order.shipping_address.country).to eq country
+            expect(order.shipping_address.state).to eq new_york
+          end
+
+          context 'with a tax category' do
+            before do
+              zone = Spree::Zone.create name: 'nyc tax'
+              zone.members << Spree::ZoneMember.new(zoneable: new_york)
+              create :tax_rate, zone: zone
+            end
+
+            it 'includes the tax in the payment' do
+              subject
+              expect(order.payments.first.amount).to eq 16
+            end
+          end
+        end
+
+        context 'when the transaction payment method is PayPal' do
+          let(:transaction) do
+            SolidusPaypalBraintree::Transaction.new nonce: 'fake-valid-nonce',
+              payment_method: payment_method, address: transaction_address,
+              payment_type: SolidusPaypalBraintree::Source::PAYPAL,
+              phone: '123-456-7890', email: 'user@example.com'
+          end
+
+          it 'skips the address importing', aggregate_failures: true do
+            subject
+            expect(order.shipping_address.address1).not_to eq '350 5th Ave'
+            expect(order.shipping_address.state).not_to eq new_york
           end
         end
 

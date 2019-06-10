@@ -39,7 +39,7 @@ module SolidusPaypalBraintree
       if valid?
         order.email = user.try!(:email) || transaction.email
 
-        if address
+        if address && !source.paypal?
           order.shipping_address = order.billing_address = address
           # work around a bug in most solidus versions
           # about tax zone cachine between address changes
