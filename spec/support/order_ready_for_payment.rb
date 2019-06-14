@@ -1,7 +1,7 @@
 shared_context 'order ready for payment' do
   let!(:country) { create :country }
 
-  let(:user) { create :user }
+  let(:user) { create(:user).tap(&:generate_spree_api_key!) }
   let(:line_item) { create :line_item, price: 50 }
   let(:address) { create :address, zipcode: "90210", lastname: "Doe", country: country }
 
