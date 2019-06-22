@@ -1,11 +1,54 @@
 it:
+  activerecord:
+    models:
+      solidus_paypal_braintree/gateway: Braintree
+  spree:
+    admin:
+      tab:
+        braintree: Braintree
+    client_sdk_enabled: Client SDK abilitato?
+    environment: Environment
+    merchant_currency_map: Associazioni tra merchant Braintree e valute
+    merchant_id: Merchant ID
+    paypal_payee_email_map: Associazioni tra email beneficiari PayPal e valute
+    private_key: Private key
+    public_key: Public key
+    token_generation_enabled: Generazione dei Token abilitata?
+    paypal_flow: Flusso PayPal
   solidus_paypal_braintree:
+    braintree: Braintree
+    nonce: Nonce
+    token: Token
     errors:
-      default_error: "Qualcosa è andato storto."
-      empty_fields: "I campi non possono essere vuoti."
-      invalid_fields: "Alcuni campi non sono corretti."
-      invalid_card: "I dati della carta di credito non sono corretti."
-      network_error: "Si è verificato un errore di rete."
-      duplicate_iframe: "Ci sono due form Braintree."
-      fail_on_duplicate: "Questo metodo di pagamento già esiste."
-      cvv_verification_failed: "Il codice CVV non è corretto."
+      default_error: Qualcosa è andato storto!
+      paypal_popup_closed: La finestra di PayPal è stata chiusa prima di completare il pagamento.
+      empty_fields: I campi non possono essere vuoti!
+      invalid_fields: Alcuni campi non sono corretti.
+      invalid_card: I dati della carta di credito non sono corretti.
+      network_error: Si è verificato un errore di rete.
+      duplicate_iframe: Ci sono due iframe di Braintree.
+      fail_on_duplicate: Questo metodo di pagamento esiste già.
+      cvv_verification_failed: Il codice CVV non è corretto.
+    payment_type:
+      label: Metodo di Pagamento
+      apple_pay_card: Apple Pay
+      credit_card: Carta di credito
+      pay_pal_account: PayPal
+    configurations:
+      title: Configurazioni di Braintree
+      tab: Braintree
+      update_success: Configurazioni di Braintree aggiornate con successo.
+      update_error: Si è verificato un errore durante l'aggiornamento delle configurazioni di Braintree.
+    gateway_rejection_reasons:
+      avs: Controllo AVS fallito.
+      avs_and_cvv: Controlli AVS e CVV falliti.
+      cvv: Controllo CVV fallito.
+      duplicate: Transazione duplicata.
+      fraud: La carta di credito è stata rifiutata a seguito di un potenziale uso fraudolento.
+      three_d_secure: Controllo '3D Secure' fallito.
+    transaction_statuses:
+      authorization_expired: L'autorizzazione di pagamento è scaduta.
+      failed: Si è verificato un errore durante l'invio della transazione al sistema di pagamento.
+      gateway_rejected: Il gateway di pagamento ha rifiutato questa transazione.
+      processor_declined: Il sistema di pagamento ha rifiutato questa transazione.
+      settlement_declined: Il saldo di questa transazione è stato rifiutato dal sistema di pagamento.

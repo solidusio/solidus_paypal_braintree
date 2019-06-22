@@ -14,6 +14,7 @@ en:
     private_key: Private key
     public_key: Public key
     token_generation_enabled: Token generation enabled?
+    paypal_flow: PayPal flow
   solidus_paypal_braintree:
     braintree: Braintree
     nonce: Nonce
