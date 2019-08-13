@@ -7,7 +7,9 @@
     line1: '<%= address.address1 %>',
     line2: '<%= address.address2 %>',
     city: '<%= address.city %>',
+    <% if Spree::Config[:address_requires_state] and address.country.states_required  %>
     state: '<%= address.state.name %>',
+    <% end %>
     postalCode: '<%= address.zipcode %>',
     countryCode: '<%= address.country.iso %>',
     phone: '<%= address.phone %>',
