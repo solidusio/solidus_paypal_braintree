@@ -20,12 +20,14 @@ require File.expand_path('dummy/config/environment.rb', __dir__)
 
 # Requires factories and other useful helpers defined in spree_core.
 require "solidus_support/extension/feature_helper"
-require 'spree/testing_support/controller_requests'
+# require 'spree/testing_support/controller_requests'
+require 'spree/api/testing_support/helpers'
 
 require 'byebug'
 require 'vcr'
 require 'webmock'
 require 'selenium-webdriver'
+require 'rspec/active_model/mocks'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -60,6 +62,7 @@ RSpec.configure do |config|
   config.example_status_persistence_file_path = "tmp/failed_examples.txt"
 
   config.include SolidusPaypalBraintree::GatewayHelpers
+  config.include Spree::Api::TestingSupport::Helpers, type: :request
 
   config.before(:each, type: :feature, js: true) do |ex|
     Capybara.current_driver = ex.metadata[:driver] || :selenium_chrome_headless
