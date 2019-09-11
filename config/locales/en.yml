@@ -35,6 +35,8 @@ en:
       duplicate_iframe: "Duplicate Braintree iframe."
       fail_on_duplicate: "This payment method already exists in your vault."
       cvv_verification_failed: "CVV did not pass verification."
+      threeds:
+        authentication_failed: "3D Secure authentication failed. Please try again using a different payment method."
     payment_type:
       label: Payment Type
       apple_pay_card: Apple Pay
