@@ -461,11 +461,31 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
         end
       end
 
-      context "when the source already has a customer" do
-        before { source.build_customer }
+      context "when the source already has a customer",
+              vcr: { cassette_name: "braintree/add_payment_method" } do
+        let(:previous_payment) do
+          build(:payment, {
+            payment_method: gateway,
+            source: previous_source
+          })
+        end
+
+        let(:previous_source) do
+          SolidusPaypalBraintree::Source.new(
+            nonce: 'fake-valid-nonce',
+            user: user,
+            payment_type: payment_type,
+            payment_method: gateway
+          )
+        end
+
+        before do
+          gateway.create_profile(previous_payment)
+          source.user.reload
+        end
 
         it "does not create a new customer profile" do
-          expect(profile).to be_nil
+          expect(profile).to eql previous_source.customer
         end
       end
 
@@ -617,7 +637,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
         gateway
       end
 
-      it { is_expected.to match(/Token generation is disabled/) }
+      it { expect { subject }.to raise_error SolidusPaypalBraintree::Gateway::TokenGenerationDisabledError }
     end
   end
 end
