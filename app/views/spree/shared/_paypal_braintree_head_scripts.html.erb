@@ -9,6 +9,10 @@
 
   <% if current_store.braintree_configuration.credit_card? %>
     <script src="https://js.braintreegateway.com/web/3.52.0/js/hosted-fields.min.js"></script>
+
+    <% if current_store.braintree_configuration.three_d_secure? %>
+      <script src="https://js.braintreegateway.com/web/3.52.0/js/three-d-secure.min.js"></script>
+    <% end %>
   <% end %>
 
   <% if current_store.braintree_configuration.apple_pay? %>

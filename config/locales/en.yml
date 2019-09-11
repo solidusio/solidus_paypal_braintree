@@ -2,6 +2,12 @@ en:
   activerecord:
     models:
       solidus_paypal_braintree/gateway: Braintree
+    attributes:
+      solidus_paypal_braintree/configuration:
+        paypal: PayPal
+        apple_pay: Apple Pay
+        credit_card: Credit Card
+        three_d_secure: 3D Secure
   spree:
     admin:
       tab:

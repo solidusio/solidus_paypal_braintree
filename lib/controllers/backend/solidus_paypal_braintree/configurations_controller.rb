@@ -29,6 +29,7 @@ module SolidusPaypalBraintree
         :paypal,
         :apple_pay,
         :credit_card,
+        :three_d_secure,
         :preferred_paypal_button_locale,
         :preferred_paypal_button_color,
         :preferred_paypal_button_size,
