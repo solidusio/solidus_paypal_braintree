@@ -33,7 +33,7 @@ RSpec.describe SolidusPaypalBraintree::AVSResult do
 
       context 'street address result is M and postal code result is N' do
         let(:codes) { %w(M N) }
-        it { is_expected.to eq 'Street address matches, but 5-digit and 9-digit postal code do not match.' }
+        it { is_expected.to eq 'Street address matches, but postal code does not match.' }
         it { expect(described_class.build(transaction).to_hash).to include('street_match' => 'M', 'postal_match' => 'N') }
       end
 
@@ -153,7 +153,7 @@ RSpec.describe SolidusPaypalBraintree::AVSResult do
 
       context 'street address result is U and postal code result is N' do
         let(:codes) { %w(U N) }
-        it { is_expected.to eq 'Street address and postal code do not match.' }
+        it { is_expected.to eq "Street address and postal code do not match. For American Express: Card member's name, street address and postal code do not match." }
         it { expect(described_class.build(transaction).to_hash).to include('street_match' => 'U', 'postal_match' => 'N') }
       end
 
