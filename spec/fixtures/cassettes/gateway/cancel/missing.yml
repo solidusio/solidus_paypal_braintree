@@ -12,9 +12,11 @@ http_interactions:
       Accept:
       - application/xml
       User-Agent:
-      - Braintree Ruby Gem 2.76.0
+      - Braintree Ruby Gem 2.98.0
       X-Apiversion:
-      - '4'
+      - '5'
+      Content-Type:
+      - application/xml
       Authorization:
       - Basic bXdqa2t4d2NwMzJja2huZjphOTI5OGY0M2IzMGM2OTlkYjMwNzJjYzRhMDBmN2Y0OQ==
   response:
@@ -23,13 +25,12 @@ http_interactions:
       message: Not Found
     headers:
       Date:
-      - Mon, 17 Jul 2017 03:27:18 GMT
+      - Fri, 13 Sep 2019 14:27:48 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
       - chunked
       X-Frame-Options:
-      - SAMEORIGIN
       - SAMEORIGIN
       X-Xss-Protection:
       - 1; mode=block
@@ -43,16 +44,20 @@ http_interactions:
       - gzip
       Cache-Control:
       - no-cache
-      X-Request-Id:
-      - 1de6b54d-41e9-4d8f-9961-af1640ca2a16
       X-Runtime:
-      - '0.030612'
+      - '0.030577'
+      X-Request-Id:
+      - 01-1568384868.074-92.223.152.178-12971830
+      Content-Security-Policy:
+      - frame-ancestors 'self'
+      X-Broxyid:
+      - 01-1568384868.074-92.223.152.178-12971830
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        H4sIAJYubFkAAwAAAP//AwAAAAAAAAAAAA==
+        H4sIAGSne10AAwAAAP//AwAAAAAAAAAAAA==
     http_version: 
-  recorded_at: Mon, 17 Jul 2017 03:27:19 GMT
-recorded_with: VCR 3.0.3
+  recorded_at: Fri, 13 Sep 2019 14:27:48 GMT
+recorded_with: VCR 5.0.0
