@@ -47,6 +47,7 @@ VCR.configure do |c|
     match_requests_on: [:method, :uri, :body],
   }
   c.allow_http_connections_when_no_cassette = false
+  c.ignore_hosts 'chromedriver.storage.googleapis.com'
 end
 
 require 'braintree'
