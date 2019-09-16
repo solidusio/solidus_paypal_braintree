@@ -20,11 +20,6 @@ module SolidusPaypalBraintree::GatewayHelpers
   def create_gateway(opts = {})
     new_gateway(opts).tap(&:save!)
   end
-
-  # Using order.update! was deprecated in Solidus v2.3
-  def recalculate(order)
-    order.respond_to?(:recalculate) ? order.recalculate : order.update!
-  end
 end
 
 RSpec.configure do |config|

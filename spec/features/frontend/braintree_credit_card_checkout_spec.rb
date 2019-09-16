@@ -20,7 +20,7 @@ shared_context "checkout setup" do
     user = create(:user)
     order.user = user
     order.number = "R9999999"
-    recalculate(order)
+    order.recalculate
 
     allow_any_instance_of(Spree::CheckoutController).to receive_messages(current_order: order)
     allow_any_instance_of(Spree::CheckoutController).to receive_messages(try_spree_current_user: user)
