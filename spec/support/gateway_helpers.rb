@@ -26,3 +26,7 @@ module SolidusPaypalBraintree::GatewayHelpers
     order.respond_to?(:recalculate) ? order.recalculate : order.update!
   end
 end
+
+RSpec.configure do |config|
+  config.include SolidusPaypalBraintree::GatewayHelpers
+end
