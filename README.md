@@ -123,8 +123,8 @@ The following is a relatively bare-bones implementation to enable Apple Pay on t
       amount: "<%= current_order.total %>",
       shippingContact: {
         emailAddress: '<%= current_order.email %>',
-        familyName: '<%= address.firstname %>',
-        givenName: '<%= address.lastname %>',
+        givenName: '<%= address.firstname %>',
+        familyName: '<%= address.lastname %>',
         phoneNumber: '<%= address.phone %>',
         addressLines: ['<%= address.address1 %>','<%= address.address2 %>'],
         locality: '<%= address.city %>',
