@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe SolidusPaypalBraintree::Source, type: :model do
+  include_context 'order ready for payment'
+
   it 'is invalid without a payment_type set' do
     expect(described_class.new).to be_invalid
   end
