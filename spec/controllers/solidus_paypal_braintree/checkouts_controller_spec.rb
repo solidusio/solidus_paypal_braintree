@@ -41,7 +41,10 @@ RSpec.describe SolidusPaypalBraintree::CheckoutsController, type: :controller do
       allow(controller).to receive(:current_order) { order }
     end
 
-    context "when a payment is created successfully", vcr: { cassette_name: 'checkout/update' } do
+    context "when a payment is created successfully", vcr: {
+      cassette_name: 'checkout/update',
+      match_requests_on: [:braintree_uri]
+    } do
       it 'creates a payment' do
         expect { patch_update }.
           to change { order.payments.count }.

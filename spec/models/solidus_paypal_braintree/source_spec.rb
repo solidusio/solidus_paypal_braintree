@@ -230,7 +230,10 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
 
     subject { payment_source.last_4 }
 
-    context 'when token is known at braintree', vcr: { cassette_name: "source/last4" } do
+    context 'when token is known at braintree', vcr: {
+      cassette_name: "source/last4",
+      match_requests_on: [:braintree_uri]
+    } do
       before do
         customer = braintree_client.customer.create
         expect(customer.customer.id).to be
@@ -301,7 +304,10 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
 
     subject { payment_source.card_type }
 
-    context "when the token is known at braintree", vcr: { cassette_name: "source/card_type" } do
+    context "when the token is known at braintree", vcr: {
+      cassette_name: "source/card_type",
+      match_requests_on: [:braintree_uri]
+    } do
       before do
         customer = braintree_client.customer.create
         expect(customer.customer.id).to be
