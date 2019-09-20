@@ -4,14 +4,14 @@ module SolidusPaypalBraintree::GatewayHelpers
       name: "Braintree",
       preferences: {
         environment: 'sandbox',
-        public_key: ENV['BRAINTREE_PUBLIC_KEY'],
-        private_key: ENV['BRAINTREE_PRIVATE_KEY'],
-        merchant_id: ENV['BRAINTREE_MERCHANT_ID'],
+        public_key: ENV.fetch('BRAINTREE_PUBLIC_KEY', 'dummy_public_key'),
+        private_key: ENV.fetch('BRAINTREE_PRIVATE_KEY', 'dummy_private_key'),
+        merchant_id: ENV.fetch('BRAINTREE_MERCHANT_ID', 'dummy_merchant_id'),
         merchant_currency_map: {
           'EUR' => 'stembolt_EUR'
         },
         paypal_payee_email_map: {
-          'EUR' => ENV['BRAINTREE_PAYPAL_PAYEE_EMAIL']
+          'EUR' => ENV.fetch('BRAINTREE_PAYPAL_PAYEE_EMAIL', 'paypal+europe@example.com')
         }
       }
     }.merge(opts))
