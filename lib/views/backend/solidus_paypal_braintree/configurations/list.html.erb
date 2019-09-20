@@ -21,6 +21,12 @@
             <%= c.label :credit_card %>
             <%= c.check_box :credit_card %>
           </div>
+
+          <% config.admin_form_preference_names.each do |name| %>
+            <%= render "spree/admin/shared/preference_fields/#{config.preference_type(name)}",
+                       form: c, attribute: "preferred_#{name}",
+                       label: t(name, scope: 'spree', default: name.to_s.humanize) %>
+          <% end %>
         <% end %>
       </fieldset>
     </div>

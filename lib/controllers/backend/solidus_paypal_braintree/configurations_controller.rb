@@ -24,7 +24,17 @@ module SolidusPaypalBraintree
 
     def configurations_params
       params.require(:configurations).
-        permit(configuration_fields: [:paypal, :apple_pay, :credit_card])
+        permit(configuration_fields: [
+        :paypal,
+        :apple_pay,
+        :credit_card,
+        :preferred_paypal_button_locale,
+        :preferred_paypal_button_color,
+        :preferred_paypal_button_size,
+        :preferred_paypal_button_shape,
+        :preferred_paypal_button_label,
+        :preferred_paypal_button_tagline
+      ])
     end
   end
 end
