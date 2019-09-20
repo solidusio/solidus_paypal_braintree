@@ -32,6 +32,26 @@ describe "Checkout", type: :feature, js: true do
         expect(page).to have_content("Your order has been processed successfully")
       end
     end
+
+    context 'using custom paypal button style' do
+      before do
+        store.braintree_configuration.tap do |conf|
+          conf.set_preference(:paypal_button_color, 'blue')
+          conf.save!
+        end
+      end
+
+      it 'should display required PayPal button style' do
+        pend_if_paypal_slow do
+          expect_any_instance_of(Spree::Order).to receive(:restart_checkout_flow)
+          move_through_paypal_popup
+
+          within(find('#paypal-button iframe')) do
+            expect(page).to have_selector('[class="paypal-button-color-blue]')
+          end
+        end
+      end
+    end
   end
 
   context "goes through regular checkout using paypal payment method" do
