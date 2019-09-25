@@ -36,7 +36,7 @@ SolidusPaypalBraintree.PaypalButton.prototype.initializeCallback = function() {
 
   paypal.Button.render({
     env: this._environment,
-
+    style: this._paypalOptions.buttonStyle,
     payment: function () {
       return this._client.getPaypalInstance().createPayment(this._paypalOptions);
     }.bind(this),

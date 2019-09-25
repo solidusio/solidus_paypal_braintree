@@ -41,6 +41,11 @@ module SolidusPaypalBraintree
     # Which checkout flow to use (vault/checkout)
     preference(:paypal_flow, :string, default: 'vault')
 
+    # How to style your paypal button(s)
+    # A hash that gets passed to the `style` key when initializing the button.
+    # See https://developer.paypal.com/docs/checkout/integration-features/customize-button
+    preference(:paypal_button_style, :hash, default: {})
+
     def partial_name
       "paypal_braintree"
     end

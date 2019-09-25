@@ -12,6 +12,9 @@ module SolidusPaypalBraintree::GatewayHelpers
         },
         paypal_payee_email_map: {
           'EUR' => ENV.fetch('BRAINTREE_PAYPAL_PAYEE_EMAIL', 'paypal+europe@example.com')
+        },
+        paypal_button_style: {
+          color: 'black'
         }
       }
     }.merge(opts))

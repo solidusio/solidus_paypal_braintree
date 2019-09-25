@@ -21,6 +21,7 @@
     enableShippingAddress: true,
     shippingAddressOverride: address,
     shippingAddressEditable: false,
+    buttonStyle: <%== SolidusPaypalBraintree::Gateway.first.preferred_paypal_button_style.to_json %>,
     environment: '<%= Rails.env.production? ? "production" : "sandbox" %>'
   }
 
