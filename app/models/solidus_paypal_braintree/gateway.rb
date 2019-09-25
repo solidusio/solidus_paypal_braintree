@@ -55,6 +55,9 @@ module SolidusPaypalBraintree
     # Example: { number: "Enter card number", cvv: "Enter CVV", expirationDate: "mm/yy" }
     preference(:placeholder_text, :hash, default: {})
 
+    # Wether to use the JS device data collector
+    preference(:use_data_collector, :boolean, default: true)
+
     def partial_name
       "paypal_braintree"
     end
