@@ -21,7 +21,7 @@ shared_context 'order ready for payment' do
       ship_address: address,
       user: user
     )
-    recalculate(order)
+    order.recalculate
 
     expect(order.state).to eq "cart"
 

@@ -88,6 +88,7 @@ describe SolidusPaypalBraintree::TransactionImport do
     let(:address) { create :address, country: country }
     let(:order) { Spree::Order.create(number: "R999999999", store: store, line_items: [line_item], ship_address: address, currency: 'USD', total: 10, email: 'test@example.com') }
     let(:payment_method) { create_gateway }
+
     let(:country) { create :country, iso: 'US', states_required: true }
     let(:transaction_address) { nil }
     let(:end_state) { 'confirm' }
@@ -112,7 +113,10 @@ describe SolidusPaypalBraintree::TransactionImport do
 
     subject { described_class.new(order, transaction).import!(end_state) }
 
-    context "passes validation", vcr: { cassette_name: 'transaction/import/valid' } do
+    context "passes validation", vcr: {
+      cassette_name: 'transaction/import/valid',
+      match_requests_on: [:braintree_uri]
+    } do
       context "order end state is confirm" do
         it 'advances order to confirm state' do
           subject
@@ -124,8 +128,10 @@ describe SolidusPaypalBraintree::TransactionImport do
           expect(order.payments.first.amount).to eq 15
         end
 
-        it 'is complete and capturable', aggregate_failures: true,
-          vcr: { cassette_name: 'transaction/import/valid/capture' } do
+        it 'is complete and capturable', aggregate_failures: true, vcr: {
+          cassette_name: 'transaction/import/valid/capture',
+          match_requests_on: [:braintree_uri]
+        } do
           subject
           order.complete
 
@@ -222,7 +228,10 @@ describe SolidusPaypalBraintree::TransactionImport do
       end
     end
 
-    context "checkout flow", vcr: { cassette_name: 'transaction/import/valid' } do
+    context "checkout flow", vcr: {
+      cassette_name: 'transaction/import/valid',
+      match_requests_on: [:braintree_uri]
+    } do
       it "is not restarted by default" do
         expect(order).to_not receive(:restart_checkout_flow)
         subject

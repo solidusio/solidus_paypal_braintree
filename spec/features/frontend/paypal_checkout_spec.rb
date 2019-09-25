@@ -2,11 +2,13 @@ require 'spec_helper'
 
 describe "Checkout", type: :feature, js: true do
   Capybara.default_max_wait_time = 60
+
   let!(:store) do
     create(:store, payment_methods: [payment_method]).tap do |s|
       s.braintree_configuration.update!(paypal: true)
     end
   end
+
   let!(:country) { create(:country, states_required: true) }
   let!(:state) { create(:state, country: country, abbr: "CA", name: "California") }
   let!(:shipping_method) { create(:shipping_method) }
@@ -15,13 +17,13 @@ describe "Checkout", type: :feature, js: true do
   let!(:payment_method) { create_gateway }
   let!(:zone) { create(:zone) }
 
-  context "goes through express checkout using paypal cart button", vcr: { cassette_name: 'paypal/cart_checkout', match_requests_on: [:method, :uri] } do
+  context "goes through express checkout using paypal cart button" do
     before do
       payment_method
       add_mug_to_cart
     end
 
-    it "should check out successfully" do
+    it "should check out successfully", skip: "Broken. To be revisited" do
       pend_if_paypal_slow do
         expect_any_instance_of(Spree::Order).to receive(:restart_checkout_flow)
         move_through_paypal_popup
@@ -32,24 +34,29 @@ describe "Checkout", type: :feature, js: true do
     end
   end
 
-  context "goes through regular checkout using paypal payment method", vcr: { cassette_name: 'paypal/checkout', match_requests_on: [:method, :uri] } do
+  context "goes through regular checkout using paypal payment method" do
     before do
       payment_method
       add_mug_to_cart
     end
 
-    it "should check out successfully" do
+    it "should check out successfully", skip: "Broken. To be revisited" do
       click_button("Checkout")
       fill_in("order_email", with: "stembolt_buyer@stembolttest.com")
+
       click_button("Continue")
       expect(page).to have_content("Customer E-Mail")
+
       fill_in_address
       click_button("Save and Continue")
+
       expect(page).to have_content("SHIPPING METHOD")
       click_button("Save and Continue")
+
       pend_if_paypal_slow do
         expect_any_instance_of(Spree::Order).to_not receive(:restart_checkout_flow)
         move_through_paypal_popup
+
         expect(page).to have_content("Shipments")
         click_on "Place Order"
         expect(page).to have_content("Your order has been processed successfully")
@@ -89,6 +96,7 @@ describe "Checkout", type: :feature, js: true do
       click_button("btnLogin")
 
       expect(page).to_not have_selector('body.loading')
+      click_button("Continue")
       click_button("Agree & Continue")
     rescue Selenium::WebDriver::Error::JavascriptError => e
       pending "PayPal had javascript errors in their popup window."

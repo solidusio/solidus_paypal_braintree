@@ -6,11 +6,12 @@ RSpec.describe BraintreeAdminHelper do
     let(:payment) do
       double(Spree::Payment, payment_method: payment_method, response_code: 'abcde')
     end
+    let(:merchant_id) { payment_method.preferences[:merchant_id] }
 
     subject { helper.braintree_transaction_link(payment) }
 
     it 'should generate a link to Braintree admin' do
-      expect(subject).to eq "<a title=\"Show payment on Braintree\" target=\"_blank\" href=\"https://sandbox.braintreegateway.com/merchants/7rdg92j7bm7fk5h3/transactions/abcde\">abcde</a>"
+      expect(subject).to eq "<a title=\"Show payment on Braintree\" target=\"_blank\" href=\"https://sandbox.braintreegateway.com/merchants/#{merchant_id}/transactions/abcde\">abcde</a>"
     end
   end
 end

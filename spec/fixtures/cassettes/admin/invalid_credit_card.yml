@@ -16,80 +16,48 @@ http_interactions:
       Accept:
       - application/xml
       User-Agent:
-      - Braintree Ruby Gem 2.76.0
+      - Braintree Ruby Gem 2.98.0
       X-Apiversion:
-      - '4'
-      Authorization:
-      - Basic bXdqa2t4d2NwMzJja2huZjphOTI5OGY0M2IzMGM2OTlkYjMwNzJjYzRhMDBmN2Y0OQ==
+      - '5'
       Content-Type:
       - application/xml
+      Authorization:
+      - Basic bXdqa2t4d2NwMzJja2huZjphOTI5OGY0M2IzMGM2OTlkYjMwNzJjYzRhMDBmN2Y0OQ==
   response:
     status:
       code: 201
       message: Created
     headers:
+      Server:
+      - nginx
       Date:
-      - Mon, 17 Jul 2017 03:29:22 GMT
+      - Fri, 13 Sep 2019 14:27:11 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
       - chunked
-      X-Frame-Options:
-      - SAMEORIGIN
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - 1; mode=block
-      X-Content-Type-Options:
-      - nosniff
       X-Authentication:
-      - basic_auth
-      X-User:
-      - 3v249hqtptsg744y
+      - server_to_server
+      Braintree-Service-Origin:
+      - clientauth
       Vary:
       - Accept-Encoding
       Content-Encoding:
       - gzip
       Etag:
-      - W/"0fa61c6a462e78e9e161550d5124987e"
+      - W/"c95fd3caa086065297edd0aeeb8e6d55"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - 1ffc1364-7b49-4dfa-a5f9-6245f7f2b305
+      - 51cbbac6-bce1-4f90-ab14-6d61a064e77b
       X-Runtime:
-      - '0.100548'
+      - '0.200715'
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        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
+        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
     http_version: 
-  recorded_at: Mon, 17 Jul 2017 03:29:22 GMT
-recorded_with: VCR 3.0.3
+  recorded_at: Fri, 13 Sep 2019 14:27:11 GMT
+recorded_with: VCR 5.0.0

@@ -26,7 +26,10 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
     create :shipping_method, cost: 5
   end
 
-  cassette_options = { cassette_name: "transactions_controller/create" }
+  cassette_options = {
+    cassette_name: "transactions_controller/create",
+    match_requests_on: [:braintree_uri]
+  }
   describe "POST create", vcr: cassette_options do
     subject(:post_create) { post :create, params: params }
     let!(:country) { create :country, iso: 'US' }
@@ -66,7 +69,10 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
       end
     end
 
-    context "when the transaction is valid", vcr: { cassette_name: 'transaction/import/valid' } do
+    context "when the transaction is valid", vcr: {
+      cassette_name: 'transaction/import/valid',
+      match_requests_on: [:braintree_uri]
+    } do
       it "imports the payment" do
         expect { post_create }.to change { order.payments.count }.by(1)
         expect(order.payments.first.amount).to eq 55

@@ -36,8 +36,7 @@ gem 'bourbon', '<5'
 group :development, :test do
   gem 'listen'
   gem "pry-rails"
-  gem 'selenium-webdriver', require: false
-  gem 'chromedriver-helper', require: false
+  gem 'webdrivers'
   gem 'ffaker'
 
   gem 'pg', '~> 0.21'

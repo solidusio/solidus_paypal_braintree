@@ -16,26 +16,25 @@ http_interactions:
       Accept:
       - application/xml
       User-Agent:
-      - Braintree Ruby Gem 2.76.0
+      - Braintree Ruby Gem 2.98.0
       X-Apiversion:
-      - '4'
-      Authorization:
-      - Basic bXdqa2t4d2NwMzJja2huZjphOTI5OGY0M2IzMGM2OTlkYjMwNzJjYzRhMDBmN2Y0OQ==
+      - '5'
       Content-Type:
       - application/xml
+      Authorization:
+      - Basic bXdqa2t4d2NwMzJja2huZjphOTI5OGY0M2IzMGM2OTlkYjMwNzJjYzRhMDBmN2Y0OQ==
   response:
     status:
       code: 201
       message: Created
     headers:
       Date:
-      - Mon, 17 Jul 2017 03:29:09 GMT
+      - Fri, 13 Sep 2019 14:27:57 GMT
       Content-Type:
       - application/xml; charset=utf-8
       Transfer-Encoding:
       - chunked
       X-Frame-Options:
-      - SAMEORIGIN
       - SAMEORIGIN
       X-Xss-Protection:
       - 1; mode=block
@@ -50,38 +49,23 @@ http_interactions:
       Content-Encoding:
       - gzip
       Etag:
-      - W/"72540377ca1a9aa39a1047189b0ecf54"
+      - W/"353759854f3f20558dfdfbeff3bd4668"
       Cache-Control:
       - max-age=0, private, must-revalidate
-      X-Request-Id:
-      - 09b5fe1b-39b1-4792-9480-c7dc5446e12a
       X-Runtime:
-      - '0.407246'
+      - '0.384787'
+      X-Request-Id:
+      - 02-1568384876.677-92.223.152.178-13026259
+      Content-Security-Policy:
+      - frame-ancestors 'self'
+      X-Broxyid:
+      - 02-1568384876.677-92.223.152.178-13026259
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        H4sIAAUvbFkAA6xVPXPjOAzt8ys86hlJjr22MzLTXbnNba64ZocSIYtnitSS
-        VGL/+wNlfTm2vM5kO+HhgYSARyB5OZRy9gbGCq22QfwYBTNQmeZC7bbB64+/
-        yDp4oQ9JVlunSzD0YTZLBKdxvIkW8fLbIgnR8iA6s4IpR9BeGb7bzP9bpeUq
-        3y+LpyQcez07F8Y6olgJMyXkNnCmhiBsXJJNeTJdVkwdL3AomZAXaFVodXlG
-        zg4X2DukVrgr9xlgDjhhbuaOFWwDjqYTJQR0HsUrEq1IvPoRPT3PN8/R5t8k
-        HAKa+Lrin4sfAk73N0UnuQDJbZ8SF45kzHDbHsqMYcfAe8/9JwSxVEiJ7SSM
-        cwPWdvipkfNV18EW6zpNzrs8hgfydBtbwmQzu9uut7T1WmcAXJf4BAkODhT3
-        VbtJkzpjUripqwzs8AVMOCttHZMEnwXQzSKOsGZjaPw7tXLm2MCEyapg88kf
-        /8h8uoepauyByH5DvVXwr2m6PeWLym7OCCd0iXpVdBHF8/Xac1SPe1ETfx39
-        R1iGmfX2mFFoyVGmUyXwivPDSDBJX9Ve6XeFJw3YQDuVUudEWFszlQH1xEu0
-        j/h6ZT/x+AaqF7ZD7dLXv0fMHu34HFLhhl8+mYMzZ7XsEk+1lsBUQH3pPLVx
-        DuTaYFsIvpha+h8YHfrR04XAoRKmyYeUWrmCxvMkvACvsI/ADJZvHp3RG/SM
-        Dfxj7jmTFtqoUSYFMOkKFAoMaY+wjiZKtgNSG0kL5yr7HIbMWnD2MTVMKD+W
-        dviD7+z4iNoJK3YsQbmfJbhC859S73T4hhp9rNTuBdSbMFp5wtYyxVN9wJHb
-        n9/fiHryryFlaj+kdoZ21GaoLmi8XsdJ2BqdD1MxWo603QE9wUDFUEffNfra
-        78GneZ01S3qIH7COZuvUZkZUvhfnW2h4Zk7vQdFNXqrdMQlPVuerlfhVN7Ms
-        bTSNlRG45Axl+XK5Wmzy5SaPc/605t+yPIsRyBfLdZqjZiZD+7P/wGR6A1Vq
-        Yvl+QlO9fxRhMI3Ti7takea1jzfzGdDMvqSdg3B1sX8ckher+zOz4/bavr20
-        b63sOxb2Xev65rK+sarvXNT3rul7l/TdK/q3C/qPLJEvP4EkHKmtNwDNQU70
-        4X8AAAD//wMA6fdVWjsMAAA=
+        H4sIAG2ne10AA6xWXXPaOhB9z69g/O4YAy44Y5xp506405mmD01y27x0ZGuNFWTJlWQC/fVXMv7iw5RM+saePSutV2d3CW43GR2sQUjC2dxyr4fWAFjMMWHLufX4cGfPrNvwKogLqXgGIrwaDAKCQ8+fTob+eOgHjrYMqJ1xipiytT0VeOmPXqZRNk1WXjoOnK7XsBMipLIZymDACJ1bShRgOaWLoj5PzLMcse0RDhki9AjNU86Oz0jQ5gh7hUgSdeI+AUgBtpEaqG0OcwtrU5EMrHA0dH176Nvu+MGd3IymN970OXDagDK+yPHb4tuA3f1l0e2EAMVyl9KS8ghRU8Uf46ffeOGr5++fk/uH1fj+n4/el98fvcBpOdVHYKLsGAksqzSQEGhrGe++f4doLCKUagHYCGMBUtb47ul/zeo3r7BaG/a+LrpwS+5/+IrQ+/z1badFUHmlEgCqTryHBBsFDJs6n6VRHiNKVN9VApa6Z3qcOZdKv4FuJAj9iTucBk4X6n5OwZTYlrCNaJ6iUe+HHzLHlzBZod+AxH+gniv4+7qgOuWdvVCe4fToUuuVhZOhO5rNDIc1uBG1ba4Ln4hEOrPG7jJSTrGWaV8JjOLM+CKIho9sxfgr0ye1WEvblZInNpGyQCyGLv/Y2QS+v8Bv6MGWavSttITDx28dZoPWfAwRUe2X7MzWmaCC1olHnFNAzApNBQ21dLbkQujXsXXjFNR8QOfQQ08dApuciDIfO+NMpaE7Cpwj8AR7C0jo8o2Ge/QS3WMDPsw9QVRCFdXJpJ2q8eLOi/57KvDCpXiRrp/v/Jcfrv8S//vp5etCHgzgMjgFRFWqxdaRRAeraSRDS7ALQcNUqVzeOA6SEpS8jgQizIy2pa7OK9pea/05OdpmwNTPDFTK8U/Kl9xZa51f52x5C2xNBGeGMJeI4Yhv9Nhuzm9u1GI0HRUhtmpT20NrajmYJ6E7m7mBUxm1T6ciOO30Rw00BAE50gW559pX/W59HBdx+degjW+xmiaLSMaC5OYh9zdZ26qKr4CFcZ7Hs1Xg7KzaVzDyqyjnYVQ2hK4M0atVhCjxvOnETzw/cRM8nuEPcRK7Gkgm3ixKtOB6Q5uz/8J0WwPLuC3xqkeQjb8TIXQau3Y9WZFyVHS3+x5Qzs+gmqVw8s/B4aA9Wv9vGTznV//5xX9u7V+w9C9a+WcX/pl1f+Gyv3TVX7roL17zf1zyf2UDvbsFAqejtsYAbbZyCq/+BwAA//8DAGwXsMSxDAAA
     http_version: 
-  recorded_at: Mon, 17 Jul 2017 03:29:09 GMT
-recorded_with: VCR 3.0.3
+  recorded_at: Fri, 13 Sep 2019 14:27:57 GMT
+recorded_with: VCR 5.0.0
