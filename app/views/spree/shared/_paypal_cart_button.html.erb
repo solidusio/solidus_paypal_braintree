@@ -4,7 +4,7 @@
 
 <script>
   var paypalOptions = {
-    flow: 'vault',
+    flow: '<%= SolidusPaypalBraintree::Gateway.first.preferred_paypal_flow %>',
     enableShippingAddress: true,
     environment: '<%= Rails.env.production? ? "production" : "sandbox" %>'
   }
