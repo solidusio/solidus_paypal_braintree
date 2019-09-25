@@ -1,18 +1,7 @@
-<% address = current_order.ship_address %>
-
 <div id="paypal-button"></div>
 
 <script>
-  var address = {
-    line1: '<%= address.address1 %>',
-    line2: '<%= address.address2 %>',
-    city: '<%= address.city %>',
-    state: '<%= address.state.name %>',
-    postalCode: '<%= address.zipcode %>',
-    countryCode: '<%= address.country.iso %>',
-    phone: '<%= address.phone %>',
-    recipientName: '<%= "#{address.firstname} #{address.lastname}" %>'
-  }
+  var address = <%= SolidusPaypalBraintree::Address.new(current_order.ship_address).to_json %>
 
   var paypalOptions = {
     flow: '<%= SolidusPaypalBraintree::Gateway.first.preferred_paypal_flow %>',
