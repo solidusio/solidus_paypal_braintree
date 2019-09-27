@@ -12,7 +12,8 @@ module SolidusPaypalBraintree
       authorize! :update, SolidusPaypalBraintree::Configuration
 
       params = configurations_params[:configuration_fields]
-      if SolidusPaypalBraintree::Configuration.update(params.keys, params.values)
+      results = SolidusPaypalBraintree::Configuration.update(params.keys, params.values)
+      if results.all? { |r| r.valid? }
         flash[:success] = t('update_success', scope: 'solidus_paypal_braintree.configurations')
       else
         flash[:error] = t('update_error', scope: 'solidus_paypal_braintree.configurations')
