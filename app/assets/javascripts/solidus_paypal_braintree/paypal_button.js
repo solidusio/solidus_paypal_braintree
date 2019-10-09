@@ -7,6 +7,12 @@
 SolidusPaypalBraintree.PaypalButton = function(element, paypalOptions, options) {
   this._element = element;
   this._paypalOptions = paypalOptions || {};
+
+  this.locale = paypalOptions['locale'] || "en_US";
+  this.style = paypalOptions['style'] || {};
+  delete paypalOptions['locale'];
+  delete paypalOptions['style'];
+
   this._options = options || {};
   this._client = null;
   this._environment = this._paypalOptions.environment || 'sandbox';
@@ -34,17 +40,19 @@ SolidusPaypalBraintree.PaypalButton.prototype.initialize = function() {
 SolidusPaypalBraintree.PaypalButton.prototype.initializeCallback = function() {
   this._paymentMethodId = this._client.paymentMethodId;
 
-  paypal.Button.render({
+  var render_options = {
     env: this._environment,
-
+    locale: this.locale,
+    style: this.style,
     payment: function () {
       return this._client.getPaypalInstance().createPayment(this._paypalOptions);
     }.bind(this),
-
     onAuthorize: function (data, actions) {
       return this._client.getPaypalInstance().tokenizePayment(data, this._tokenizeCallback.bind(this));
     }.bind(this)
-  }, this._element);
+  };
+
+  paypal.Button.render(render_options, this._element);
 };
 
 /**

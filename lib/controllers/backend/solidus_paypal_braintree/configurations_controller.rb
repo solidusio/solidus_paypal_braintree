@@ -12,7 +12,8 @@ module SolidusPaypalBraintree
       authorize! :update, SolidusPaypalBraintree::Configuration
 
       params = configurations_params[:configuration_fields]
-      if SolidusPaypalBraintree::Configuration.update(params.keys, params.values)
+      results = SolidusPaypalBraintree::Configuration.update(params.keys, params.values)
+      if results.all? { |r| r.valid? }
         flash[:success] = t('update_success', scope: 'solidus_paypal_braintree.configurations')
       else
         flash[:error] = t('update_error', scope: 'solidus_paypal_braintree.configurations')
@@ -24,7 +25,17 @@ module SolidusPaypalBraintree
 
     def configurations_params
       params.require(:configurations).
-        permit(configuration_fields: [:paypal, :apple_pay, :credit_card])
+        permit(configuration_fields: [
+        :paypal,
+        :apple_pay,
+        :credit_card,
+        :preferred_paypal_button_locale,
+        :preferred_paypal_button_color,
+        :preferred_paypal_button_size,
+        :preferred_paypal_button_shape,
+        :preferred_paypal_button_label,
+        :preferred_paypal_button_tagline
+      ])
     end
   end
 end
