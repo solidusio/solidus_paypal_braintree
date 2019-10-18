@@ -220,6 +220,19 @@ has each payment type disabled. It also adds a `before_create` callback to
 default configuration that gets created by overriding the private
 `build_default_configuration` method on `Spree::Store`.
 
+### 3D Secure
+
+This gem supports [3D Secure 2](https://developers.braintreepayments.com/guides/3d-secure/overview),
+which satisfies the [Strong Customer Authentication (SCA)](https://www.braintreepayments.com/blog/getting-up-to-speed-on-psd2-regulation-2/)
+requirements introduced by PSD2.
+
+3D Secure can be enabled from Solidus Admin -> Braintree (left-side menu) ->
+tick _3D Secure_ checkbox.
+
+Once enabled, you can use the following card numbers to test 3DS 2 on your
+client side in sandbox:
+https://developers.braintreepayments.com/guides/3d-secure/migration/javascript/v3#client-side-sandbox-testing.
+
 Testing
 -------
 
