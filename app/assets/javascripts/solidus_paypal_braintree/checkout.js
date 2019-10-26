@@ -44,16 +44,38 @@ $(function() {
         var $nonce = $("#payment_method_nonce", $field);
 
         if ($nonce.length > 0 && $nonce.val() === "") {
+          var client = braintreeForm._merchantConfigurationOptions._solidusClient;
+
           event.preventDefault();
           disableSubmit();
 
           braintreeForm.tokenize(function(error, payload) {
             if (error) {
               braintreeError(error);
-            } else {
-              $nonce.val(payload.nonce);
-              $paymentForm.submit();
+              return;
             }
+
+            $nonce.val(payload.nonce);
+
+            if (!client.useThreeDSecure) {
+              $paymentForm.submit();
+              return;
+            }
+
+            threeDSecureOptions.nonce = payload.nonce;
+            threeDSecureOptions.bin = payload.details.bin;
+            threeDSecureOptions.onLookupComplete = function(data, next) {
+              next();
+            }
+            client._threeDSecureInstance.verifyCard(threeDSecureOptions, function(error, response) {
+              if (error === null && (!response.liabilityShiftPossible || response.liabilityShifted)) {
+                $nonce.val(response.nonce);
+                $paymentForm.submit();
+              } else {
+                $nonce.val('');
+                braintreeError(error || { code: 'THREEDS_AUTHENTICATION_FAILED' });
+              }
+            });
           });
         }
       }

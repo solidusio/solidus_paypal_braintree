@@ -57,10 +57,12 @@ SolidusPaypalBraintree.Client = function(config) {
   this.useDataCollector = config.useDataCollector;
   this.usePaypal = config.usePaypal;
   this.useApplepay = config.useApplepay;
+  this.useThreeDSecure = config.useThreeDSecure;
 
   this._braintreeInstance = null;
   this._dataCollectorInstance = null;
   this._paypalInstance = null;
+  this._threeDSecureInstance = null;
 };
 
 /**
@@ -71,16 +73,20 @@ SolidusPaypalBraintree.Client.prototype.initialize = function() {
   var initializationPromise = this._fetchToken().
     then(this._createBraintreeInstance.bind(this));
 
-  if(this.useDataCollector) {
+  if (this.useDataCollector) {
     initializationPromise = initializationPromise.then(this._createDataCollector.bind(this));
   }
 
-  if(this.usePaypal) {
+  if (this.usePaypal) {
     initializationPromise = initializationPromise.then(this._createPaypal.bind(this));
   }
 
-  if(this.useApplepay) {
+  if (this.useApplepay) {
     initializationPromise = initializationPromise.then(this._createApplepay.bind(this));
+  }
+
+  if (this.useThreeDSecure) {
+    initializationPromise = initializationPromise.then(this._createThreeDSecure.bind(this));
   }
 
   return initializationPromise.then(this._invokeReadyCallback.bind(this));
@@ -185,4 +191,15 @@ SolidusPaypalBraintree.Client.prototype._createApplepay = function() {
     this._applepayInstance = applePayInstance;
     return applePayInstance;
   }.bind(this));
+};
+
+SolidusPaypalBraintree.Client.prototype._createThreeDSecure = function() {
+  return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.threeDSecure.create, [{
+    client: this._braintreeInstance,
+    version: 2
+  }]).then(function (threeDSecureInstance) {
+    this._threeDSecureInstance = threeDSecureInstance;
+  }.bind(this), function(error) {
+    console.log(error);
+  });
 };

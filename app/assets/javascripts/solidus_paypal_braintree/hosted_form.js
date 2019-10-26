@@ -4,7 +4,11 @@ SolidusPaypalBraintree.HostedForm = function(paymentMethodId) {
 };
 
 SolidusPaypalBraintree.HostedForm.prototype.initialize = function() {
-  this.client = SolidusPaypalBraintree.createClient({paymentMethodId: this.paymentMethodId});
+  this.client = SolidusPaypalBraintree.createClient({
+    paymentMethodId: this.paymentMethodId,
+    useThreeDSecure: (typeof(window.threeDSecureOptions) !== 'undefined'),
+  });
+
   return this.client.initialize().
     then(this._createHostedFields.bind(this));
 };
@@ -15,6 +19,7 @@ SolidusPaypalBraintree.HostedForm.prototype._createHostedFields = function () {
   }
 
   var opts = {
+    _solidusClient: this.client,
     client: this.client.getBraintreeInstance(),
 
     fields: {
