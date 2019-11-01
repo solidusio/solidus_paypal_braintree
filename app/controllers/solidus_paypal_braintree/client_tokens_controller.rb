@@ -7,7 +7,12 @@ module SolidusPaypalBraintree
     before_action :load_gateway
 
     def create
-      render json: { client_token: generate_token, payment_method_id: @gateway.id }
+      token = @gateway.generate_token
+      if token
+        render json: { client_token: token, payment_method_id: @gateway.id }
+      else
+        render json: { error: Gateway::TOKEN_GENERATION_DISABLED_MESSAGE }, status: :unprocessable_entity
+      end
     end
 
     private
@@ -28,8 +33,8 @@ module SolidusPaypalBraintree
 
     def generate_token
       @gateway.generate_token
-    rescue ::SolidusPaypalBraintree::Gateway::TokenGenerationDisabledError => error
-      Rails.logger.error error
+    rescue ::SolidusPaypalBraintree::Gateway::TokenGenerationDisabledError => e
+      Rails.logger.error e
       nil
     end
   end
