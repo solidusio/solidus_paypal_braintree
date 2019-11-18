@@ -5,9 +5,11 @@ describe "Checkout", type: :feature, js: true do
 
   let!(:store) do
     create(:store, payment_methods: [payment_method]).tap do |s|
-      s.braintree_configuration.update!(paypal: true)
+      s.braintree_configuration.update!(braintree_preferences)
     end
   end
+  let(:braintree_preferences) { { paypal: true }.merge(paypal_options) }
+  let(:paypal_options) { {} }
 
   let!(:country) { create(:country, states_required: true) }
   let!(:state) { create(:state, country: country, abbr: "CA", name: "California") }
@@ -34,21 +36,11 @@ describe "Checkout", type: :feature, js: true do
     end
 
     context 'using custom paypal button style' do
-      before do
-        store.braintree_configuration.tap do |conf|
-          conf.set_preference(:paypal_button_color, 'blue')
-          conf.save!
-        end
-      end
+      let(:paypal_options) { { preferred_paypal_button_color: 'blue' } }
 
       it 'should display required PayPal button style' do
-        pend_if_paypal_slow do
-          expect_any_instance_of(Spree::Order).to receive(:restart_checkout_flow)
-          move_through_paypal_popup
-
-          within(find('#paypal-button iframe')) do
-            expect(page).to have_selector('[class="paypal-button-color-blue]')
-          end
+        within_frame find('#paypal-button iframe') do
+          expect(page).to have_selector('.paypal-button-color-blue')
         end
       end
     end
