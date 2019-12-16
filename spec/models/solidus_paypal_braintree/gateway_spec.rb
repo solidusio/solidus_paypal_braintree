@@ -163,6 +163,20 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       it { is_expected.to eq "paypal_braintree" }
     end
 
+    describe '#gateway_options' do
+      subject(:gateway_options) { gateway.gateway_options }
+
+      it 'includes http_open_timeout' do
+        is_expected.to have_key(:http_open_timeout)
+        expect(gateway_options[:http_open_timeout]).to eq(60)
+      end
+
+      it 'includes http_read_timeout' do
+        is_expected.to have_key(:http_read_timeout)
+        expect(gateway_options[:http_read_timeout]).to eq(60)
+      end
+    end
+
     describe '#purchase' do
       subject(:purchase) { gateway.purchase(1000, source, gateway_options) }
 
