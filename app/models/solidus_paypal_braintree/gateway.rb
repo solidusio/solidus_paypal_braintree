@@ -35,6 +35,8 @@ module SolidusPaypalBraintree
     preference(:merchant_id, :string, default: nil)
     preference(:public_key,  :string, default: nil)
     preference(:private_key, :string, default: nil)
+    preference(:http_open_timeout, :integer, default: 60)
+    preference(:http_read_timeout, :integer, default: 60)
     preference(:merchant_currency_map, :hash, default: {})
     preference(:paypal_payee_email_map, :hash, default: {})
 
@@ -60,6 +62,8 @@ module SolidusPaypalBraintree
         merchant_id: preferred_merchant_id,
         public_key: preferred_public_key,
         private_key: preferred_private_key,
+        http_open_timeout: preferred_http_open_timeout,
+        http_read_timeout: preferred_http_read_timeout,
         logger: logger
       }
     end
