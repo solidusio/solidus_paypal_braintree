@@ -72,6 +72,14 @@ SolidusPaypalBraintree::Gateway.new(
 ).save
 ```
 
+7. If you are using Rails 6, revert the autoloader to the classic one
+
+```ruby
+# config/application.rb
+    config.load_defaults 6.0
+    config.autoloader = :classic
+```
+
 ### Configure payment types
 Your payment method can accept payments in three ways: through Paypal, through ApplePay, or with credit card details entered directly by the customer. By default all are disabled for all your site's stores.
 
