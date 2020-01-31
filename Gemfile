@@ -5,21 +5,13 @@ gem 'solidus', github: 'solidusio/solidus', branch: branch
 
 if branch == 'master' || branch >= "v2.3"
   gem "rails-controller-testing", group: :test
-  gem 'rails', '~> 5.1.0' # HACK: broken bundler dependency resolution
+  gem 'rails', '~> 5.2.4' # HACK: broken bundler dependency resolution
 elsif branch >= "v2.0"
   gem "rails-controller-testing", group: :test
   gem 'rails', '~> 5.0.3' # HACK: broken bundler dependency resolution
 else
   gem "rails", '~> 4.2.0' # HACK: broken bundler dependency resolution
   gem "rails_test_params_backport", group: :test
-end
-
-group :test do
-  if branch < "v2.5"
-    gem 'factory_bot', '4.10.0'
-  else
-    gem 'factory_bot', '> 4.10.0'
-  end
 end
 
 # Provides basic authentication functionality for testing parts of your engine
