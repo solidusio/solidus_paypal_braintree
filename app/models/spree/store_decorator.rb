@@ -1,11 +1,16 @@
-Spree::Store.class_eval do
-  has_one :braintree_configuration, class_name: "SolidusPaypalBraintree::Configuration", dependent: :destroy
+module Spree
+  module StoreDecorator
+    def self.prepended(base)
+      base.has_one :braintree_configuration, class_name: "SolidusPaypalBraintree::Configuration", dependent: :destroy
+      base.before_create :build_default_configuration
+    end
 
-  before_create :build_default_configuration
+    private
 
-  private
+    def build_default_configuration
+      build_braintree_configuration unless braintree_configuration
+    end
 
-  def build_default_configuration
-    build_braintree_configuration unless braintree_configuration
+    ::Spree::Store.prepend self
   end
 end

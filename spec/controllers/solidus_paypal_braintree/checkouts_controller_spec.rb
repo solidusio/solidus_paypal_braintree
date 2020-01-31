@@ -65,7 +65,7 @@ RSpec.describe SolidusPaypalBraintree::CheckoutsController, type: :controller do
       end
 
       it "is successful" do
-        expect(patch_update).to be_success
+        expect(patch_update).to be_successful
       end
 
       it "renders 'ok'" do
@@ -80,7 +80,7 @@ RSpec.describe SolidusPaypalBraintree::CheckoutsController, type: :controller do
 
       # No idea why this is the case, but I'm just adding the tests here
       it "is successful" do
-        expect(patch_update).to be_success
+        expect(patch_update).to be_successful
       end
 
       it "renders 'not-ok'" do

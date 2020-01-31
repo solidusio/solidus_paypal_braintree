@@ -18,7 +18,7 @@ describe SolidusPaypalBraintree::ClientTokensController do
 
       it "returns a client token", aggregate_failures: true do
         expect(response).to have_http_status(:success)
-        expect(response.content_type).to eq "application/json"
+        expect(response.content_type).to include 'application/json'
         expect(json["client_token"]).to be_present
         expect(json["client_token"]).to be_a String
         expect(json["payment_method_id"]).to eq gateway.id

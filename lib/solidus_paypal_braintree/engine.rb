@@ -5,6 +5,10 @@ module SolidusPaypalBraintree
     isolate_namespace SolidusPaypalBraintree
     engine_name 'solidus_paypal_braintree'
 
+    ActiveSupport::Inflector.inflections do |inflect|
+      inflect.acronym 'AVS'
+    end
+
     # use rspec for tests
     config.generators do |g|
       g.test_framework :rspec
