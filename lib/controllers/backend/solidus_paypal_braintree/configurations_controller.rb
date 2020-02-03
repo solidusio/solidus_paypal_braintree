@@ -1,11 +1,11 @@
 module SolidusPaypalBraintree
-  class ConfigurationsController < Spree::Admin::BaseController
-    helper Spree::Core::Engine.routes.url_helpers
+  class ConfigurationsController < ::Spree::Admin::BaseController
+    helper ::Spree::Core::Engine.routes.url_helpers
 
     def list
       authorize! :list, SolidusPaypalBraintree::Configuration
 
-      @configurations = Spree::Store.all.map(&:braintree_configuration)
+      @configurations = ::Spree::Store.all.map(&:braintree_configuration)
     end
 
     def update

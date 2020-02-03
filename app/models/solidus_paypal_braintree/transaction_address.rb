@@ -29,19 +29,19 @@ module SolidusPaypalBraintree
     end
 
     def spree_country
-      country_code && (@country ||= Spree::Country.find_by(iso: country_code.upcase))
+      country_code && (@country ||= ::Spree::Country.find_by(iso: country_code.upcase))
     end
 
     def spree_state
       spree_country && state_code && ( @state ||= spree_country.states.where(
-        Spree::State.arel_table[:name].matches(state_code).or(
-          Spree::State.arel_table[:abbr].matches(state_code)
+        ::Spree::State.arel_table[:name].matches(state_code).or(
+          ::Spree::State.arel_table[:abbr].matches(state_code)
         )
       ).first )
     end
 
     def to_spree_address
-      address = Spree::Address.new first_name: first_name,
+      address = ::Spree::Address.new first_name: first_name,
         last_name: last_name,
         city: city,
         country: spree_country,

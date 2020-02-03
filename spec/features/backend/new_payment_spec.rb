@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'spree/testing_support/order_walkthrough'
 
-shared_context "checkout setup" do
+shared_context "backend checkout setup" do
   let(:braintree) { new_gateway(active: true) }
   let!(:gateway) { create :payment_method }
   let!(:order) { create(:completed_order_with_totals, number: 'R9999999') }
@@ -32,7 +32,7 @@ describe 'creating a new payment', type: :feature, js: true do
     cassette_name: 'admin/valid_credit_card',
     match_requests_on: [:braintree_uri]
   } do
-    include_context "checkout setup"
+    include_context "backend checkout setup"
 
     it "checks out successfully" do
       visit "/admin/orders/#{order.number}/payments/new"
@@ -65,7 +65,7 @@ describe 'creating a new payment', type: :feature, js: true do
   end
 
   context "with invalid credit card data" do
-    include_context "checkout setup"
+    include_context "backend checkout setup"
 
     # Attempt to submit an invalid form once
     before(:each) do

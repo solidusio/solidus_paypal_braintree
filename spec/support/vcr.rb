@@ -35,4 +35,8 @@ VCR.configure do |c|
 
     r1_resource != nil && r1_resource == r2_resource
   end
+
+  # https://github.com/titusfortner/webdrivers/wiki/Using-with-VCR-or-WebMock
+  driver_hosts = Webdrivers::Common.subclasses.map { |driver| URI(driver.base_url).host }
+  c.ignore_hosts(*driver_hosts)
 end

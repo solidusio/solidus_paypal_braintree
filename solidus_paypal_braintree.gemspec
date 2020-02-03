@@ -1,6 +1,6 @@
-# encoding: UTF-8
+# frozen_string_literal: true
 
-$:.push File.expand_path('../lib', __FILE__)
+$:.push File.expand_path('lib', __dir__)
 require 'solidus_paypal_braintree/version'
 
 Gem::Specification.new do |s|
@@ -12,31 +12,31 @@ Gem::Specification.new do |s|
 
   s.author    = 'Stembolt'
   s.email     = 'braintree+gemfile@stembolt.com'
-  s.homepage  = 'https://stembolt.com'
+  s.homepage  = 'https://github.com/solidusio/solidus_paypal_braintree'
 
-  s.files = Dir["{app,config,db,lib}/**/*", 'LICENSE', 'Rakefile', 'README.md']
-  s.test_files = Dir['test/**/*']
+  s.required_ruby_version = '~> 2.4'
 
-  s.add_dependency "solidus_api", ['>= 1.0', '< 3']
-  s.add_dependency "solidus_core", ['>= 1.0', '< 3']
-  s.add_dependency "solidus_support", '>= 0.1.3'
-  s.add_dependency "braintree", '~> 2.65'
+  s.files = Dir.chdir(File.expand_path(__dir__)) do
+    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  end
+  s.test_files = Dir['spec/**/*']
+  s.bindir = "exe"
+  s.executables = s.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  s.require_paths = ["lib"]
+
+  if s.respond_to?(:metadata)
+    s.metadata["homepage_uri"] = s.homepage if s.homepage
+    s.metadata["source_code_uri"] = s.homepage if s.homepage
+  end
+
   s.add_dependency 'activemerchant', '~> 1.48'
+  s.add_dependency 'braintree', '~> 2.65'
+  s.add_dependency 'solidus_api', ['>= 2.0.0', '< 3']
+  s.add_dependency 'solidus_core', ['>= 2.0.0', '< 3']
+  s.add_dependency 'solidus_support', '~> 0.4.0'
 
-  s.add_development_dependency 'byebug'
-  s.add_development_dependency 'capybara'
-  s.add_development_dependency 'puma'
-  s.add_development_dependency 'capybara-screenshot'
-  s.add_development_dependency 'launchy'
-  s.add_development_dependency 'poltergeist'
-  s.add_development_dependency 'coffee-rails'
-  s.add_development_dependency 'sass-rails'
-  s.add_development_dependency 'database_cleaner'
-  s.add_development_dependency 'rspec-rails'
-  s.add_development_dependency 'rubocop', '~> 0.53.0'
-  s.add_development_dependency 'rubocop-rspec'
-  s.add_development_dependency 'simplecov'
-  s.add_development_dependency 'sqlite3', '~> 1.3.6'
-  s.add_development_dependency 'webmock'
+  s.add_development_dependency 'selenium-webdriver'
+  s.add_development_dependency 'solidus_dev_support'
   s.add_development_dependency 'vcr'
+  s.add_development_dependency 'webmock'
 end

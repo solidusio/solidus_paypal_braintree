@@ -1,0 +1,5 @@
+bump:
+  recurse: false
+  file: 'lib/solidus_paypal_braintree/version.rb'
+  message: Bump SolidusPaypalBraintree to %{version}
+  tag: true

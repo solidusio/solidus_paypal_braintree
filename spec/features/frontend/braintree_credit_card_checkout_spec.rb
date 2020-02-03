@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'spree/testing_support/order_walkthrough'
 
-shared_context "checkout setup" do
+shared_context "frontend checkout setup" do
   let(:braintree) { new_gateway(active: true) }
   let!(:gateway) { create :payment_method }
   let(:three_d_secure_enabled) { false }
@@ -53,7 +53,7 @@ describe 'entering credit card details', type: :feature, js: true do
     let(:card_expiration) { "01/#{Time.now.year+2}" }
     let(:card_cvv) { "123" }
 
-    include_context "checkout setup"
+    include_context "frontend checkout setup"
 
     before do
       within_frame("braintree-hosted-field-number") do
@@ -105,7 +105,7 @@ describe 'entering credit card details', type: :feature, js: true do
   end
 
   context "with invalid credit card data" do
-    include_context "checkout setup"
+    include_context "frontend checkout setup"
 
     # Attempt to submit an empty form once
     before(:each) do

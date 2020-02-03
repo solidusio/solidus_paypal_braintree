@@ -147,7 +147,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
 
         it "has a successful response" do
           post_create
-          expect(response).to be_success
+          expect(response).to be_successful
         end
       end
     end
