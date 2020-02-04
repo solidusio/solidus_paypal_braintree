@@ -1,4 +1,5 @@
 require 'braintree'
+require_relative 'response'
 
 module SolidusPaypalBraintree
   class Gateway < ::Spree::PaymentMethod
