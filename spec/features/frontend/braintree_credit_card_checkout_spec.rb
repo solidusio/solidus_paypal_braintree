@@ -5,6 +5,9 @@ shared_context "frontend checkout setup" do
   let(:braintree) { new_gateway(active: true) }
   let!(:gateway) { create :payment_method }
   let(:three_d_secure_enabled) { false }
+  let(:card_number) { "4111111111111111" }
+  let(:card_expiration) { "01/#{Time.now.year+2}" }
+  let(:card_cvv) { "123" }
 
   before(:each) do
     braintree.save!
@@ -49,10 +52,6 @@ describe 'entering credit card details', type: :feature, js: true do
     cassette_name: 'checkout/valid_credit_card',
     match_requests_on: [:braintree_uri]
   } do
-    let(:card_number) { "4111111111111111" }
-    let(:card_expiration) { "01/#{Time.now.year+2}" }
-    let(:card_cvv) { "123" }
-
     include_context "frontend checkout setup"
 
     before do
@@ -136,7 +135,7 @@ describe 'entering credit card details', type: :feature, js: true do
           fill_in("credit-card-number", with: "4111111111111111")
         end
         within_frame("braintree-hosted-field-expirationDate") do
-          fill_in("expiration", with: "02/2020")
+          fill_in("expiration", with: card_expiration)
         end
         within_frame("braintree-hosted-field-cvv") do
           fill_in("cvv", with: "123")
