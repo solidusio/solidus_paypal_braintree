@@ -6,6 +6,7 @@ shared_context "backend checkout setup" do
   let!(:gateway) { create :payment_method }
   let!(:order) { create(:completed_order_with_totals, number: 'R9999999') }
   let(:pending_case_insensitive) { /pending/i }
+  let(:expiration) { "02/#{Date.current.year.next}"}
 
   before(:each) do
     braintree.save!
@@ -44,7 +45,7 @@ describe 'creating a new payment', type: :feature, js: true do
         fill_in("credit-card-number", with: "4111111111111111")
       end
       within_frame("braintree-hosted-field-expirationDate") do
-        fill_in("expiration", with: "02/2020")
+        fill_in("expiration", with: expiration)
       end
       within_frame("braintree-hosted-field-cvv") do
         fill_in("cvv", with: "123")
@@ -79,7 +80,7 @@ describe 'creating a new payment', type: :feature, js: true do
         fill_in("credit-card-number", with: "1111111111111111")
       end
       within_frame("braintree-hosted-field-expirationDate") do
-        fill_in("expiration", with: "02/2020")
+        fill_in("expiration", with: expiration)
       end
       within_frame("braintree-hosted-field-cvv") do
         fill_in("cvv", with: "123")
@@ -110,7 +111,7 @@ describe 'creating a new payment', type: :feature, js: true do
           fill_in("credit-card-number", with: "4111111111111111")
         end
         within_frame("braintree-hosted-field-expirationDate") do
-          fill_in("expiration", with: "02/2020")
+          fill_in("expiration", with: expiration)
         end
         within_frame("braintree-hosted-field-cvv") do
           fill_in("cvv", with: "123")
