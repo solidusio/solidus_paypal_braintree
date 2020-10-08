@@ -78,7 +78,8 @@ describe 'entering credit card details', type: :feature, js: true do
 
     context 'and having 3D secure enabled' do
       let(:three_d_secure_enabled) { true }
-      let(:card_number) { "4000000000001091" }
+      let(:card_number) { "4000000000000002" }
+      let(:card_cvv) { "123" }
 
       it 'checks out successfully' do
         authenticate_3ds
@@ -92,7 +93,8 @@ describe 'entering credit card details', type: :feature, js: true do
       end
 
       context 'with 3ds authentication error' do
-        let(:card_number) { "4000000000001125" }
+        let(:card_number) { "4000000000000028" }
+        let(:card_cvv) { "123" }
 
         it 'shows a 3ds authentication error' do
           authenticate_3ds
@@ -152,8 +154,10 @@ describe 'entering credit card details', type: :feature, js: true do
 
   def authenticate_3ds
     within_frame("Cardinal-CCA-IFrame") do
-      fill_in("challengeDataEntry", with: "1234")
-      click_button("SUBMIT")
+      within_frame("authWindow") do
+        fill_in("password", with: "1234")
+        click_button("Submit")
+      end
     end
   end
 end
