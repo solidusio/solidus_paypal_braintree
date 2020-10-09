@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe BraintreeAdminHelper do
+RSpec.describe SolidusPaypalBraintree::BraintreeAdminHelper do
   describe '#braintree_transaction_link' do
     let(:payment_method) { create_gateway }
     let(:payment) do
