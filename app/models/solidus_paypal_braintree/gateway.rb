@@ -292,11 +292,15 @@ module SolidusPaypalBraintree
       JSON.parse(preference_string.gsub("=>", ":"))
     end
 
-    def convert_preference_value(value, type)
+    def convert_preference_value(value, type, preference_encryptor = nil)
       if type == :hash && value.is_a?(String)
         value = to_hash(value)
       end
-      super
+      if method(__method__).super_method.arity == 3
+        super
+      else
+        super(value, type)
+      end
     end
 
     def transaction_options(source, options, submit_for_settlement = false)
