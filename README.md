@@ -153,6 +153,12 @@ It will only be displayed if the `SolidusPaypalBraintree::Gateway` payment
 method is configured to display on the frontend and PayPal is enabled in the
 store's configuration.
 
+You can find button configuration options in 
+`/solidus_paypal_braintree/configurations/list` if you want to change the color,
+shape, layout, and a few other options. Keep in mind that the `paypal_button_tagline`
+does not work when the `paypal_button_layout` is set to `vertical`, and will be
+ignored in that case.
+
 The checkout view
 [initializes the PayPal button](/lib/views/frontend/spree/checkout/payment/_paypal_braintree.html.erb)
 using the
@@ -163,24 +169,16 @@ balance (see setup instructions).
 
 If you are creating your own checkout view or would like to customize the
 [options that get passed to tokenize](https://braintree.github.io/braintree-web/3.6.3/PayPal.html#tokenize)
-, you can initialize your own using the `PaypalButton` JS object:
+, you can initialize your own using the `CreatePaypalButton` JS object:
 
 ```javascript
-var button = new PaypalButton(document.querySelector("#your-button-id"));
-
-button.initialize({
+var paypalOptions = {
   // your configuration options here
-});
-```
+}
 
-After successful tokenization, a callback function is invoked that submits the
-transaction via AJAX and advances the order to confirm. It is possible to provide
-your own callback function to customize the behaviour after tokenize as follows:
+var button = new SolidusPaypalBraintree.createPaypalButton(document.querySelector("#your-button-id"), paypalOptions);
 
-```javascript
-var button = new PaypalButton(document.querySelector("#your-button-id"));
-
-button.setTokenizeCallback(your-callback);
+button.initialize();
 ```
 
 ### Express checkout from the cart

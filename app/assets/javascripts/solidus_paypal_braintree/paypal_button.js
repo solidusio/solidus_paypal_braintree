@@ -40,19 +40,27 @@ SolidusPaypalBraintree.PaypalButton.prototype.initialize = function() {
 SolidusPaypalBraintree.PaypalButton.prototype.initializeCallback = function() {
   this._paymentMethodId = this._client.paymentMethodId;
 
-  var render_options = {
-    env: this._environment,
-    locale: this.locale,
-    style: this.style,
-    payment: function () {
-      return this._client.getPaypalInstance().createPayment(this._paypalOptions);
-    }.bind(this),
-    onAuthorize: function (data, actions) {
-      return this._client.getPaypalInstance().tokenizePayment(data, this._tokenizeCallback.bind(this));
-    }.bind(this)
-  };
+  this._client.getPaypalInstance().loadPayPalSDK({
+    currency: this._paypalOptions.currency,
+    commit: true,
+    vault: this._paypalOptions.flow == "vault",
+    components: this.style['messaging'] == "true" ? "buttons,messages" : "buttons",
+    intent: this._paypalOptions.flow == "vault" ? "tokenize" : "authorize"
+  }).then(() => {
+    var create_method = this._paypalOptions.flow == "vault" ? "createBillingAgreement" : "createOrder"
 
-  paypal.Button.render(render_options, this._element);
+    var render_config = {
+      style: this.style,
+      [create_method]: function () {
+        return this._client.getPaypalInstance().createPayment(this._paypalOptions);
+      }.bind(this),
+      onApprove: function (data, actions) {
+        return this._client.getPaypalInstance().tokenizePayment(data, this._tokenizeCallback.bind(this));
+      }.bind(this)
+    };
+
+    paypal.Buttons(render_config).render(this._element);
+  })
 };
 
 /**

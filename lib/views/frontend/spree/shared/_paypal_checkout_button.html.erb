@@ -1,6 +1,7 @@
 <% address = current_order.ship_address %>
 
 <div id="paypal-button"></div>
+<div data-pp-message data-pp-placement="payment" data-pp-amount="<%= @order.total %>"></div>
 
 <script>
   var address = {
@@ -25,10 +26,13 @@
     locale: '<%= paypal_button_preference(:paypal_button_locale, store: current_store) %>',
     style: {
       color: '<%= paypal_button_preference(:paypal_button_color, store: current_store) %>',
-      size: '<%= paypal_button_preference(:paypal_button_size, store: current_store) %>',
       shape: '<%= paypal_button_preference(:paypal_button_shape, store: current_store) %>',
       label: '<%= paypal_button_preference(:paypal_button_label, store: current_store) %>',
-      tagline: '<%= paypal_button_preference(:paypal_button_tagline, store: current_store) %>'
+      layout: '<%= paypal_button_preference(:paypal_button_layout, store: current_store) %>',
+      <% if paypal_button_preference(:paypal_button_layout, store: current_store) == "horizontal" %>
+        tagline: '<%= paypal_button_preference(:paypal_button_tagline, store: current_store) %>',
+      <% end %>
+      messaging: '<%= paypal_button_preference(:paypal_button_messaging, store: current_store) %>'
     }
   }
 

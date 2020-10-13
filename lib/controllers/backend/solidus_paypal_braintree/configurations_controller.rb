@@ -34,10 +34,11 @@ module SolidusPaypalBraintree
           :three_d_secure,
           :preferred_paypal_button_locale,
           :preferred_paypal_button_color,
-          :preferred_paypal_button_size,
           :preferred_paypal_button_shape,
           :preferred_paypal_button_label,
-          :preferred_paypal_button_tagline
+          :preferred_paypal_button_tagline,
+          :preferred_paypal_button_layout,
+          :preferred_paypal_button_messaging
         ])
     end
   end

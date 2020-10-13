@@ -4,10 +4,11 @@ module SolidusPaypalBraintree
   class Configuration < ::Spree::Base
     PAYPAL_BUTTON_PREFERENCES = {
       color: { availables: %w[gold blue silver white black], default: 'white' },
-      size: { availables: %w[small medium large responsive], default: 'small' },
       shape: { availables: %w[pill rect], default: 'rect' },
       label: { availables: %w[checkout credit pay buynow paypal installment], default: 'checkout' },
-      tagline: { availables: %w[true false], default: 'false' }
+      tagline: { availables: %w[true false], default: 'false' },
+      layout: { availables: %w[horizontal vertical], default: 'horizontal' },
+      messaging: { availables: %w[true false], default: 'true' }
     }.freeze
 
     belongs_to :store, class_name: 'Spree::Store'
