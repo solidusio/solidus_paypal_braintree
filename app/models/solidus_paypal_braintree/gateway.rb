@@ -207,7 +207,7 @@ module SolidusPaypalBraintree
       return if source.token.present? || source.customer.present? || source.nonce.nil?
 
       result = braintree.customer.create(customer_profile_params(payment))
-      fail Spree::Core::GatewayError, result.message unless result.success?
+      fail ::Spree::Core::GatewayError, result.message unless result.success?
 
       customer = result.customer
 
