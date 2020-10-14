@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SolidusPaypalBraintree
   module CountryMapper
     extend ActiveSupport::Concern
@@ -12,12 +14,12 @@ module SolidusPaypalBraintree
       "usa",
       "u.s.",
       "us"
-    ]
+    ].freeze
 
     CANADA_VARIANTS = [
       "canada",
       "ca"
-    ]
+    ].freeze
 
     # Generates a hash mapping each variant of the country name to the same ISO
     # ie: { "usa" => "US", "united states" => "US", "canada" => "CA", ... }

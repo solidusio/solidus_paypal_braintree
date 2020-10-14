@@ -1,8 +1,7 @@
-shared_context 'order ready for payment' do
+shared_context 'when order is ready for payment' do
   let!(:country) { create :country }
 
   let(:user) { create :user }
-  let(:line_item) { create :line_item, price: 50 }
   let(:address) { create :address, zipcode: "90210", lastname: "Doe", country: country }
 
   before do
@@ -15,7 +14,7 @@ shared_context 'order ready for payment' do
 
   let(:order) do
     order = Spree::Order.create!(
-      line_items: [line_item],
+      line_items: [create(:line_item, price: 50)],
       email: 'test@example.com',
       bill_address: address,
       ship_address: address,

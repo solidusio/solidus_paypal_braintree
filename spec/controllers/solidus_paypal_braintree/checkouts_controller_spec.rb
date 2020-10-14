@@ -4,7 +4,7 @@ require 'support/order_ready_for_payment'
 RSpec.describe SolidusPaypalBraintree::CheckoutsController, type: :controller do
   routes { SolidusPaypalBraintree::Engine.routes }
 
-  include_context 'order ready for payment'
+  include_context 'when order is ready for payment'
 
   describe 'PATCH update' do
     subject(:patch_update) { patch :update, params: params }
@@ -75,7 +75,7 @@ RSpec.describe SolidusPaypalBraintree::CheckoutsController, type: :controller do
 
     context "when a payment is not created successfully" do
       before do
-        allow_any_instance_of(Spree::Payment).to receive(:save).and_return(false)
+        allow_any_instance_of(::Spree::Payment).to receive(:save).and_return(false)
       end
 
       # No idea why this is the case, but I'm just adding the tests here
@@ -88,11 +88,11 @@ RSpec.describe SolidusPaypalBraintree::CheckoutsController, type: :controller do
       end
 
       it "does not change the number of payments in the system" do
-        expect{ patch_update }.to_not change{ Spree::Payment.count }
+        expect{ patch_update }.not_to(change{ ::Spree::Payment.count })
       end
 
       it "does not change the number of sources in the system" do
-        expect{ patch_update }.to_not change{ SolidusPaypalBraintree::Source.count }
+        expect{ patch_update }.not_to(change{ SolidusPaypalBraintree::Source.count })
       end
     end
   end

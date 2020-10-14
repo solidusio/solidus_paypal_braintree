@@ -5,8 +5,6 @@ describe SolidusPaypalBraintree::ConfigurationsController, type: :controller do
 
   let!(:store_1) { create :store }
   let!(:store_2) { create :store }
-  let(:store_1_config) { store_1.braintree_configuration }
-  let(:store_2_config) { store_2.braintree_configuration }
 
   stub_authorization!
 
@@ -25,13 +23,15 @@ describe SolidusPaypalBraintree::ConfigurationsController, type: :controller do
   end
 
   describe "POST #update" do
+    subject { post :update, params: configurations_params }
+
     let(:paypal_button_color) { 'blue' }
     let(:configurations_params) do
       {
         configurations: {
           configuration_fields: {
-            store_1_config.id.to_s => { paypal: true, apple_pay: true },
-            store_2_config.id.to_s => {
+            store_1.braintree_configuration.id.to_s => { paypal: true, apple_pay: true },
+            store_2.braintree_configuration.id.to_s => {
               paypal: true,
               apple_pay: false,
               preferred_paypal_button_color: paypal_button_color
@@ -41,11 +41,9 @@ describe SolidusPaypalBraintree::ConfigurationsController, type: :controller do
       }
     end
 
-    subject { post :update, params: configurations_params }
-
     context "with valid parameters" do
       it "updates the configuration" do
-        expect { subject }.to change { store_1_config.reload.paypal }.
+        expect { subject }.to change { store_1.braintree_configuration.reload.paypal }.
           from(false).to(true)
       end
 
@@ -60,7 +58,7 @@ describe SolidusPaypalBraintree::ConfigurationsController, type: :controller do
     end
 
     context "with invalid parameters" do
-      let(:paypal_button_color) { 'invalid-color'}
+      let(:paypal_button_color) { 'invalid-color' }
 
       it "displays an error message to the user" do
         subject

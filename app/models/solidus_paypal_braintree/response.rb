@@ -27,7 +27,7 @@ module SolidusPaypalBraintree
         transaction = result.transaction
         options = response_options(transaction).update(
           # For error responses we want to have the CVV code
-          cvv_result: transaction.try!(:cvv_response_code)
+          cvv_result: transaction&.cvv_response_code
         )
         new(false, error_message(result), result.params, options)
       end
@@ -35,6 +35,7 @@ module SolidusPaypalBraintree
       def response_options(transaction)
         # Some error responses do not have a transaction
         return {} if transaction.nil?
+
         {
           authorization: transaction.id,
           avs_result: SolidusPaypalBraintree::AVSResult.build(transaction),
@@ -67,7 +68,7 @@ module SolidusPaypalBraintree
         when 'settlement_declined'
           I18n.t(transaction.processor_settlement_response_code,
             scope: 'solidus_paypal_braintree.processor_settlement_response_codes',
-            default: "#{transaction.processor_settlement_response_text} (#{transaction.processor_settlement_response_code})")
+            default: "#{transaction.processor_settlement_response_text} (#{transaction.processor_settlement_response_code})") # rubocop:disable Layout/LineLength
         else
           I18n.t(transaction.status,
             scope: 'solidus_paypal_braintree.transaction_statuses',

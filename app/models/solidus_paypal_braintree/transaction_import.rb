@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_model'
 
 module SolidusPaypalBraintree
@@ -25,19 +27,19 @@ module SolidusPaypalBraintree
     end
 
     def source
-      SolidusPaypalBraintree::Source.new nonce: transaction.nonce,
+      SolidusPaypalBraintree::Source.new(
+        nonce: transaction.nonce,
         payment_type: transaction.payment_type,
         payment_method: transaction.payment_method,
         user: user
+      )
     end
 
-    def user
-      order.user
-    end
+    delegate :user, to: :order
 
     def import!(end_state, restart_checkout: false)
       if valid?
-        order.email = user.try!(:email) || transaction.email
+        order.email = user&.email || transaction.email
 
         if address
           order.shipping_address = order.billing_address = address
@@ -46,9 +48,11 @@ module SolidusPaypalBraintree
           order.instance_variable_set("@tax_zone", nil)
         end
 
-        payment = order.payments.new source: source,
+        payment = order.payments.new(
+          source: source,
           payment_method: transaction.payment_method,
           amount: order.total
+        )
 
         order.save!
         order.restart_checkout_flow if restart_checkout
@@ -85,9 +89,9 @@ module SolidusPaypalBraintree
       payment_total = order.payments.where(state: %w[checkout pending]).sum(:amount)
       payment_difference = order.outstanding_balance - payment_total
 
-      if payment_difference != 0
-        payment.update!(amount: payment.amount + payment_difference)
-      end
+      return unless payment_difference != 0
+
+      payment.update!(amount: payment.amount + payment_difference)
     end
   end
 end

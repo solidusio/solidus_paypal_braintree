@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_model'
 
 module SolidusPaypalBraintree
@@ -33,21 +35,23 @@ module SolidusPaypalBraintree
     end
 
     def spree_state
-      spree_country && state_code && ( @state ||= spree_country.states.where(
+      spree_country && state_code && ( @state ||= spree_country.states.find_by(
         ::Spree::State.arel_table[:name].matches(state_code).or(
           ::Spree::State.arel_table[:abbr].matches(state_code)
         )
-      ).first )
+      ))
     end
 
     def to_spree_address
-      address = ::Spree::Address.new first_name: first_name,
+      address = ::Spree::Address.new(
+        first_name: first_name,
         last_name: last_name,
         city: city,
         country: spree_country,
         address1: address_line_1,
         address2: address_line_2,
         zipcode: zip
+      )
 
       if spree_state
         address.state = spree_state
@@ -59,7 +63,7 @@ module SolidusPaypalBraintree
 
     # Check to see if this address should match to a state model in the database
     def should_match_state_model?
-      spree_country.try!(:states_required?)
+      spree_country&.states_required?
     end
   end
 end

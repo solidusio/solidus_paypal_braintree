@@ -65,6 +65,7 @@ RSpec.describe SolidusPaypalBraintree::Response do
   describe "#message" do
     context "with a success response" do
       subject { successful_response.message }
+
       it { is_expected.to eq "ok" }
     end
 
@@ -181,6 +182,8 @@ RSpec.describe SolidusPaypalBraintree::Response do
     end
 
     context 'with an error result' do
+      subject { described_class.build(error_result).avs_result }
+
       let(:failed_transaction) do
         instance_double(
           'Braintree::Transaction',
@@ -191,8 +194,6 @@ RSpec.describe SolidusPaypalBraintree::Response do
           cvv_response_code: nil
         )
       end
-
-      subject { described_class.build(error_result).avs_result }
 
       it 'includes AVS response code' do
         expect(subject['code']).to eq 'E'
@@ -227,6 +228,8 @@ RSpec.describe SolidusPaypalBraintree::Response do
     end
 
     context 'with an error result' do
+      subject { described_class.build(error_result).cvv_result }
+
       let(:failed_transaction) do
         instance_double(
           'Braintree::Transaction',
@@ -237,8 +240,6 @@ RSpec.describe SolidusPaypalBraintree::Response do
           cvv_response_code: 'N'
         )
       end
-
-      subject { described_class.build(error_result).cvv_result }
 
       it 'includes CVV response code' do
         expect(subject['code']).to eq 'N'
@@ -264,7 +265,7 @@ RSpec.describe SolidusPaypalBraintree::Response do
       subject { error_response.params }
 
       it 'includes request params' do
-        is_expected.to eq({ 'some' => 'error' })
+        expect(subject).to eq({ 'some' => 'error' })
       end
     end
   end

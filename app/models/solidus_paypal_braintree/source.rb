@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SolidusPaypalBraintree
   class Source < SolidusSupport.payment_source_parent_class
     include RequestProtection
@@ -8,7 +10,7 @@ module SolidusPaypalBraintree
 
     belongs_to :user, class_name: ::Spree::UserClassHandle.new, optional: true
     belongs_to :payment_method, class_name: 'Spree::PaymentMethod'
-    has_many :payments, as: :source, class_name: "Spree::Payment"
+    has_many :payments, as: :source, class_name: "Spree::Payment", dependent: :destroy
 
     belongs_to :customer, class_name: "SolidusPaypalBraintree::Customer", optional: true
 
@@ -26,7 +28,6 @@ module SolidusPaypalBraintree
     alias_method :year, :expiration_year
     alias_method :cc_type, :card_type
 
-
     # we are not currenctly supporting an "imported" flag
     def imported
       false
@@ -42,6 +43,7 @@ module SolidusPaypalBraintree
 
     def can_void?(payment)
       return false unless payment.response_code
+
       transaction = protected_request do
         braintree_client.transaction.find(payment.response_code)
       end
@@ -86,6 +88,7 @@ module SolidusPaypalBraintree
 
     def braintree_payment_method
       return unless braintree_client
+
       @braintree_payment_method ||= protected_request do
         braintree_client.payment_method.find(token)
       end
