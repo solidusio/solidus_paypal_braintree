@@ -1,4 +1,68 @@
 require:
   - solidus_dev_support/rubocop
 
-inherit_from: .rubocop_todo.yml
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 2.4
+
+Layout/FirstArgumentIndentation:
+  EnforcedStyle: consistent
+
+Layout/FirstArrayElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/FirstHashElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+# We use this extensively, the alternatives are not viable or desirable.
+RSpec/AnyInstance:
+  Enabled: false
+
+# No need to make the code more complex for no real gain.
+RSpec/MessageSpies:
+  Enabled: false
+
+# Let's consider legitimate to have multiple expectations within an example.
+RSpec/MultipleExpectations:
+  Enabled: false
+
+# Allow to use subject as is, no big deal.
+RSpec/NamedSubject:
+  Enabled: false
+
+# Let's set this to some really exagerate value.
+RSpec/NestedGroups:
+  Max: 8
+
+RSpec/VerifiedDoubles:
+  # Sometimes you really need an "anything" double
+  IgnoreSymbolicNames: true
+
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - spec/**/*
+    - db/migrate/**/*
+    - bin/**/*
+
+Style/ExplicitBlockArgument:
+  Exclude:
+    - lib/solidus_paypal_braintree/request_protection.rb
+
+Rails/SkipsModelValidations:
+  Exclude:
+    - db/migrate/**/*
+
+Rails/ReflectionClassName:
+  Exclude:
+    - app/models/solidus_paypal_braintree/customer.rb
+    - app/models/solidus_paypal_braintree/source.rb
+
+RSpec/MultipleMemoizedHelpers:
+  Exclude:
+    - spec/models/solidus_paypal_braintree/transaction_import_spec.rb
+    - spec/models/solidus_paypal_braintree/response_spec.rb
+    - spec/models/solidus_paypal_braintree/gateway_spec.rb
+    - spec/controllers/solidus_paypal_braintree/client_tokens_controller_spec.rb
