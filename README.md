@@ -73,7 +73,7 @@ SolidusPaypalBraintree::Gateway.new(
 ```
 
 ### Configure payment types
-Your payment method can accept payments in three ways: through Paypal, through ApplePay, or with credit card details entered directly by the customer. By default all are disabled for all your site's stores.
+Your payment method can accept payments in three ways: through Paypal, through ApplePay, or with credit card details entered directly by the customer. By default all are disabled for all your site's stores. Before proceeding to checkout, ensure you've created a Braintree configuration for your store:
 
 1. Visit /solidus_paypal_braintree/configurations/list
 
