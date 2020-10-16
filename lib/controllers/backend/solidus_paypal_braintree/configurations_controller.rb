@@ -5,7 +5,7 @@ module SolidusPaypalBraintree
     def list
       authorize! :list, SolidusPaypalBraintree::Configuration
 
-      @configurations = ::Spree::Store.all.map(&:braintree_configuration)
+      @configurations = ::Spree::Store.all.map { |s| s.braintree_configuration || s.create_braintree_configuration }
     end
 
     def update
