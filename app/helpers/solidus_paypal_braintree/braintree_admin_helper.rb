@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SolidusPaypalBraintree
   module BraintreeAdminHelper
     # Returns a link to the Braintree web UI for the given Braintree payment
@@ -6,14 +8,15 @@ module SolidusPaypalBraintree
       merchant_id = payment.payment_method.preferred_merchant_id
       response_code = payment.response_code
 
-      return unless response_code.present?
-      return response_code unless merchant_id.present?
+      return if response_code.blank?
+      return response_code if merchant_id.blank?
 
       link_to(
         response_code,
         "https://#{environment}.braintreegateway.com/merchants/#{merchant_id}/transactions/#{response_code}",
         title: 'Show payment on Braintree',
-        target: '_blank'
+        target: '_blank',
+        rel: 'noopener'
       )
     end
   end

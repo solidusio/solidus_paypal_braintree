@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'solidus_support'
 
 module SolidusPaypalBraintree
@@ -20,7 +22,7 @@ module SolidusPaypalBraintree
     end
 
     def self.activate
-      Dir.glob(File.join(File.dirname(__FILE__), '../../app/**/*_decorator*.rb')) do |c|
+      Dir.glob(File.join(File.dirname(__FILE__), '../../app/**/*_decorator*.rb')).sort.each do |c|
         Rails.configuration.cache_classes ? require(c) : load(c)
       end
     end
@@ -53,7 +55,7 @@ module SolidusPaypalBraintree
 
       paths["app/views"] << "lib/views/backend"
 
-      initializer "solidus_paypal_braintree_admin_menu_item", after: "register_solidus_paypal_braintree_gateway" do |app|
+      initializer "solidus_paypal_braintree_admin_menu_item", after: "register_solidus_paypal_braintree_gateway" do
         Spree::Backend::Config.configure do |config|
           config.menu_items << config.class::MenuItem.new(
             [:braintree],
