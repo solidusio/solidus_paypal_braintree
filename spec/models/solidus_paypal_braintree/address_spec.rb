@@ -31,7 +31,7 @@ RSpec.describe SolidusPaypalBraintree::Address do
 
     context 'with states turned off globally' do
       before do
-        allow(Spree::Config).to receive(:address_requires_state) { false }
+        allow(::Spree::Config).to receive(:address_requires_state) { false }
       end
 
       context 'with a country that requires states' do

@@ -15,7 +15,7 @@ module SolidusPaypalBraintree
         recipientName: spree_address.full_name
       }
 
-      if Spree::Config.address_requires_state && spree_address.country.states_required
+      if ::Spree::Config.address_requires_state && spree_address.country.states_required
         address_hash[:state] = spree_address.state.name
       end
       address_hash.to_json
