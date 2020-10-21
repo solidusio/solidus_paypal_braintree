@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module SolidusPaypalBraintree
   class Address
     def initialize(spree_address)
       @spree_address = spree_address
     end
 
-    def to_json
+    def to_json(*_args)
       address_hash = {
         line1: spree_address.address1,
         line2: spree_address.address2,
