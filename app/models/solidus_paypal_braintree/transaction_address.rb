@@ -8,11 +8,11 @@ module SolidusPaypalBraintree
     include ActiveModel::Validations::Callbacks
     include SolidusPaypalBraintree::CountryMapper
 
-    attr_accessor :country_code, :last_name, :first_name,
-      :city, :zip, :state_code, :address_line_1, :address_line_2
+    attr_accessor :country_code, :name, :city, :zip, :state_code,
+      :address_line_1, :address_line_2, :first_name, :last_name
 
-    validates :first_name, :last_name, :address_line_1, :city, :zip,
-      :country_code, presence: true
+    validates :address_line_1, :city, :zip, :country_code, presence: true
+    validates :name, presence: true, unless: ->(address){ address.first_name.present? }
 
     before_validation do
       self.country_code = country_code.presence || "us"
@@ -44,8 +44,6 @@ module SolidusPaypalBraintree
 
     def to_spree_address
       address = ::Spree::Address.new(
-        first_name: first_name,
-        last_name: last_name,
         city: city,
         country: spree_country,
         address1: address_line_1,
@@ -53,12 +51,28 @@ module SolidusPaypalBraintree
         zipcode: zip
       )
 
+      if !first_name.nil?
+        ::Spree::Deprecation.warn("first_name and last_name are deprecated. Use name instead.", caller)
+        address.first_name = first_name
+        address.last_name = last_name || "(left blank)"
+      elsif address.respond_to? :name
+        address.name = name
+      else
+        first_name, last_name = split_name(name)
+        address.first_name = first_name
+        address.last_name = last_name || "(left blank)"
+      end
+
       if spree_state
         address.state = spree_state
       else
         address.state_name = state_code
       end
       address
+    end
+
+    def split_name(name)
+      name.strip.split(' ', 2)
     end
 
     # Check to see if this address should match to a state model in the database
