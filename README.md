@@ -211,7 +211,12 @@ This preference allows users to provide different Merchant Account Ids for
 different currencies. If you only plan to accept payment in one currency, the
 defaut Merchant Account Id will be used and you can omit this option.
 An example of setting this preference can be found
-[here](https://github.com/solidusio/solidus_paypal_braintree/blob/master/spec/spec_helper.rb#L70-L72).
+[here](https://github.com/solidusio/solidus_paypal_braintree/blob/bf5fe0e154d38f7c498f1c54450bb4de7608ff04/spec/support/gateway_helpers.rb#L11-L13).
+
+In addition to this, you can also specify different PayPal accounts for each
+currency by using the `paypal_payee_email_map` preference. If you only want
+to use one PayPal account for all currencies, then you can ignore this option.
+You can find an example of setting this preference [here](https://github.com/solidusio/solidus_paypal_braintree/blob/bf5fe0e154d38f7c498f1c54450bb4de7608ff04/spec/support/gateway_helpers.rb#L14-L16).
 
 ### Default store configuration
 The migrations for this gem will add a default configuration to all stores that
