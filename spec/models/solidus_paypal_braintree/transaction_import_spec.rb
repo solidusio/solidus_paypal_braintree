@@ -31,8 +31,7 @@ describe SolidusPaypalBraintree::TransactionImport do
     context "with invalid address" do
       let(:transaction_address) do
         SolidusPaypalBraintree::TransactionAddress.new(
-          first_name: "Bruce",
-          last_name: "Wayne",
+          name: "Bruce Wayne",
           address_line_1: "42 Spruce Lane",
           city: "Gotham",
           state_code: "WA",
@@ -187,8 +186,7 @@ describe SolidusPaypalBraintree::TransactionImport do
         let(:transaction_address) do
           SolidusPaypalBraintree::TransactionAddress.new(
             country_code: 'US',
-            last_name: 'Venture',
-            first_name: 'Thaddeus',
+            name: 'Thaddeus Venture',
             city: 'New York',
             state_code: 'NY',
             address_line_1: '350 5th Ave',
@@ -247,8 +245,7 @@ describe SolidusPaypalBraintree::TransactionImport do
       let(:transaction_address) do
         SolidusPaypalBraintree::TransactionAddress.new(
           country_code: 'US',
-          last_name: 'Venture',
-          first_name: 'Thaddeus',
+          name: 'Thaddeus Venture',
           city: 'New York',
           state_code: 'NY',
           address_line_1: '350 5th Ave'

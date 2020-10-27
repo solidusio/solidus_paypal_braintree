@@ -8,8 +8,7 @@ describe SolidusPaypalBraintree::TransactionAddress do
 
     let(:valid_attributes) do
       {
-        first_name: "Bruce",
-        last_name: "Wayne",
+        name: "Bruce Wayne",
         address_line_1: "42 Spruce Lane",
         city: "Gotham",
         zip: "98201",
@@ -32,14 +31,8 @@ describe SolidusPaypalBraintree::TransactionAddress do
       it { is_expected.to be false }
     end
 
-    context "without first_name" do
-      let(:valid_attributes) { super().except(:first_name) }
-
-      it { is_expected.to be false }
-    end
-
-    context "without last_name" do
-      let(:valid_attributes) { super().except(:last_name) }
+    context "without name" do
+      let(:valid_attributes) { super().except(:name) }
 
       it { is_expected.to be false }
     end
@@ -83,6 +76,12 @@ describe SolidusPaypalBraintree::TransactionAddress do
         subject
         expect(address.country_code).to eq "us"
       end
+    end
+
+    context "with a one word name" do
+      let(:valid_attributes) { super().merge({ name: "Bruce" }) }
+
+      it { is_expected.to be true }
     end
   end
 
@@ -190,8 +189,15 @@ describe SolidusPaypalBraintree::TransactionAddress do
   end
 
   describe '#to_spree_address' do
-    subject { described_class.new(country_code: 'US', state_code: 'NY').to_spree_address }
+    subject { described_class.new(address_params).to_spree_address }
 
+    let(:address_params) do
+      {
+        country_code: 'US',
+        state_code: 'NY',
+        name: "Alfred"
+      }
+    end
     let!(:us) { create :country, iso: 'US' }
 
     it { is_expected.to be_a Spree::Address }
@@ -210,6 +216,37 @@ describe SolidusPaypalBraintree::TransactionAddress do
       it 'uses state_name' do
         expect(subject.state).to be_nil
         expect(subject.state_text).to eq 'NY'
+      end
+    end
+
+    context 'when using first_name and last_name' do
+      let(:address_params) { super().merge({ first_name: "Bruce", last_name: "Wayne" }) }
+
+      it 'displays a deprecation warning' do
+        expect(Spree::Deprecation).to receive(:warn).
+          with("first_name and last_name are deprecated. Use name instead.", any_args)
+
+        subject
+      end
+    end
+  end
+
+  describe "#split" do
+    subject { described_class.new.split_name(name) }
+
+    context "with a one word name" do
+      let(:name) { "Bruce" }
+
+      it "correctly splits" do
+        expect(subject).to eq ["Bruce"]
+      end
+    end
+
+    context "with a multi word name" do
+      let(:name) { "Bruce Wayne The Batman" }
+
+      it "correctly splits" do
+        expect(subject).to eq ["Bruce", "Wayne The Batman"]
       end
     end
   end

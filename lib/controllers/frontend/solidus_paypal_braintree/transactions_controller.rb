@@ -10,8 +10,8 @@ module SolidusPaypalBraintree
       :phone,
       :email,
       { address_attributes: [
-        :country_code, :country_name, :last_name, :first_name,
-        :city, :zip, :state_code, :address_line_1, :address_line_2
+        :country_code, :country_name, :name, :city, :zip, :state_code,
+        :address_line_1, :address_line_2, :first_name, :last_name
       ] }
     ].freeze
 

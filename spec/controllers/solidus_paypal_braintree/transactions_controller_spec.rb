@@ -41,8 +41,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
           phone: "1112223333",
           email: "batman@example.com",
           address_attributes: {
-            first_name: "Wade",
-            last_name: "Wilson",
+            name: "Wade Wilson",
             address_line_1: "123 Fake Street",
             city: "Seattle",
             zip: "98101",

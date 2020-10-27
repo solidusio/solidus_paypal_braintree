@@ -15,8 +15,7 @@ describe SolidusPaypalBraintree::Transaction do
     let(:valid_address_attributes) do
       {
         address_attributes: {
-          first_name: "Bruce",
-          last_name: "Wayne",
+          name: "Bruce Wayne",
           address_line_1: "42 Spruce Lane",
           city: "Gotham",
           zip: "98201",
