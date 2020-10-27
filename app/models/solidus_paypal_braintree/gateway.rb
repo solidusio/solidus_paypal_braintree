@@ -6,6 +6,8 @@ module SolidusPaypalBraintree
   class Gateway < ::Spree::PaymentMethod
     include RequestProtection
 
+    class TokenGenerationDisabledError < StandardError; end
+
     # Error message from Braintree that gets returned by a non voidable transaction
     NON_VOIDABLE_STATUS_ERROR_REGEXP = /can only be voided if status is authorized/.freeze
 
@@ -222,11 +224,11 @@ module SolidusPaypalBraintree
       end
     end
 
+    # @raise [TokenGenerationDisabledError]
+    #   If `preferred_token_generation_enabled` is false
+    #
     # @return [String]
     #   The token that should be used along with the Braintree js-client sdk.
-    #
-    #   returns an error message if `preferred_token_generation_enabled` is
-    #   set to false.
     #
     # @example
     #   <script>
@@ -242,7 +244,9 @@ module SolidusPaypalBraintree
     #     );
     #   </script>
     def generate_token
-      return TOKEN_GENERATION_DISABLED_MESSAGE unless preferred_token_generation_enabled
+      unless preferred_token_generation_enabled
+        raise TokenGenerationDisabledError, TOKEN_GENERATION_DISABLED_MESSAGE
+      end
 
       braintree.client_token.generate
     end
