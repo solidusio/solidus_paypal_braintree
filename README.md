@@ -223,6 +223,9 @@ has each payment type disabled. It also adds a `before_create` callback to
 default configuration that gets created by overriding the private
 `build_default_configuration` method on `Spree::Store`.
 
+### Hosted Fields Styling
+You can style the Braintree credit card fields by using the `credit_card_fields_style` preference on the payment method. The `credit_card_fields_style` will be passed to the `style` key when initializing the credit card fields. You can find more information about styling hosted fields can be found [here.](https://developers.braintreepayments.com/guides/hosted-fields/styling/javascript/v3)
+
 ### 3D Secure
 
 This gem supports [3D Secure 2](https://developers.braintreepayments.com/guides/3d-secure/overview),
