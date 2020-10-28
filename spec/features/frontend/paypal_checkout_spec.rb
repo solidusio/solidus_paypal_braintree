@@ -60,21 +60,19 @@ describe "Checkout", type: :feature, js: true do
     before do
       payment_method
       add_mug_to_cart
+      click_button("Checkout")
+      fill_in("order_email", with: "paypal_buyer@paypaltest.com")
+      click_button("Continue")
+      fill_in_address
+      click_button("Save and Continue")
+      click_button("Save and Continue")
+    end
+
+    it "formats the address variable correctly" do
+      expect(page.evaluate_script("address['recipientName']")).to eq "Ryan Bigg"
     end
 
     it "checks out successfully", skip: "Broken. To be revisited" do
-      click_button("Checkout")
-      fill_in("order_email", with: "stembolt_buyer@stembolttest.com")
-
-      click_button("Continue")
-      expect(page).to have_content("Customer E-Mail")
-
-      fill_in_address
-      click_button("Save and Continue")
-
-      expect(page).to have_content("SHIPPING METHOD")
-      click_button("Save and Continue")
-
       pend_if_paypal_slow do
         expect_any_instance_of(Spree::Order).not_to receive(:restart_checkout_flow)
         move_through_paypal_popup
@@ -136,8 +134,12 @@ describe "Checkout", type: :feature, js: true do
 
   def fill_in_address
     address = "order_bill_address_attributes"
-    fill_in "#{address}_firstname", with: "Ryan"
-    fill_in "#{address}_lastname", with: "Bigg"
+    if page.has_css?("##{address}_firstname", wait: 0)
+      fill_in "#{address}_firstname", with: "Ryan"
+      fill_in "#{address}_lastname", with: "Bigg"
+    else
+      fill_in "#{address}_name", with: "Ryan Bigg"
+    end
     fill_in "#{address}_address1", with: "143 Swan Street"
     fill_in "#{address}_city", with: "San Jose"
     select "United States of America", from: "#{address}_country_id"
