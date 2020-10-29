@@ -1,19 +1,19 @@
-<% prefix = "payment_source[#{id}]" %>
+<% prefix = "payment_source[#{payment_method.id}]" %>
 
 <div class="hosted-fields">
   <div class="field" data-hook="card_number">
-    <%= label_tag "card_number#{id}", Spree::CreditCard.human_attribute_name(:number), class: "required" %>
-    <div class="input" id="card_number<%= id %>"></div>
+    <%= label_tag "card_number#{payment_method.id}", Spree::CreditCard.human_attribute_name(:number), class: "required" %>
+    <div class="input" id="card_number<%= payment_method.id %>"></div>
   </div>
 
   <div class="field" data-hook="card_expiration">
-    <%= label_tag "card_expiry#{id}", Spree::CreditCard.human_attribute_name(:expiration), class: "required" %>
-    <div class="input" id="card_expiry<%= id %>"></div>
+    <%= label_tag "card_expiry#{payment_method.id}", Spree::CreditCard.human_attribute_name(:expiration), class: "required" %>
+    <div class="input" id="card_expiry<%= payment_method.id %>"></div>
   </div>
 
   <div class="field" data-hook="card_code">
-    <%= label_tag "card_code#{id}", Spree::CreditCard.human_attribute_name(:card_code), class: "required" %>
-    <div class="input" id="card_code<%= id %>"></div>
+    <%= label_tag "card_code#{payment_method.id}", Spree::CreditCard.human_attribute_name(:card_code), class: "required" %>
+    <div class="input" id="card_code<%= payment_method.id %>"></div>
 
     <a href="/content/cvv" class="info cvvLink" target="_blank">
       (<%= I18n.t("spree.what_is_this") %>)
