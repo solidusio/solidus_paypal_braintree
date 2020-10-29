@@ -34,7 +34,9 @@ SolidusPaypalBraintree.HostedForm.prototype._createHostedFields = function () {
       expirationDate: {
         selector: "#card_expiry" + this.paymentMethodId
       }
-    }
+    },
+
+    styles: credit_card_fields_style
   };
 
   return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.hostedFields.create, [opts]);

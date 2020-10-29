@@ -25,8 +25,10 @@
   <input type="hidden" id="payment_method_nonce" name="<%= prefix %>[nonce]">
 </div>
 
-<% if current_store.braintree_configuration.three_d_secure? %>
-  <script>
-    var threeDSecureOptions = <%=raw braintree_3ds_options_for(current_order).to_json %>;
-  </script>
-<% end -%>
+
+<script>
+  <% if current_store.braintree_configuration.three_d_secure? %>
+    var threeDSecureOptions = <%= raw braintree_3ds_options_for(current_order).to_json %>;
+  <% end -%>
+  var credit_card_fields_style = <%= raw payment_method.preferred_credit_card_fields_style.to_json %>
+</script>
