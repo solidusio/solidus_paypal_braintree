@@ -1,3 +1,11 @@
+<% if defined?(id) && !defined?(payment_method) %>
+  <% payment_method = Spree::PaymentMethod.find(id) %>
+  <% Spree::Deprecation.warn(
+    "passing id to _braintree_hosted_fields.html.erb is deprecated. Please pass the payment_method directly.",
+    caller
+  ) %>
+<% end %>
+
 <% prefix = "payment_source[#{payment_method.id}]" %>
 
 <div class="hosted-fields">
@@ -31,4 +39,5 @@
     var threeDSecureOptions = <%= raw braintree_3ds_options_for(current_order).to_json %>;
   <% end -%>
   var credit_card_fields_style = <%= raw payment_method.preferred_credit_card_fields_style.to_json %>
+  var placeholder_text = <%= raw payment_method.preferred_placeholder_text.to_json %>
 </script>
