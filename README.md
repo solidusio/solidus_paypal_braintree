@@ -165,7 +165,7 @@ using the
 [Vault flow](https://developers.braintreepayments.com/guides/paypal/overview/javascript/v3),
 which allows the source to be reused. If you want, you can use [Checkout with PayPal](https://developers.braintreepayments.com/guides/paypal/checkout-with-paypal/javascript/v3)
 instead, which doesn't allow you to reuse sources but allows your customers to pay with their PayPal
-balance (see setup instructions).
+balance and with PayPal financing options ([see setup instructions](#create-a-new-payment-method)).
 
 If you are creating your own checkout view or would like to customize the
 [options that get passed to tokenize](https://braintree.github.io/braintree-web/3.6.3/PayPal.html#tokenize)
@@ -186,6 +186,15 @@ button.initialize();
 A PayPal button can also be included on the cart view to enable express checkouts:
 ```ruby
 render "spree/shared/paypal_cart_button"
+```
+
+### PayPal Financing Messaging
+
+PayPal offers an [on-site messaging component](https://www.paypal.com/us/webapps/mpp/on-site-messaging) to notify the customer that there are financing options available. By default, this component is used in both the cart and checkout partials.
+
+You can also include this view partial to implement this messaging component anywhere - for instance, on the product page:
+```ruby
+render "spree/shared/paypal_messaging, options: {total: @product.price, placement: "product", currency: 'USD'}"
 ```
 
 #### PayPal configuration
