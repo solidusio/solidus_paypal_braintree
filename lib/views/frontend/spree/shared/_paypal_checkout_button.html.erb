@@ -2,7 +2,7 @@
 <div data-pp-message data-pp-placement="payment" data-pp-amount="<%= @order.total %>"></div>
 
 <script>
-  var address = <%= SolidusPaypalBraintree::Address.new(current_order.ship_address).to_json %>
+  var address = <%= sanitize SolidusPaypalBraintree::Address.new(current_order.ship_address).to_json %>
 
   var paypalOptions = {
     flow: '<%= SolidusPaypalBraintree::Gateway.first.preferred_paypal_flow %>',
