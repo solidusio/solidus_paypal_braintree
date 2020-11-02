@@ -44,7 +44,7 @@ SolidusPaypalBraintree.PaypalButton.prototype.initializeCallback = function() {
     currency: this._paypalOptions.currency,
     commit: true,
     vault: this._paypalOptions.flow == "vault",
-    components: this.style['messaging'] == "true" ? "buttons,messages" : "buttons",
+    components: this.style['messaging'] == "true" && this._paypalOptions.flow != "vault" ? "buttons,messages" : "buttons",
     intent: this._paypalOptions.flow == "vault" ? "tokenize" : "authorize"
   }).then(() => {
     var create_method = this._paypalOptions.flow == "vault" ? "createBillingAgreement" : "createOrder"
