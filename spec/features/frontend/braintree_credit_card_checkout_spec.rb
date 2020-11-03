@@ -18,7 +18,7 @@ shared_context "with frontend checkout setup" do
       )
     end
 
-    order = if SolidusSupport.solidus_gem_version >= Gem::Version.new('2.6.0')
+    order = if Spree.solidus_gem_version >= Gem::Version.new('2.6.0')
               Spree::TestingSupport::OrderWalkthrough.up_to(:delivery)
             else
               OrderWalkthrough.up_to(:delivery)
