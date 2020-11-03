@@ -47,6 +47,14 @@ module SolidusPaypalBraintree
     # Which checkout flow to use (vault/checkout)
     preference(:paypal_flow, :string, default: 'vault')
 
+    # A hash that gets passed to the `style` key when initializing the credit card fields.
+    # See https://developers.braintreepayments.com/guides/hosted-fields/styling/javascript/v3
+    preference(:credit_card_fields_style, :hash, default: {})
+
+    # A hash that gets its keys passed to the associated braintree field placeholder tag.
+    # Example: { number: "Enter card number", cvv: "Enter CVV", expirationDate: "mm/yy" }
+    preference(:placeholder_text, :hash, default: {})
+
     def partial_name
       "paypal_braintree"
     end

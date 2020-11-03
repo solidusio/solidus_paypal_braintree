@@ -11,6 +11,6 @@
   </div>
 
   <div id="card_form<%= id %>" data-hook style="display: none;">
-    <%= render partial: "spree/shared/braintree_hosted_fields", locals: { id: id } %>
+    <%= render partial: "spree/shared/braintree_hosted_fields", locals: { payment_method: payment_method } %>
   </div>
 </fieldset>

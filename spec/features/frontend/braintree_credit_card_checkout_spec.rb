@@ -16,6 +16,11 @@ shared_context "with frontend checkout setup" do
         credit_card: true,
         three_d_secure: three_d_secure_enabled
       )
+
+      braintree.update(
+        preferred_credit_card_fields_style: { input: { 'font-size': '30px' } },
+        preferred_placeholder_text: { number: "Enter Your Card Number" }
+      )
     end
 
     order = if Spree.solidus_gem_version >= Gem::Version.new('2.6.0')
@@ -52,6 +57,18 @@ describe 'entering credit card details', type: :feature, js: true do
       expect(page).to have_selector("#payment_method_#{braintree.id}", visible: :visible)
       expect(page).to have_selector("iframe#braintree-hosted-field-number")
       expect(page).to have_selector("iframe[type='number']")
+    end
+
+    it "credit card field style variable is set" do
+      within_frame("braintree-hosted-field-number") do
+        expect(find("#credit-card-number").style("font-size")).to eq({ "font-size" => "30px" })
+      end
+    end
+
+    it "sets the placeholder text correctly" do
+      within_frame("braintree-hosted-field-number") do
+        expect(find("#credit-card-number")['placeholder']).to eq("Enter Your Card Number")
+      end
     end
   end
 
