@@ -8,7 +8,7 @@ module SolidusPaypalBraintree
       label: { availables: %w[checkout credit pay buynow paypal installment], default: 'checkout' },
       tagline: { availables: %w[true false], default: 'false' },
       layout: { availables: %w[horizontal vertical], default: 'horizontal' },
-      messaging: { availables: %w[true false], default: 'true' }
+      messaging: { availables: %w[true false], default: 'false' }
     }.freeze
 
     belongs_to :store, class_name: 'Spree::Store'

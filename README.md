@@ -163,7 +163,7 @@ The checkout view
 [initializes the PayPal button](/lib/views/frontend/spree/checkout/payment/_paypal_braintree.html.erb)
 using the
 [Vault flow](https://developers.braintreepayments.com/guides/paypal/overview/javascript/v3),
-which allows the source to be reused. If you want, you can use [Checkout with PayPal](https://developers.braintreepayments.com/guides/paypal/checkout-with-paypal/javascript/v3)
+which allows the source to be reused. Please note that PayPal messaging is disabled with vault flow. If you want, you can use [Checkout with PayPal](https://developers.braintreepayments.com/guides/paypal/checkout-with-paypal/javascript/v3)
 instead, which doesn't allow you to reuse sources but allows your customers to pay with their PayPal
 balance and with PayPal financing options ([see setup instructions](#create-a-new-payment-method)).
 
@@ -190,7 +190,7 @@ render "spree/shared/paypal_cart_button"
 
 ### PayPal Financing Messaging
 
-PayPal offers an [on-site messaging component](https://www.paypal.com/us/webapps/mpp/on-site-messaging) to notify the customer that there are financing options available. By default, this component is used in both the cart and checkout partials.
+PayPal offers an [on-site messaging component](https://www.paypal.com/us/webapps/mpp/on-site-messaging) to notify the customer that there are financing options available. This component is included in both the cart and checkout partials, but is disabled by default. To enable this option, you'll need to use the `checkout` flow, and set the `paypal button messaging` option to `true` in your Braintree configuration.
 
 You can also include this view partial to implement this messaging component anywhere - for instance, on the product page:
 ```ruby
