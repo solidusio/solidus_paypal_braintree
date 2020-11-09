@@ -197,6 +197,8 @@ You can also include this view partial to implement this messaging component any
 render "spree/shared/paypal_messaging, options: {total: @product.price, placement: "product", currency: 'USD'}"
 ```
 
+While we provide the messaging component on the payment buttons for cart and checkout, you're expected to move these to where they make the most sense for your frontend. PayPal recommends keeping the messaging directly below wherever the order or product total is located.
+
 #### PayPal configuration
 
 If your store requires the [phone number into user addresses](https://github.com/solidusio/solidus/blob/859143f3f061de79cc1b385234599422b8ae8e21/core/app/models/spree/address.rb#L151-L153)
