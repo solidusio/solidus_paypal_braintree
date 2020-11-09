@@ -197,6 +197,21 @@ You can also include this view partial to implement this messaging component any
 render "spree/shared/paypal_messaging, options: {total: @product.price, placement: "product", currency: 'USD'}"
 ```
 
+If you're using this partial on a page where the PayPal SDK isn't already initialized, you'll also need to include this somewhere on the page:
+```ruby
+  <%= render "spree/shared/paypal_braintree_head_scripts" %>
+
+  <script>
+    var message = new SolidusPaypalBraintree.createPaypalMessaging(
+      {
+        currency: "<%= options[:currency] %>"
+      }
+    )
+
+    message.initialize();
+  </script>
+  ```
+
 While we provide the messaging component on the payment buttons for cart and checkout, you're expected to move these to where they make the most sense for your frontend. PayPal recommends keeping the messaging directly below wherever the order or product total is located.
 
 #### PayPal configuration

@@ -1,13 +1,1 @@
-<%= render "spree/shared/paypal_braintree_head_scripts" %>
-
 <div data-pp-message data-pp-placement="<%= options[:placement] %>" data-pp-amount="<%= options[:total] %>"></div>
-
-<script>
-  var message = new SolidusPaypalBraintree.createPaypalMessaging(
-    {
-      currency: "<%= options[:currency] %>"
-    }
-  )
-
-  message.initialize();
-</script>

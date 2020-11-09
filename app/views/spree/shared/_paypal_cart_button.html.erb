@@ -1,7 +1,9 @@
 <%= render "spree/shared/paypal_braintree_head_scripts" %>
 
 <div id="paypal-button"></div>
-<div data-pp-message data-pp-placement="payment" data-pp-amount="<%= current_order.total %>"></div>
+<%= render "spree/shared/paypal_messaging", options: {
+  total: current_order.total,
+  placement: "payment" } %>
 
 <script>
   var paypalOptions = {
