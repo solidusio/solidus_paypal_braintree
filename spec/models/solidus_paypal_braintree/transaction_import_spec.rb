@@ -6,10 +6,14 @@ describe SolidusPaypalBraintree::TransactionImport do
   let(:braintree_gateway) { SolidusPaypalBraintree::Gateway.new }
   let(:transaction_address) { nil }
   let(:transaction) do
-    SolidusPaypalBraintree::Transaction.new nonce: 'abcd1234',
-      payment_type: "ApplePayCard", address: transaction_address,
-      payment_method: braintree_gateway, email: "test@example.com",
+    SolidusPaypalBraintree::Transaction.new(
+      nonce: 'abcd1234',
+      payment_type: "ApplePayCard",
+      address: transaction_address,
+      payment_method: braintree_gateway,
+      email: "test@example.com",
       phone: "123-456-6789"
+    )
   end
   let(:transaction_import) { described_class.new(order, transaction) }
 
@@ -18,17 +22,21 @@ describe SolidusPaypalBraintree::TransactionImport do
 
     it { is_expected.to be true }
 
-    context "invalid transaction" do
+    context "with invalid transaction" do
       let(:transaction) { SolidusPaypalBraintree::Transaction.new }
 
       it { is_expected.to be false }
     end
 
-    context "invalid address" do
+    context "with invalid address" do
       let(:transaction_address) do
-        SolidusPaypalBraintree::TransactionAddress.new first_name: "Bruce",
-          last_name: "Wayne", address_line_1: "42 Spruce Lane", city: "Gotham",
-          state_code: "WA", country_code: "US"
+        SolidusPaypalBraintree::TransactionAddress.new(
+          name: "Bruce Wayne",
+          address_line_1: "42 Spruce Lane",
+          city: "Gotham",
+          state_code: "WA",
+          country_code: "US"
+        )
       end
 
       it { is_expected.to be false }
@@ -58,7 +66,7 @@ describe SolidusPaypalBraintree::TransactionImport do
       expect(subject.payment_method).to eq braintree_gateway
     end
 
-    context 'order has a user' do
+    context 'when order has a user' do
       let(:user) { Spree.user_class.new }
       let(:order) { Spree::Order.new user: user }
 
@@ -82,11 +90,23 @@ describe SolidusPaypalBraintree::TransactionImport do
   end
 
   describe '#import!' do
+    subject { described_class.new(order, transaction).import!(end_state) }
+
     let(:store) { create :store }
     let(:variant) { create :variant }
     let(:line_item) { Spree::LineItem.new(variant: variant, quantity: 1, price: 10) }
     let(:address) { create :address, country: country }
-    let(:order) { Spree::Order.create(number: "R999999999", store: store, line_items: [line_item], ship_address: address, currency: 'USD', total: 10, email: 'test@example.com') }
+    let(:order) {
+      Spree::Order.create(
+        number: "R999999999",
+        store: store,
+        line_items: [line_item],
+        ship_address: address,
+        currency: 'USD',
+        total: 10,
+        email: 'test@example.com'
+      )
+    }
     let(:payment_method) { create_gateway }
 
     let(:country) { create :country, iso: 'US', states_required: true }
@@ -94,10 +114,14 @@ describe SolidusPaypalBraintree::TransactionImport do
     let(:end_state) { 'confirm' }
 
     let(:transaction) do
-      SolidusPaypalBraintree::Transaction.new nonce: 'fake-valid-nonce',
-        payment_method: payment_method, address: transaction_address,
+      SolidusPaypalBraintree::Transaction.new(
+        nonce: 'fake-valid-nonce',
+        payment_method: payment_method,
+        address: transaction_address,
         payment_type: SolidusPaypalBraintree::Source::PAYPAL,
-        phone: '123-456-7890', email: 'user@example.com'
+        phone: '123-456-7890',
+        email: 'user@example.com'
+      )
     end
 
     before do
@@ -111,13 +135,11 @@ describe SolidusPaypalBraintree::TransactionImport do
         and_return("ABCD1234")
     end
 
-    subject { described_class.new(order, transaction).import!(end_state) }
-
-    context "passes validation", vcr: {
+    context "with passing validation", vcr: {
       cassette_name: 'transaction/import/valid',
       match_requests_on: [:braintree_uri]
     } do
-      context "order end state is confirm" do
+      context "when order end state is confirm" do
         it 'advances order to confirm state' do
           subject
           expect(order.state).to eq 'confirm'
@@ -144,7 +166,7 @@ describe SolidusPaypalBraintree::TransactionImport do
         end
       end
 
-      context "order end state is delivery" do
+      context "when order end state is delivery" do
         let(:end_state) { 'delivery' }
 
         it "advances the order to delivery" do
@@ -158,13 +180,18 @@ describe SolidusPaypalBraintree::TransactionImport do
         end
       end
 
-      context 'transaction has address' do
+      context 'when transaction has address' do
         let!(:new_york) { create :state, country: country, abbr: 'NY' }
 
         let(:transaction_address) do
-          SolidusPaypalBraintree::TransactionAddress.new country_code: 'US',
-            last_name: 'Venture', first_name: 'Thaddeus', city: 'New York',
-            state_code: 'NY', address_line_1: '350 5th Ave', zip: '10118'
+          SolidusPaypalBraintree::TransactionAddress.new(
+            country_code: 'US',
+            name: 'Thaddeus Venture',
+            city: 'New York',
+            state_code: 'NY',
+            address_line_1: '350 5th Ave',
+            zip: '10118'
+          )
         end
 
         it 'uses the new address', aggregate_failures: true do
@@ -214,11 +241,15 @@ describe SolidusPaypalBraintree::TransactionImport do
       end
     end
 
-    context "validation fails" do
+    context "when validation fails" do
       let(:transaction_address) do
-        SolidusPaypalBraintree::TransactionAddress.new country_code: 'US',
-          last_name: 'Venture', first_name: 'Thaddeus', city: 'New York',
-          state_code: 'NY', address_line_1: '350 5th Ave'
+        SolidusPaypalBraintree::TransactionAddress.new(
+          country_code: 'US',
+          name: 'Thaddeus Venture',
+          city: 'New York',
+          state_code: 'NY',
+          address_line_1: '350 5th Ave'
+        )
       end
 
       it "raises an error with the validation messages" do
@@ -228,12 +259,12 @@ describe SolidusPaypalBraintree::TransactionImport do
       end
     end
 
-    context "checkout flow", vcr: {
+    context "with checkout flow", vcr: {
       cassette_name: 'transaction/import/valid',
       match_requests_on: [:braintree_uri]
     } do
       it "is not restarted by default" do
-        expect(order).to_not receive(:restart_checkout_flow)
+        expect(order).not_to receive(:restart_checkout_flow)
         subject
       end
 

@@ -26,6 +26,10 @@ SolidusPaypalBraintree = {
         return SolidusPaypalBraintree.PaypalButton;
       },
 
+      paypalMessaging: function() {
+        return SolidusPaypalBraintree.PaypalMessaging;
+      },
+
       applepayButton: function() {
         return SolidusPaypalBraintree.ApplepayButton;
       }
@@ -49,6 +53,10 @@ SolidusPaypalBraintree = {
 
   createPaypalButton: function() {
     return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.classes.paypalButton(), arguments);
+  },
+
+  createPaypalMessaging: function() {
+    return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.classes.paypalMessaging(), arguments);
   },
 
   createApplePayButton: function() {

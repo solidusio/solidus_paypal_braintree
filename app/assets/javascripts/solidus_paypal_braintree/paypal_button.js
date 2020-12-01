@@ -40,19 +40,27 @@ SolidusPaypalBraintree.PaypalButton.prototype.initialize = function() {
 SolidusPaypalBraintree.PaypalButton.prototype.initializeCallback = function() {
   this._paymentMethodId = this._client.paymentMethodId;
 
-  var render_options = {
-    env: this._environment,
-    locale: this.locale,
-    style: this.style,
-    payment: function () {
-      return this._client.getPaypalInstance().createPayment(this._paypalOptions);
-    }.bind(this),
-    onAuthorize: function (data, actions) {
-      return this._client.getPaypalInstance().tokenizePayment(data, this._tokenizeCallback.bind(this));
-    }.bind(this)
-  };
+  this._client.getPaypalInstance().loadPayPalSDK({
+    currency: this._paypalOptions.currency,
+    commit: true,
+    vault: this._paypalOptions.flow == "vault",
+    components: this.style['messaging'] == "true" && this._paypalOptions.flow != "vault" ? "buttons,messages" : "buttons",
+    intent: this._paypalOptions.flow == "vault" ? "tokenize" : "authorize"
+  }).then(() => {
+    var create_method = this._paypalOptions.flow == "vault" ? "createBillingAgreement" : "createOrder"
 
-  paypal.Button.render(render_options, this._element);
+    var render_config = {
+      style: this.style,
+      [create_method]: function () {
+        return this._client.getPaypalInstance().createPayment(this._paypalOptions);
+      }.bind(this),
+      onApprove: function (data, actions) {
+        return this._client.getPaypalInstance().tokenizePayment(data, this._tokenizeCallback.bind(this));
+      }.bind(this)
+    };
+
+    paypal.Buttons(render_config).render(this._element);
+  })
 };
 
 /**
@@ -125,23 +133,18 @@ SolidusPaypalBraintree.PaypalButton.prototype._transactionParams = function(payl
  * @param {object} payload - The payload returned by Braintree after tokenization
  */
 SolidusPaypalBraintree.PaypalButton.prototype._addressParams = function(payload) {
-  var first_name, last_name;
+  var name;
   var payload_address = payload.details.shippingAddress || payload.details.billingAddress;
   if (!payload_address) return {};
 
   if (payload_address.recipientName) {
-    first_name = payload_address.recipientName.split(" ")[0];
-    last_name = payload_address.recipientName.split(" ")[1];
-  }
-
-  if (!first_name || !last_name) {
-    first_name = payload.details.firstName;
-    last_name = payload.details.lastName;
+    name = payload_address.recipientName
+  } else {
+    name = payload.details.firstName + " " + payload.details.lastName;
   }
 
   return {
-    "first_name" : first_name,
-    "last_name" : last_name,
+    "name" : name,
     "address_line_1" : payload_address.line1,
     "address_line_2" : payload_address.line2,
     "city" : payload_address.city,

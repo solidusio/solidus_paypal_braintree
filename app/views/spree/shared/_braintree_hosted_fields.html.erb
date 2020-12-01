@@ -1,19 +1,27 @@
-<% prefix = "payment_source[#{id}]" %>
+<% if defined?(id) && !defined?(payment_method) %>
+  <% payment_method = Spree::PaymentMethod.find(id) %>
+  <% Spree::Deprecation.warn(
+    "passing id to _braintree_hosted_fields.html.erb is deprecated. Please pass the payment_method directly.",
+    caller
+  ) %>
+<% end %>
+
+<% prefix = "payment_source[#{payment_method.id}]" %>
 
 <div class="hosted-fields">
   <div class="field" data-hook="card_number">
-    <%= label_tag "card_number#{id}", Spree::CreditCard.human_attribute_name(:number), class: "required" %>
-    <div class="input" id="card_number<%= id %>"></div>
+    <%= label_tag "card_number#{payment_method.id}", Spree::CreditCard.human_attribute_name(:number), class: "required" %>
+    <div class="input" id="card_number<%= payment_method.id %>"></div>
   </div>
 
   <div class="field" data-hook="card_expiration">
-    <%= label_tag "card_expiry#{id}", Spree::CreditCard.human_attribute_name(:expiration), class: "required" %>
-    <div class="input" id="card_expiry<%= id %>"></div>
+    <%= label_tag "card_expiry#{payment_method.id}", Spree::CreditCard.human_attribute_name(:expiration), class: "required" %>
+    <div class="input" id="card_expiry<%= payment_method.id %>"></div>
   </div>
 
   <div class="field" data-hook="card_code">
-    <%= label_tag "card_code#{id}", Spree::CreditCard.human_attribute_name(:card_code), class: "required" %>
-    <div class="input" id="card_code<%= id %>"></div>
+    <%= label_tag "card_code#{payment_method.id}", Spree::CreditCard.human_attribute_name(:card_code), class: "required" %>
+    <div class="input" id="card_code<%= payment_method.id %>"></div>
 
     <a href="/content/cvv" class="info cvvLink" target="_blank">
       (<%= I18n.t("spree.what_is_this") %>)
@@ -25,8 +33,11 @@
   <input type="hidden" id="payment_method_nonce" name="<%= prefix %>[nonce]">
 </div>
 
-<% if current_store.braintree_configuration.three_d_secure? %>
-  <script>
-    var threeDSecureOptions = <%=raw braintree_3ds_options_for(current_order).to_json %>;
-  </script>
-<% end -%>
+
+<script>
+  <% if current_store.braintree_configuration.three_d_secure? %>
+    var threeDSecureOptions = <%= raw braintree_3ds_options_for(current_order).to_json %>;
+  <% end -%>
+  var credit_card_fields_style = <%= raw payment_method.preferred_credit_card_fields_style.to_json %>
+  var placeholder_text = <%= raw payment_method.preferred_placeholder_text.to_json %>
+</script>

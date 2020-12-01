@@ -4,26 +4,24 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
   routes { SolidusPaypalBraintree::Engine.routes }
 
   let!(:country) { create :country }
-  let!(:state) { create :state, abbr: 'WA', country: country }
-  let(:user) { create :user }
   let(:line_item) { create :line_item, price: 50 }
-  let(:address) { create :address, country: country }
   let(:order) do
     Spree::Order.create!(
       line_items: [line_item],
       email: 'test@example.com',
-      bill_address: address,
-      ship_address: address,
-      user: user
+      bill_address: create(:address, country: country),
+      ship_address: create(:address, country: country),
+      user: create(:user)
     )
   end
 
   let(:payment_method) { create_gateway }
 
   before do
-    allow(controller).to receive(:spree_current_user) { user }
+    allow(controller).to receive(:spree_current_user) { order.user }
     allow(controller).to receive(:current_order) { order }
     create :shipping_method, cost: 5
+    create :state, abbr: "WA", country: country
   end
 
   cassette_options = {
@@ -32,8 +30,8 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
   }
   describe "POST create", vcr: cassette_options do
     subject(:post_create) { post :create, params: params }
+
     let!(:country) { create :country, iso: 'US' }
-    let!(:state) { create :state, abbr: 'WA', country: country }
 
     let(:params) do
       {
@@ -43,8 +41,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
           phone: "1112223333",
           email: "batman@example.com",
           address_attributes: {
-            first_name: "Wade",
-            last_name: "Wilson",
+            name: "Wade Wilson",
             address_line_1: "123 Fake Street",
             city: "Seattle",
             zip: "98101",
@@ -56,7 +53,11 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
       }
     end
 
-    context "import has invalid address" do
+    before do
+      create :state, abbr: "WA", country: country
+    end
+
+    context "when import has invalid address" do
       before { params[:transaction][:address_attributes][:city] = nil }
 
       it "raises a validation error" do
@@ -78,14 +79,14 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
         expect(order.payments.first.amount).to eq 55
       end
 
-      context "no end state is provided" do
+      context "when no end state is provided" do
         it "advances the order to confirm" do
           post_create
           expect(order).to be_confirm
         end
       end
 
-      context "end state provided is delivery" do
+      context "when end state provided is delivery" do
         let(:params) { super().merge(state: 'delivery') }
 
         it "advances the order to delivery" do
@@ -94,7 +95,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
         end
       end
 
-      context "and an address is provided" do
+      context "with provided address" do
         it "creates a new address" do
           # Creating the order also creates 3 addresses, we want to make sure
           # the transaction import only creates 1 new one
@@ -104,7 +105,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
         end
       end
 
-      context "and no country ISO was provided" do
+      context "without country ISO" do
         before do
           params[:transaction][:address_attributes][:country_code] = ""
           params[:transaction][:address_attributes][:country_name] = "United States"
@@ -117,16 +118,16 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
         end
       end
 
-      context "and the transaction does not have an address" do
+      context "without transaction address" do
         before { params[:transaction].delete(:address_attributes) }
 
         it "does not create a new address" do
           order
-          expect { post_create }.to_not change { Spree::Address.count }
+          expect { post_create }.not_to(change { Spree::Address.count })
         end
       end
 
-      context "format is HTML" do
+      context "when format is HTML" do
         context "when import! leaves the order in confirm" do
           it "redirects the user to the confirm page" do
             expect(post_create).to redirect_to spree.checkout_state_path("confirm")
@@ -142,7 +143,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
         end
       end
 
-      context "format is JSON" do
+      context "when format is JSON" do
         before { params[:format] = :json }
 
         it "has a successful response" do
@@ -155,7 +156,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
     context "when the transaction is invalid" do
       before { params[:transaction][:email] = nil }
 
-      context "format is HTML" do
+      context "when format is HTML" do
         it "raises an error including the validation messages" do
           expect { post_create }.to raise_error(
             SolidusPaypalBraintree::TransactionsController::InvalidImportError,
@@ -164,8 +165,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
         end
       end
 
-      context "format is JSON" do
-        let(:json) { JSON.parse(response.body) }
+      context "when format is JSON" do
         before { params[:format] = :json }
 
         it "has a failed status" do
@@ -175,7 +175,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
 
         it "returns the errors as JSON" do
           post_create
-          expect(json["errors"]["email"]).to eq ["can't be blank"]
+          expect(JSON.parse(response.body)["errors"]["email"]).to eq ["can't be blank"]
         end
       end
     end

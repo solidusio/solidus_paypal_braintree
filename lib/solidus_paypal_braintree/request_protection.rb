@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_merchant/network_connection_retries'
 
 module SolidusPaypalBraintree
@@ -6,6 +8,7 @@ module SolidusPaypalBraintree
 
     def protected_request
       raise ArgumentError unless block_given?
+
       options = {
         connection_exceptions: {
           Braintree::BraintreeError => 'Error while connecting to Braintree gateway'

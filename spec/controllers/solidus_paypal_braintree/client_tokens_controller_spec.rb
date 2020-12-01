@@ -35,7 +35,7 @@ describe SolidusPaypalBraintree::ClientTokensController do
           expect(json["payment_method_id"]).to eq gateway_for_store1.id
         end
 
-        it "returns the correct gateway for store1" do
+        it "returns the correct gateway for store2" do
           allow_any_instance_of(described_class).to receive(:current_store).and_return store2
           expect(json["payment_method_id"]).to eq gateway_for_store2.id
         end

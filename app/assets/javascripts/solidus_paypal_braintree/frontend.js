@@ -9,4 +9,5 @@
 //= require solidus_paypal_braintree/client
 //= require solidus_paypal_braintree/hosted_form
 //= require solidus_paypal_braintree/paypal_button
+//= require solidus_paypal_braintree/paypal_messaging
 //= require solidus_paypal_braintree/apple_pay_button

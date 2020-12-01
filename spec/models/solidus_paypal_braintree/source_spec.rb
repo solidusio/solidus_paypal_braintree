@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe SolidusPaypalBraintree::Source, type: :model do
-  include_context 'order ready for payment'
+  include_context 'when order is ready for payment'
 
   it 'is invalid without a payment_type set' do
     expect(described_class.new).to be_invalid
@@ -19,7 +19,7 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
 
   describe '#imported' do
     it 'is always false' do
-      expect(described_class.new.imported).to_not be
+      expect(described_class.new.imported).not_to be_truthy
     end
   end
 
@@ -35,39 +35,39 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     context "when the payment state is pending" do
       let(:payment) { build(:payment, state: "pending") }
 
-      it { is_expected.to be }
+      it { is_expected.to be_truthy }
     end
 
     context "when the payment state is checkout" do
       let(:payment) { build(:payment, state: "checkout") }
 
-      it { is_expected.to be }
+      it { is_expected.to be_truthy }
     end
 
     context "when the payment is completed" do
       let(:payment) { build(:payment, state: "completed") }
 
-      it { is_expected.to_not be }
+      it { is_expected.not_to be_truthy }
     end
   end
 
   describe '#can_void?' do
+    subject { payment_source.can_void?(payment) }
+
     let(:payment_source) { described_class.new }
     let(:payment) { build(:payment) }
 
     let(:transaction_response) do
-      double(status: Braintree::Transaction::Status::SubmittedForSettlement)
+      double(:response, status: Braintree::Transaction::Status::SubmittedForSettlement)
     end
 
     let(:transaction_request) do
-      double(find: transaction_response)
+      double(:request, find: transaction_response)
     end
-
-    subject { payment_source.can_void?(payment) }
 
     before do
       allow(payment_source).to receive(:braintree_client) do
-        double(transaction: transaction_request)
+        double(:transaction, transaction: transaction_request)
       end
     end
 
@@ -83,7 +83,7 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
 
     context 'when transaction has non voidable status' do
       let(:transaction_response) do
-        double(status: Braintree::Transaction::Status::Settled)
+        double(:response, status: Braintree::Transaction::Status::Settled)
       end
 
       it { is_expected.to be(false) }
@@ -103,23 +103,23 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     subject { described_class.new.can_credit?(payment) }
 
     context "when the payment is completed" do
-      context "and the credit allowed is 100" do
+      context "when the credit allowed is 100" do
         let(:payment) { build(:payment, state: "completed", amount: 100) }
 
-        it { is_expected.to be }
+        it { is_expected.to be_truthy }
       end
 
-      context "and the credit allowed is 0" do
+      context "when the credit allowed is 0" do
         let(:payment) { build(:payment, state: "completed", amount: 0) }
 
-        it { is_expected.not_to be }
+        it { is_expected.not_to be_truthy }
       end
     end
 
     context "when the payment has not been completed" do
       let(:payment) { build(:payment, state: "checkout") }
 
-      it { is_expected.not_to be }
+      it { is_expected.not_to be_truthy }
     end
   end
 
@@ -199,7 +199,7 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     end
   end
 
-  shared_context 'unknown source token' do
+  shared_context 'with unknown source token' do
     let(:braintree_payment_method) { double }
 
     before do
@@ -207,12 +207,12 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
         raise Braintree::NotFoundError
       end
       allow(payment_source).to receive(:braintree_client) do
-        double(payment_method: braintree_payment_method)
+        instance_double(payment_method: braintree_payment_method)
       end
     end
   end
 
-  shared_context 'nil source token' do
+  shared_context 'with nil source token' do
     let(:braintree_payment_method) { double }
 
     before do
@@ -220,17 +220,17 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
         raise ArgumentError
       end
       allow(payment_source).to receive(:braintree_client) do
-        double(payment_method: braintree_payment_method)
+        instance_double(payment_method: braintree_payment_method)
       end
     end
   end
 
   describe "#last_4" do
+    subject { payment_source.last_4 }
+
     let(:method) { new_gateway.tap(&:save!) }
     let(:payment_source) { described_class.create!(payment_type: "CreditCard", payment_method: method) }
     let(:braintree_client) { method.braintree }
-
-    subject { payment_source.last_4 }
 
     context 'when token is known at braintree', vcr: {
       cassette_name: "source/last4",
@@ -238,14 +238,13 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     } do
       before do
         customer = braintree_client.customer.create
-        expect(customer.customer.id).to be
 
         method = braintree_client.payment_method.create({
-          payment_method_nonce: "fake-valid-country-of-issuance-usa-nonce", customer_id: customer.customer.id
+          payment_method_nonce: "fake-valid-country-of-issuance-usa-nonce",
+          customer_id: customer.customer.id
         })
-        expect(method.payment_method.token).to be
 
-        payment_source.update_attributes!(token: method.payment_method.token)
+        payment_source.update!(token: method.payment_method.token)
       end
 
       it "delegates to the braintree payment method" do
@@ -255,22 +254,23 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     end
 
     context 'when the source token is not known at Braintree' do
-      include_context 'unknown source token'
+      include_context 'with unknown source token'
 
       it { is_expected.to be(nil) }
     end
 
     context 'when the source token is nil' do
-      include_context 'nil source token'
+      include_context 'with nil source token'
 
       it { is_expected.to be(nil) }
     end
   end
 
   describe "#display_number" do
+    subject { payment_source.display_number }
+
     let(:type) { nil }
     let(:payment_source) { described_class.new(payment_type: type) }
-    subject { payment_source.display_number }
 
     context "when last_digits is a number" do
       before do
@@ -300,11 +300,11 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
   end
 
   describe "#card_type" do
+    subject { payment_source.card_type }
+
     let(:method) { new_gateway.tap(&:save!) }
     let(:payment_source) { described_class.create!(payment_type: "CreditCard", payment_method: method) }
     let(:braintree_client) { method.braintree }
-
-    subject { payment_source.card_type }
 
     context "when the token is known at braintree", vcr: {
       cassette_name: "source/card_type",
@@ -312,14 +312,12 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     } do
       before do
         customer = braintree_client.customer.create
-        expect(customer.customer.id).to be
 
         method = braintree_client.payment_method.create({
           payment_method_nonce: "fake-valid-country-of-issuance-usa-nonce", customer_id: customer.customer.id
         })
-        expect(method.payment_method.token).to be
 
-        payment_source.update_attributes!(token: method.payment_method.token)
+        payment_source.update!(token: method.payment_method.token)
       end
 
       it "delegates to the braintree payment method" do
@@ -329,30 +327,33 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     end
 
     context 'when the source token is not known at Braintree' do
-      include_context 'unknown source token'
+      include_context 'with unknown source token'
 
       it { is_expected.to be_nil }
     end
 
     context 'when the source token is nil' do
-      include_context 'nil source token'
+      include_context 'with nil source token'
 
       it { is_expected.to be_nil }
     end
   end
 
   describe '#reusable?' do
+    subject { payment_source.reusable? }
+
     let(:payment_source) { described_class.new(token: token, nonce: nonce) }
     let(:nonce) { 'nonce67890' }
-    subject { payment_source.reusable? }
 
     context 'when source token is present' do
       let(:token) { 'token12345' }
+
       it { is_expected.to be_truthy }
     end
 
     context 'when source token is nil' do
       let(:token) { nil }
+
       it { is_expected.to be_falsy }
     end
   end

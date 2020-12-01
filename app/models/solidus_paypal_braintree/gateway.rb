@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'braintree'
 require_relative 'response'
 
@@ -5,19 +7,21 @@ module SolidusPaypalBraintree
   class Gateway < ::Spree::PaymentMethod
     include RequestProtection
 
+    class TokenGenerationDisabledError < StandardError; end
+
     # Error message from Braintree that gets returned by a non voidable transaction
-    NON_VOIDABLE_STATUS_ERROR_REGEXP = /can only be voided if status is authorized/
+    NON_VOIDABLE_STATUS_ERROR_REGEXP = /can only be voided if status is authorized/.freeze
 
     TOKEN_GENERATION_DISABLED_MESSAGE = 'Token generation is disabled.' \
       ' To re-enable set the `token_generation_enabled` preference on the' \
-      ' gateway to `true`.'.freeze
+      ' gateway to `true`.'
 
     ALLOWED_BRAINTREE_OPTIONS = [
       :device_data,
       :device_session_id,
       :merchant_account_id,
       :order_id
-    ]
+    ].freeze
 
     VOIDABLE_STATUSES = [
       Braintree::Transaction::Status::SubmittedForSettlement,
@@ -43,6 +47,14 @@ module SolidusPaypalBraintree
 
     # Which checkout flow to use (vault/checkout)
     preference(:paypal_flow, :string, default: 'vault')
+
+    # A hash that gets passed to the `style` key when initializing the credit card fields.
+    # See https://developers.braintreepayments.com/guides/hosted-fields/styling/javascript/v3
+    preference(:credit_card_fields_style, :hash, default: {})
+
+    # A hash that gets its keys passed to the associated braintree field placeholder tag.
+    # Example: { number: "Enter card number", cvv: "Enter CVV", expirationDate: "mm/yy" }
+    preference(:placeholder_text, :hash, default: {})
 
     def partial_name
       "paypal_braintree"
@@ -81,7 +93,7 @@ module SolidusPaypalBraintree
       protected_request do
         result = braintree.transaction.sale(
           amount: dollars(money_cents),
-          **transaction_options(source, gateway_options, true)
+          **transaction_options(source, gateway_options, submit_for_settlement: true)
         )
 
         Response.build(result)
@@ -221,11 +233,11 @@ module SolidusPaypalBraintree
       end
     end
 
+    # @raise [TokenGenerationDisabledError]
+    #   If `preferred_token_generation_enabled` is false
+    #
     # @return [String]
     #   The token that should be used along with the Braintree js-client sdk.
-    #
-    #   returns an error message if `preferred_token_generation_enabled` is
-    #   set to false.
     #
     # @example
     #   <script>
@@ -241,7 +253,10 @@ module SolidusPaypalBraintree
     #     );
     #   </script>
     def generate_token
-      return TOKEN_GENERATION_DISABLED_MESSAGE unless preferred_token_generation_enabled
+      unless preferred_token_generation_enabled
+        raise TokenGenerationDisabledError, TOKEN_GENERATION_DISABLED_MESSAGE
+      end
+
       braintree.client_token.generate
     end
 
@@ -304,7 +319,7 @@ module SolidusPaypalBraintree
       end
     end
 
-    def transaction_options(source, options, submit_for_settlement = false)
+    def transaction_options(source, options, submit_for_settlement: false)
       params = options.select do |key, _|
         ALLOWED_BRAINTREE_OPTIONS.include?(key)
       end
@@ -367,15 +382,15 @@ module SolidusPaypalBraintree
     end
 
     def merchant_account_for(_source, options)
-      if options[:currency]
-        preferred_merchant_currency_map[options[:currency]]
-      end
+      return unless options[:currency]
+
+      preferred_merchant_currency_map[options[:currency]]
     end
 
     def paypal_payee_email_for(source, options)
-      if source.paypal?
-        preferred_paypal_payee_email_map[options[:currency]]
-      end
+      return unless source.paypal?
+
+      preferred_paypal_payee_email_map[options[:currency]]
     end
 
     def customer_profile_params(payment)

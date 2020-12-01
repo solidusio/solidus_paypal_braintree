@@ -15,7 +15,9 @@ class AddNullConstraintToSources < SolidusSupport::Migration[4.2]
 
     Spree::Payment.joins(join_sources).find_each do |payment|
       Rails.logger.info("Updating source #{payment.source_id} with payment method id #{payment.payment_method_id}")
-      SolidusPaypalBraintree::Source.where(id: payment.source_id).update_all(payment_method_id: payment.payment_method_id)
+      SolidusPaypalBraintree::Source.where(id: payment.source_id).update_all(
+        payment_method_id: payment.payment_method_id
+      )
     end
 
     # We use a foreign key constraint on the model,
