@@ -17,6 +17,11 @@ Layout/FirstHashElementIndentation:
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 
+# We have a lot of these, and they're part of this gem's API.
+# The cop would want to rename e.g. `:last_4` to `:last4`.
+Naming/VariableNumber:
+  Enabled: false
+
 # We use this extensively, the alternatives are not viable or desirable.
 RSpec/AnyInstance:
   Enabled: false
