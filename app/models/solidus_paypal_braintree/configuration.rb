@@ -2,6 +2,9 @@
 
 module SolidusPaypalBraintree
   class Configuration < ::Spree::Base
+    if Spree.solidus_gem_version >= Gem::Version.new('2.11.8')
+      include Spree::Preferences::Persistable
+    end
     PAYPAL_BUTTON_PREFERENCES = {
       color: { availables: %w[gold blue silver white black], default: 'white' },
       shape: { availables: %w[pill rect], default: 'rect' },
