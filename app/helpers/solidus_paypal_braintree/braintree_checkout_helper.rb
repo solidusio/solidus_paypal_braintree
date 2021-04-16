@@ -18,7 +18,7 @@ module SolidusPaypalBraintree
           streetAddress: bill_address.address1,
           extendedAddress: bill_address.address2,
           locality: bill_address.city,
-          region: bill_address.state&.name,
+          region: bill_address.state&.abbr,
           postalCode: bill_address.zipcode,
           countryCodeAlpha2: bill_address.country&.iso,
         },
@@ -30,7 +30,7 @@ module SolidusPaypalBraintree
             streedAddress: ship_address.address1,
             extendedAddress: ship_address.address2,
             locality: ship_address.city,
-            region: ship_address.state&.name,
+            region: ship_address.state&.abbr,
             postalCode: ship_address.zipcode,
             countryCodeAlpha2: ship_address.country&.iso,
           }
