@@ -8,6 +8,9 @@ require 'solidus_dev_support/rspec/coverage'
 
 require File.expand_path('dummy/config/environment.rb', __dir__)
 
+require 'rails-controller-testing'
+Rails::Controller::Testing.install
+
 # Requires factories and other useful helpers defined in spree_core.
 require 'solidus_dev_support/rspec/feature_helper'
 
