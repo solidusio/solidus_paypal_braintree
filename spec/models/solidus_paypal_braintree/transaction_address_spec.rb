@@ -219,14 +219,16 @@ describe SolidusPaypalBraintree::TransactionAddress do
       end
     end
 
-    context 'when using first_name and last_name' do
-      let(:address_params) { super().merge({ first_name: "Bruce", last_name: "Wayne" }) }
+    unless SolidusSupport.combined_first_and_last_name_in_address?
+      context 'when using first_name and last_name' do
+        let(:address_params) { super().merge({ first_name: "Bruce", last_name: "Wayne" }) }
 
-      it 'displays a deprecation warning' do
-        expect(Spree::Deprecation).to receive(:warn).
-          with("first_name and last_name are deprecated. Use name instead.", any_args)
+        it 'displays a deprecation warning' do
+          expect(Spree::Deprecation).to receive(:warn).
+            with("first_name and last_name are deprecated. Use name instead.", any_args)
 
-        subject
+          subject
+        end
       end
     end
   end

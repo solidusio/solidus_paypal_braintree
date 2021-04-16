@@ -3,9 +3,8 @@
 module SolidusPaypalBraintree
   module BraintreeCheckoutHelper
     def braintree_3ds_options_for(order)
-      ship_address = order.ship_address
-      bill_address = order.bill_address
-
+      ship_address = SolidusPaypalBraintree::Address.new(order.ship_address)
+      bill_address = SolidusPaypalBraintree::Address.new(order.bill_address)
       {
         nonce: nil, # populated after tokenization
         bin: nil, # populated after tokenization
