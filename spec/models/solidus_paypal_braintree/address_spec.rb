@@ -1,6 +1,26 @@
 require 'spec_helper'
 
 RSpec.describe SolidusPaypalBraintree::Address do
+  describe "::split_name" do
+    subject { described_class.split_name(name) }
+
+    context "with a one word name" do
+      let(:name) { "Bruce" }
+
+      it "correctly splits" do
+        expect(subject).to eq ["Bruce"]
+      end
+    end
+
+    context "with a multi word name" do
+      let(:name) { "Bruce Wayne The Batman" }
+
+      it "correctly splits" do
+        expect(subject).to eq ["Bruce", "Wayne The Batman"]
+      end
+    end
+  end
+
   describe '#to_json' do
     subject(:address_json) { JSON.parse(described_class.new(spree_address).to_json) }
 

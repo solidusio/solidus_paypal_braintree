@@ -12,8 +12,12 @@ module SolidusPaypalBraintree
       to: :spree_address
 
     def self.split_name(name)
-      first, last = name.split(/[[:space:]]/, 2)
-      { first: first, last: last }
+      if defined?(Spree::Address::Name)
+        address_name = Spree::Address::Name.new(name)
+        [address_name.first_name, address_name.last_name]
+      else
+        name.strip.split(' ', 2)
+      end
     end
 
     def initialize(spree_address)
