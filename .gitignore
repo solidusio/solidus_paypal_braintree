@@ -16,3 +16,7 @@ spec/dummy
 spec/examples.txt
 .bundle/
 .env
+/sandbox
+.rvmrc
+.ruby-version
+.ruby-gemset

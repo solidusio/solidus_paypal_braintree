@@ -39,7 +39,7 @@ Payment methods can accept preferences either directly entered in admin, or from
 1. Set static preferences in an initializer
   ```ruby
   # config/initializers/spree.rb
-  Spree::Config.config do |config|
+  Spree.config do |config|
     config.static_model_preferences.add(
       SolidusPaypalBraintree::Gateway,
       'braintree_credentials', {
