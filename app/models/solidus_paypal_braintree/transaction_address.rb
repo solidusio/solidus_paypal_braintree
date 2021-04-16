@@ -80,7 +80,12 @@ module SolidusPaypalBraintree
     end
 
     def split_name(name)
-      name.strip.split(' ', 2)
+      if defined?(Spree::Address::Name)
+        address_name = Spree::Address::Name.new(name)
+        [address_name.first_name, address_name.last_name]
+      else
+        name.strip.split(' ', 2)
+      end
     end
 
     # Check to see if this address should match to a state model in the database
