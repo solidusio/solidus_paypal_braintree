@@ -21,6 +21,15 @@ module SolidusPaypalBraintree
     validates :spree_country, presence: true
     validates :state_code, :spree_state, presence: true, if: :should_match_state_model?
 
+    def self.split_name(name)
+      if defined?(Spree::Address::Name)
+        address_name = Spree::Address::Name.new(name)
+        [address_name.first_name, address_name.last_name]
+      else
+        name.strip.split(' ', 2)
+      end
+    end
+
     def initialize(attributes = {})
       country_name = attributes.delete(:country_name) || ""
       if attributes[:country_code].blank?
@@ -62,7 +71,7 @@ module SolidusPaypalBraintree
       else
         ::Spree::Deprecation.warn("first_name and last_name are deprecated. Use name instead.", caller)
         if first_name.nil?
-          first, last = split_name(name)
+          first, last = self.class.split(name)
           address.firstname = first
           address.lastname = last || "(left blank)"
         else
@@ -77,15 +86,6 @@ module SolidusPaypalBraintree
         address.state_name = state_code
       end
       address
-    end
-
-    def split_name(name)
-      if defined?(Spree::Address::Name)
-        address_name = Spree::Address::Name.new(name)
-        [address_name.first_name, address_name.last_name]
-      else
-        name.strip.split(' ', 2)
-      end
     end
 
     # Check to see if this address should match to a state model in the database

@@ -233,8 +233,8 @@ describe SolidusPaypalBraintree::TransactionAddress do
     end
   end
 
-  describe "#split" do
-    subject { described_class.new.split_name(name) }
+  describe "::split_name" do
+    subject { described_class.split_name(name) }
 
     context "with a one word name" do
       let(:name) { "Bruce" }
