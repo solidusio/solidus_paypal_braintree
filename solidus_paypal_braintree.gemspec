@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'braintree', '~> 2.65'
   s.add_dependency 'solidus_api', ['>= 2.0.0', '< 3']
   s.add_dependency 'solidus_core', ['>= 2.0.0', '< 3']
-  s.add_dependency 'solidus_support', '~> 0.5.0'
+  s.add_dependency 'solidus_support', ['>= 0.8.1', '< 1']
 
   s.add_development_dependency 'selenium-webdriver'
   s.add_development_dependency 'solidus_dev_support'
