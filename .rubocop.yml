@@ -17,6 +17,9 @@ Layout/FirstHashElementIndentation:
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 
+Naming/VariableNumber:
+  Enabled: false
+
 # We use this extensively, the alternatives are not viable or desirable.
 RSpec/AnyInstance:
   Enabled: false
