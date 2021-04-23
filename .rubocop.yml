@@ -3,7 +3,7 @@ require:
 
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
 
 Layout/FirstArgumentIndentation:
   EnforcedStyle: consistent

@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.email     = 'braintree+gemfile@stembolt.com'
   s.homepage  = 'https://github.com/solidusio/solidus_paypal_braintree'
 
-  s.required_ruby_version = '~> 2.4'
+  s.required_ruby_version = '>= 2.5'
 
   s.files = Dir.chdir(File.expand_path(__dir__)) do
     `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
