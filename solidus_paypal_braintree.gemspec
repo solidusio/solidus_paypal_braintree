@@ -31,8 +31,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'activemerchant', '~> 1.48'
   s.add_dependency 'braintree', '~> 2.65'
-  s.add_dependency 'solidus_api', ['>= 2.0.0', '< 3']
-  s.add_dependency 'solidus_core', ['>= 2.0.0', '< 3']
+  s.add_dependency 'solidus_api', ['>= 2.0.0', '< 4']
+  s.add_dependency 'solidus_core', ['>= 2.0.0', '< 4']
   s.add_dependency 'solidus_support', ['>= 0.8.1', '< 1']
 
   s.add_development_dependency 'selenium-webdriver'
