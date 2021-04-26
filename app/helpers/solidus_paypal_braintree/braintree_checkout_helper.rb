@@ -3,9 +3,8 @@
 module SolidusPaypalBraintree
   module BraintreeCheckoutHelper
     def braintree_3ds_options_for(order)
-      ship_address = order.ship_address
-      bill_address = order.bill_address
-
+      ship_address = SolidusPaypalBraintree::Address.new(order.ship_address)
+      bill_address = SolidusPaypalBraintree::Address.new(order.bill_address)
       {
         nonce: nil, # populated after tokenization
         bin: nil, # populated after tokenization
@@ -19,7 +18,7 @@ module SolidusPaypalBraintree
           streetAddress: bill_address.address1,
           extendedAddress: bill_address.address2,
           locality: bill_address.city,
-          region: bill_address.state&.name,
+          region: bill_address.state&.abbr,
           postalCode: bill_address.zipcode,
           countryCodeAlpha2: bill_address.country&.iso,
         },
@@ -31,7 +30,7 @@ module SolidusPaypalBraintree
             streedAddress: ship_address.address1,
             extendedAddress: ship_address.address2,
             locality: ship_address.city,
-            region: ship_address.state&.name,
+            region: ship_address.state&.abbr,
             postalCode: ship_address.zipcode,
             countryCodeAlpha2: ship_address.country&.iso,
           }

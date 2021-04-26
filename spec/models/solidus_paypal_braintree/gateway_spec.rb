@@ -12,7 +12,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
   let(:user) { create :user }
 
   let(:source) do
-    SolidusPaypalBraintree::Source.new(
+    SolidusPaypalBraintree::Source.create!(
       nonce: 'fake-valid-nonce',
       user: user,
       payment_type: payment_type,

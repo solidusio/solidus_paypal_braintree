@@ -219,34 +219,16 @@ describe SolidusPaypalBraintree::TransactionAddress do
       end
     end
 
-    context 'when using first_name and last_name' do
-      let(:address_params) { super().merge({ first_name: "Bruce", last_name: "Wayne" }) }
+    unless SolidusSupport.combined_first_and_last_name_in_address?
+      context 'when using first_name and last_name' do
+        let(:address_params) { super().merge({ first_name: "Bruce", last_name: "Wayne" }) }
 
-      it 'displays a deprecation warning' do
-        expect(Spree::Deprecation).to receive(:warn).
-          with("first_name and last_name are deprecated. Use name instead.", any_args)
+        it 'displays a deprecation warning' do
+          expect(Spree::Deprecation).to receive(:warn).
+            with("first_name and last_name are deprecated. Use name instead.", any_args)
 
-        subject
-      end
-    end
-  end
-
-  describe "#split" do
-    subject { described_class.new.split_name(name) }
-
-    context "with a one word name" do
-      let(:name) { "Bruce" }
-
-      it "correctly splits" do
-        expect(subject).to eq ["Bruce"]
-      end
-    end
-
-    context "with a multi word name" do
-      let(:name) { "Bruce Wayne The Batman" }
-
-      it "correctly splits" do
-        expect(subject).to eq ["Bruce", "Wayne The Batman"]
+          subject
+        end
       end
     end
   end

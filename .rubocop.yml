@@ -3,7 +3,7 @@ require:
 
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
 
 Layout/FirstArgumentIndentation:
   EnforcedStyle: consistent
@@ -16,6 +16,9 @@ Layout/FirstHashElementIndentation:
 
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
+
+Naming/VariableNumber:
+  Enabled: false
 
 # We use this extensively, the alternatives are not viable or desirable.
 RSpec/AnyInstance:

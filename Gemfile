@@ -18,9 +18,7 @@ gem 'solidus_auth_devise'
 gem 'mini_racer'
 gem 'sassc-rails', platforms: :mri
 
-# bourbon 5 doesn't work under sassc
-# https://github.com/thoughtbot/bourbon/issues/1047
-gem 'bourbon', '<5'
+gem 'bourbon'
 
 case ENV['DB']
 when 'mysql'
