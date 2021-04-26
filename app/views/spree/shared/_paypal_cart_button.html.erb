@@ -11,6 +11,7 @@
     enableShippingAddress: true,
     environment: '<%= Rails.env.production? ? "production" : "sandbox" %>',
     locale: '<%= paypal_button_preference(:paypal_button_locale, store: current_store) %>',
+    useDataCollector: <%= SolidusPaypalBraintree::Gateway.first.preferred_use_data_collector %>,
     style: {
       color: '<%= paypal_button_preference(:paypal_button_color, store: current_store) %>',
       shape: '<%= paypal_button_preference(:paypal_button_shape, store: current_store) %>',
