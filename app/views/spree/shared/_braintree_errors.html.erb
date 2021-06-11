@@ -1,13 +1,22 @@
 <script type="text/javascript">
-  BraintreeError.DEFAULT = "<%= I18n.t('solidus_paypal_braintree.errors.default_error')%>"
-  BraintreeError.PAYPAL_POPUP_CLOSED = "<%= I18n.t('solidus_paypal_braintree.errors.paypal_popup_closed') %>"
-  BraintreeError.HOSTED_FIELDS_FIELDS_EMPTY = "<%= I18n.t('solidus_paypal_braintree.errors.empty_fields')%>"
-  BraintreeError.HOSTED_FIELDS_FIELDS_INVALID = "<%= I18n.t('solidus_paypal_braintree.errors.invalid_fields')%>"
-  BraintreeError.HOSTED_FIELDS_FAILED_TOKENIZATION = "<%= I18n.t('solidus_paypal_braintree.errors.invalid_card')%>"
-  BraintreeError.HOSTED_FIELDS_TOKENIZATION_NETWORK_ERROR = "<%= I18n.t('solidus_paypal_braintree.errors.network_error')%>"
-  BraintreeError.HOSTED_FIELDS_FIELD_DUPLICATE_IFRAME = "<%= I18n.t('solidus_paypal_braintree.errors.duplicate_iframe')%>"
-  BraintreeError.HOSTED_FIELDS_TOKENIZATION_FAIL_ON_DUPLICATE = "<%= I18n.t('solidus_paypal_braintree.errors.fail_on_duplicate')%>"
-  BraintreeError.HOSTED_FIELDS_TOKENIZATION_CVV_VERIFICATION_FAILED = "<%= I18n.t('solidus_paypal_braintree.errors.cvv_verification_failed')%>"
-  BraintreeError.THREEDS_AUTHENTICATION_FAILED = "<%= t('solidus_paypal_braintree.errors.threeds.authentication_failed') %>";
-  BraintreeError.THREEDS_CARDINAL_SDK_ERROR = "<%= t('solidus_paypal_braintree.errors.threeds.authentication_failed') %>";
+  BraintreeError = {
+    DEFAULT: "<%= I18n.t('solidus_paypal_braintree.errors.default_error')%>",
+    PAYPAL_POPUP_CLOSED: "<%= I18n.t('solidus_paypal_braintree.errors.paypal_popup_closed') %>",
+    HOSTED_FIELDS_FIELDS_EMPTY: "<%= I18n.t('solidus_paypal_braintree.errors.empty_fields')%>",
+    HOSTED_FIELDS_FIELDS_INVALID: "<%= I18n.t('solidus_paypal_braintree.errors.invalid_fields')%>",
+    HOSTED_FIELDS_FAILED_TOKENIZATION: "<%= I18n.t('solidus_paypal_braintree.errors.invalid_card')%>",
+    HOSTED_FIELDS_TOKENIZATION_NETWORK_ERROR: "<%= I18n.t('solidus_paypal_braintree.errors.network_error')%>",
+    HOSTED_FIELDS_FIELD_DUPLICATE_IFRAME: "<%= I18n.t('solidus_paypal_braintree.errors.duplicate_iframe')%>",
+    HOSTED_FIELDS_TOKENIZATION_FAIL_ON_DUPLICATE: "<%= I18n.t('solidus_paypal_braintree.errors.fail_on_duplicate')%>",
+    HOSTED_FIELDS_TOKENIZATION_CVV_VERIFICATION_FAILED: "<%= I18n.t('solidus_paypal_braintree.errors.cvv_verification_failed')%>",
+    THREEDS_AUTHENTICATION_FAILED: "<%= I18n.t('solidus_paypal_braintree.errors.threeds.authentication_failed') %>",
+    THREEDS_CARDINAL_SDK_ERROR: "<%= I18n.t('solidus_paypal_braintree.errors.threeds.authentication_failed') %>",
+
+    getErrorFromSlug: function(slug) {
+      error = BraintreeError.DEFAULT
+      if (slug in BraintreeError)
+        error = BraintreeError[slug]
+      return error
+    }
+  }
 </script>

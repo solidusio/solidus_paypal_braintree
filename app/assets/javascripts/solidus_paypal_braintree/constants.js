@@ -68,14 +68,3 @@ SolidusPaypalBraintree = {
     return new (Function.prototype.bind.apply(klass, [null].concat(normalizedArgs)));
   }
 };
-
-BraintreeError = {
-  DEFAULT: "Something bad happened!",
-
-  getErrorFromSlug: function(slug) {
-    error = BraintreeError.DEFAULT
-    if (slug in BraintreeError)
-      error = BraintreeError[slug]
-    return error
-  }
-}

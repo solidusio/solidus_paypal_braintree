@@ -24,7 +24,4 @@
       messaging: '<%= paypal_button_preference(:paypal_button_messaging, store: current_store) %>'
     }
   }
-
-  var button = new SolidusPaypalBraintree.createPaypalButton(document.querySelector("#paypal-button"), paypalOptions);
-  button.initialize();
 </script>

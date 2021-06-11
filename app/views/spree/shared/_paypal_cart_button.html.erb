@@ -3,6 +3,8 @@
 <div id="paypal-button"></div>
 <div data-pp-message data-pp-placement="payment" data-pp-amount="<%= current_order.total %>"></div>
 
+<%= render "spree/shared/braintree_errors" %>
+
 <script>
   var paypalOptions = {
     flow: '<%= SolidusPaypalBraintree::Gateway.first.preferred_paypal_flow %>',
@@ -25,12 +27,4 @@
   var options = {
     restart_checkout: true
   }
-
-  var button = new SolidusPaypalBraintree.createPaypalButton(
-    document.querySelector("#paypal-button"),
-    paypalOptions,
-    options
-  )
-
-  button.initialize();
 </script>
