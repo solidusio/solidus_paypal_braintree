@@ -11,7 +11,7 @@ module SolidusPaypalBraintree
       messaging: { availables: %w[true false], default: 'false' }
     }.freeze
 
-    unless respond_to?(:preference)
+    unless respond_to?(:preference) && respond_to?(:preferences)
       include ::Spree::Preferences::Persistable
     end
 
