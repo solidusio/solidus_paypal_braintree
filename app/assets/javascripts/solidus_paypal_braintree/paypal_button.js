@@ -41,6 +41,7 @@ SolidusPaypalBraintree.PaypalButton.prototype.initializeCallback = function() {
   this._paymentMethodId = this._client.paymentMethodId;
 
   this._client.getPaypalInstance().loadPayPalSDK({
+    "client-id": this._environment === "sandbox" ? "sb" : null,
     currency: this._paypalOptions.currency,
     commit: true,
     vault: this._paypalOptions.flow == "vault",
