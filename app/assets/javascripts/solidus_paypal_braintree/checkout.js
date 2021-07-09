@@ -105,4 +105,16 @@ $(function() {
 
     $.when.apply($, fieldPromises).done(enableSubmit);
   }
+
+  var $paypalButton = $("#paypal-button");
+  if ($paypalButton.length > 0) {
+    var button = new SolidusPaypalBraintree.createPaypalButton($paypalButton[0], paypalOptions, (typeof options === 'undefined') ? {} : options);
+    button.initialize();
+  }
+
+  var $applePayButton = $('#apple-pay-button');
+  if ($applePayButton.length > 0) {
+    var button = new SolidusPaypalBraintree.createApplePayButton($applePayButton[0], applePayOptions);
+    button.initialize();
+  }
 });
