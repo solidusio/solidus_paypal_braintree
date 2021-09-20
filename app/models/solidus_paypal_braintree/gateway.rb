@@ -12,8 +12,8 @@ module SolidusPaypalBraintree
     NON_VOIDABLE_STATUS_ERROR_REGEXP = /can only be voided if status is authorized/.freeze
 
     TOKEN_GENERATION_DISABLED_MESSAGE = 'Token generation is disabled.' \
-      ' To re-enable set the `token_generation_enabled` preference on the' \
-      ' gateway to `true`.'
+                                        ' To re-enable set the `token_generation_enabled` preference on the' \
+                                        ' gateway to `true`.'
 
     ALLOWED_BRAINTREE_OPTIONS = [
       :device_data,
