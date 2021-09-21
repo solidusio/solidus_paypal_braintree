@@ -48,6 +48,7 @@ Payment methods can accept preferences either directly entered in admin, or from
         public_key: ENV['BRAINTREE_PUBLIC_KEY'],
         private_key: ENV['BRAINTREE_PRIVATE_KEY'],
         paypal_flow: 'vault', # 'checkout' is accepted too
+        use_data_collector: true # Fingerprint the user's browser when using Paypal
       }
     )
   end
@@ -211,6 +212,13 @@ address used by the user:
 
 Using the option `Off` will not make the address valid and will raise a
 validation error.
+
+#### Disabling the data collector
+
+For fraud prevention, PayPal recommends using a data collector to collect device
+information, which we've included by default. You're able to turn off the PayPal
+data collector on the payment method preferences if you desire. If you use
+static preferences, add `use_data_collector: false` to your initializer.
 
 ## Optional configuration
 

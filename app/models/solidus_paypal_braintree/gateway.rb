@@ -12,8 +12,8 @@ module SolidusPaypalBraintree
     NON_VOIDABLE_STATUS_ERROR_REGEXP = /can only be voided if status is authorized/.freeze
 
     TOKEN_GENERATION_DISABLED_MESSAGE = 'Token generation is disabled.' \
-      ' To re-enable set the `token_generation_enabled` preference on the' \
-      ' gateway to `true`.'
+                                        ' To re-enable set the `token_generation_enabled` preference on the' \
+                                        ' gateway to `true`.'
 
     ALLOWED_BRAINTREE_OPTIONS = [
       :device_data,
@@ -54,6 +54,9 @@ module SolidusPaypalBraintree
     # A hash that gets its keys passed to the associated braintree field placeholder tag.
     # Example: { number: "Enter card number", cvv: "Enter CVV", expirationDate: "mm/yy" }
     preference(:placeholder_text, :hash, default: {})
+
+    # Wether to use the JS device data collector
+    preference(:use_data_collector, :boolean, default: true)
 
     def partial_name
       "paypal_braintree"
