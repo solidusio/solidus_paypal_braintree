@@ -283,4 +283,14 @@ Simply add this require statement to your spec_helper:
 require 'solidus_paypal_braintree/factories'
 ```
 
+Development
+-------
+
+### Mocking your buyer country
+PayPal looks at the buyer's IP geolocation to determine what funding sources should be available to them. Because for example, Venmo is currently only available to US buyers. Because of this, you may want to pretend that you are from US so you can check if Venmo is correctly integrated for these customers. To do this, set the payment method's preference of `force_buyer_country` to "US". See more information about preferences above.
+
+This preference has no effect on production.
+
+## License
+
 Copyright (c) 2016-2020 Stembolt and others contributors, released under the New BSD License

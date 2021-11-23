@@ -9,6 +9,7 @@
     amount: '<%= current_order.total %>',
     currency: '<%= current_order.currency %>',
     enableShippingAddress: true,
+    buyerCountry: '<%= SolidusPaypalBraintree::Gateway.first.preferred_force_buyer_country %>',
     shippingAddressOverride: address,
     shippingAddressEditable: false,
     environment: '<%= Rails.env.production? ? "production" : "sandbox" %>',

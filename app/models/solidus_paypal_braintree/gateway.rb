@@ -58,6 +58,10 @@ module SolidusPaypalBraintree
     # Wether to use the JS device data collector
     preference(:use_data_collector, :boolean, default: true)
 
+    # Useful for testing purposes, as PayPal will show funding sources based on the buyer's country;
+    # usually retrieved by their  ip geolocation. I.e. Venmo will show for US buyers, but not European.
+    preference(:force_buyer_country, :string)
+
     def partial_name
       "paypal_braintree"
     end
