@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
   if s.respond_to?(:metadata)
     s.metadata["homepage_uri"] = s.homepage if s.homepage
     s.metadata["source_code_uri"] = s.homepage if s.homepage
+    s.metadata["rubygems_mfa_required"] = 'true'
   end
 
   s.add_dependency 'activemerchant', '~> 1.48'
