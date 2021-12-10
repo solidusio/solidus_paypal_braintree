@@ -1,0 +1,295 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.sandbox.braintreegateway.com/merchants/vn32pmzn67tzbcd9/customers
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <customer>
+        </customer>
+    headers:
+      Accept-Encoding:
+      - gzip
+      Accept:
+      - application/xml
+      User-Agent:
+      - Braintree Ruby Gem 3.4.0
+      X-Apiversion:
+      - '6'
+      Content-Type:
+      - application/xml
+      Authorization:
+      - Basic cTM3ZnF0eXc0cDJzN2Zidzo2M2RhYmNjOWFmMTcyNDhlZjQyMTdjZmRlYWEwM2UwMQ==
+  response:
+    status:
+      code: 201
+      message: ''
+    headers:
+      Date:
+      - Fri, 10 Dec 2021 09:55:18 GMT
+      Content-Type:
+      - application/xml; charset=utf-8
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      X-Authentication:
+      - basic_auth
+      X-User:
+      - mp9fm99xgbv5d7nc
+      Vary:
+      - Accept-Encoding, Origin
+      Content-Encoding:
+      - gzip
+      Etag:
+      - W/"d67d6becf5f71dba659b5ab86c245b1b"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Runtime:
+      - '0.150123'
+      X-Request-Id:
+      - 02e94062-8a37-4c0e-94a8-af5719545970
+      Content-Security-Policy:
+      - frame-ancestors 'self'
+      X-Broxyid:
+      - 02e94062-8a37-4c0e-94a8-af5719545970
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Paypal-Debug-Id:
+      - d43720276ae64
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAYks2EAA5RRy07DMBC89ysi301ehDaVk95AQgqngqC3rb1pDbYT2U5p8/WkD1GkwIHjzOzs7uyyxV6rYIfWycYUJL6JSICGN0KaTUGel/d0RhblhPHO+UajLSdBwKQoszRL8tt0OmXhgI7kIPItGE8HvDNp0ure3E19v+YiZ+FP9VhdS+s8NaAxMFIVxNsOSXiSFPyl8Ea3YA4jHjVINWLbbWPGPWrYj7hPXDvpf5lnETwKCj7whxYLIgbopUZSJlES0zihcbSM8nmWzePZioVXw8nfteJ//qvhPP90dFpLVMKdV9qoZg3qeMW39KUXD7lfvT7WT8sqrt4/oqrnKQuvNZcQQnrKwQp3WQOshcMlIwhh0TkcaUOa759/AQAA//8DAPz7l2QmAgAA
+  recorded_at: Fri, 10 Dec 2021 09:55:18 GMT
+- request:
+    method: post
+    uri: https://api.sandbox.braintreegateway.com/merchants/vn32pmzn67tzbcd9/payment_methods
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <payment-method>
+          <payment-method-nonce>fake-valid-country-of-issuance-usa-nonce</payment-method-nonce>
+          <customer-id>535294377</customer-id>
+        </payment-method>
+    headers:
+      Accept-Encoding:
+      - gzip
+      Accept:
+      - application/xml
+      User-Agent:
+      - Braintree Ruby Gem 3.4.0
+      X-Apiversion:
+      - '6'
+      Content-Type:
+      - application/xml
+      Authorization:
+      - Basic cTM3ZnF0eXc0cDJzN2Zidzo2M2RhYmNjOWFmMTcyNDhlZjQyMTdjZmRlYWEwM2UwMQ==
+  response:
+    status:
+      code: 201
+      message: ''
+    headers:
+      Date:
+      - Fri, 10 Dec 2021 09:55:18 GMT
+      Content-Type:
+      - application/xml; charset=utf-8
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      X-Authentication:
+      - basic_auth
+      X-User:
+      - mp9fm99xgbv5d7nc
+      Vary:
+      - Accept-Encoding, Origin
+      Content-Encoding:
+      - gzip
+      Etag:
+      - W/"1ad6e9a0fcfe412dc3c07ba29dd2b797"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Runtime:
+      - '0.280990'
+      X-Request-Id:
+      - 5338b7d7-1814-4d10-b6da-3a9e37ab49ff
+      Content-Security-Policy:
+      - frame-ancestors 'self'
+      X-Broxyid:
+      - 5338b7d7-1814-4d10-b6da-3a9e37ab49ff
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Paypal-Debug-Id:
+      - 0e25af7389b04
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAYks2EAA6xVTXPiOBC98yso3xV/ACGkwKm9hKqtSi6bZCa5pGSpwQqy5JVkEvLrt2UMNhkzu1OzN+v165b66bU8v/ko5HALxgqtFkF8EQVDUExzodaL4PHhllwFN+lgzgxw4QijhqeD4XCeCSmRQijnBqz1GKKCp07NQ8GbNaus0wUYgshkNElm49F0Og+78J64EsY6omgBQyXkInCmgiBsgpKejzFdlFTteiLWGQB3OGAPAT4cKA78JxSpGZXC9ZU3sEbFegKlto5KghJCOhvHEfbbhQ7HrpQzuxoiVJY5TXqb+8oa/RtLVairYD+hnRGyzLWq0zMwfdkGqPNauaHblbAIOC6dKCBIkyiJSZyQOHqIZteTyXV89YJ3fExoKlQl/7UKbULtuLDHcmhDlY6jOIkiH1c15j1K/Bbpk7AUT3JcH6K5lhzd16eENxQqyASV6aPaKP2Ofu5gg46SekWEtRVVDNLHv/7wvB8Dg98X7z+OUUtbS52h3xB+Hj198uXMvXz/c3X/cBffvW2iu0826iS35JMa3voOHY6ddchH1HM5ZMK1Ku2X+8CKVvLQbKa1BKqC1KvsaXVwT6wM3hrBWaqkb7hT7GtkUE9sKUy9Pym0cnkaJ/PwB/ALcwfUeJlPqTV6ZAL/etYVlRaajGb3Vii2vJ1k354qvowlX+bbl9vZ23M8q55VGfFlKebhqag5UOlydB60DXYwTxEFXQOpjExz50p7HYbUWnD2IjNUKP+UrVGGd7q7QDOGJd0VoNxrAS7X/FXqtQ63aPaLUq1vQG2F0coTFpYqnukPfJKP9evd0J1+lDKqNu2RTtDB4eEdp9FlguPVLDyO2xstOwNyAOqggZJi4/ca8eZ7j2teMec1afNazFNslVlmROlvyDY3Qo2hu2Y2nd6ASlX26dxbNg/3Sx+olPi7OrxeWA1bFysBJp1SxuIxJIwmfJpN2QiuVrPJmNNpliTT6BJfmXOpg//hzdqCKjSxfHPGXsd4wza49X7A+toXlihw79psSN26+Dzr2z4q/sXDk9/4PwAAAP//AwCzxPWl/AcAAA==
+  recorded_at: Fri, 10 Dec 2021 09:55:18 GMT
+- request:
+    method: get
+    uri: https://api.sandbox.braintreegateway.com/merchants/vn32pmzn67tzbcd9/payment_methods/any/nbzttjb
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip
+      Accept:
+      - application/xml
+      User-Agent:
+      - Braintree Ruby Gem 3.4.0
+      X-Apiversion:
+      - '6'
+      Content-Type:
+      - application/xml
+      Authorization:
+      - Basic cTM3ZnF0eXc0cDJzN2Zidzo2M2RhYmNjOWFmMTcyNDhlZjQyMTdjZmRlYWEwM2UwMQ==
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      Date:
+      - Fri, 10 Dec 2021 09:55:19 GMT
+      Content-Type:
+      - application/xml; charset=utf-8
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      X-Authentication:
+      - basic_auth
+      X-User:
+      - mp9fm99xgbv5d7nc
+      Vary:
+      - Accept-Encoding, Origin
+      Content-Encoding:
+      - gzip
+      Etag:
+      - W/"83512a16e13acf960bd3e4f7a69f25a1"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Runtime:
+      - '0.058907'
+      X-Request-Id:
+      - '0891cd8a-cb3b-4bb0-82f3-ed64c3bb9bc4'
+      Content-Security-Policy:
+      - frame-ancestors 'self'
+      X-Broxyid:
+      - '0891cd8a-cb3b-4bb0-82f3-ed64c3bb9bc4'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Paypal-Debug-Id:
+      - 2eeddf47a6b34
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAcks2EAA6xVTXPiOBC98yso3xV/ACGkwKm9hKqtSi6bZCa5pGSpwQqy5JVkEvLrt2UMNhkzu1OzN+v165b66bU8v/ko5HALxgqtFkF8EQVDUExzodaL4PHhllwFN+lgzgxw4QijhqeD4XCeCSmRQijnBqz1GKKCp07NQ8GbNaus0wUYgshkNElm49F0Og+78J64EsY6omgBQyXkInCmgiBsgpKejzFdlFTteiLWGQB3OGAPAT4cKA78JxSpGZXC9ZU3sEbFegKlto5KghJCOhvHEfbbhQ7HrpQzuxoiVJY5TXqb+8oa/RtLVairYD+hnRGyzLWq0zMwfdkGqPNauaHblbAIOC6dKCBIkyiJSZyQOHqIZteTyXV89YJ3fExoKlQl/7UKbULtuLDHcmhDlY6jOIkiH1c15j1K/Bbpk7AUT3JcH6K5lhzd16eENxQqyASV6aPaKP2Ofu5gg46SekWEtRVVDNLHv/7wvB8Dg98X7z+OUUtbS52h3xB+Hj198uXMvXz/c3X/cBffvW2iu0826iS35JMa3voOHY6ddchH1HM5ZMK1Ku2X+8CKVvLQbKa1BKqC1KvsaXVwT6wM3hrBWaqkb7hT7GtkUE9sKUy9Pym0cnkaJ/PwB/ALcwfUeJlPqTV6ZAL/etYVlRaajGb3Vii2vJ1k354qvowlX+bbl9vZ23M8q55VGfFlKebhqag5UOlydB60DXYwTxEFXQOpjExz50p7HYbUWnD2IjNUKP+UrVGGd7q7QDOGJd0VoNxrAS7X/FXqtQ63aPaLUq1vQG2F0coTFpYqnukPfJKP9evd0J1+lDKqNu2RTtDB4eEdp9FlguPVLDyO2xstOwNyAOqggZJi4/ca8eZ7j2teMec1afNazFNslVlmROlvyDY3Qo2hu2Y2nd6ASlX26dxbNg/3Sx+olPi7OrxeWA1bFysBJp1SxuIxJIwmfJpN2QiuVrPJmNNpliTT6BJfmXOpg//hzdqCKjSxfHPGXsd4wza49X7A+toXlihw79psSN26+Dzr2z4q/sXDk9/4PwAAAP//AwCzxPWl/AcAAA==
+  recorded_at: Fri, 10 Dec 2021 09:55:19 GMT
+- request:
+    method: get
+    uri: https://api.sandbox.braintreegateway.com/merchants/vn32pmzn67tzbcd9/payment_methods/any/nbzttjb
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip
+      Accept:
+      - application/xml
+      User-Agent:
+      - Braintree Ruby Gem 3.4.0
+      X-Apiversion:
+      - '6'
+      Content-Type:
+      - application/xml
+      Authorization:
+      - Basic cTM3ZnF0eXc0cDJzN2Zidzo2M2RhYmNjOWFmMTcyNDhlZjQyMTdjZmRlYWEwM2UwMQ==
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      Date:
+      - Fri, 10 Dec 2021 09:55:20 GMT
+      Content-Type:
+      - application/xml; charset=utf-8
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      X-Authentication:
+      - basic_auth
+      X-User:
+      - mp9fm99xgbv5d7nc
+      Vary:
+      - Accept-Encoding, Origin
+      Content-Encoding:
+      - gzip
+      Etag:
+      - W/"dc4c858d5799c84c9cc85c87078f0e47"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Runtime:
+      - '0.104150'
+      X-Request-Id:
+      - 94731a91-db6c-45e3-aa67-9d0b469b7574
+      Content-Security-Policy:
+      - frame-ancestors 'self'
+      X-Broxyid:
+      - 94731a91-db6c-45e3-aa67-9d0b469b7574
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Paypal-Debug-Id:
+      - 7fea0021b40b4
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAgks2EAA6xVTXPiOBC98yso3xV/ACGkwKm9hKqtSi6bZCa5pGSpwQqy5JVkEvLrt2UMNhkzu1OzN+v165b66bU8v/ko5HALxgqtFkF8EQVDUExzodaL4PHhllwFN+lgzgxw4QijhqeD4XCeCSmRQijnBqz1GKKCp07NQ8GbNaus0wUYgshkNElm49F0Og+78J64EsY6omgBQyXkInCmgiBsgpKejzFdlFTteiLWGQB3OGAPAT4cKA78JxSpGZXC9ZU3sEbFegKlto5KghJCOhvHEfbbhQ7HrpQzuxoiVJY5TXqb+8oa/RtLVairYD+hnRGyzLWq0zMwfdkGqPNauaHblbAIOC6dKCBIkyiJSZyQOHqIZteTyXV89YJ3fExoKlQl/7UKbULtuLDHcmhDlY6jOIkiH1c15j1K/Bbpk7AUT3JcH6K5lhzd16eENxQqyASV6aPaKP2Ofu5gg46SekWEtRVVDNLHv/7wvB8Dg98X7z+OUUtbS52h3xB+Hj198uXMvXz/c3X/cBffvW2iu0826iS35JMa3voOHY6ddchH1HM5ZMK1Ku2X+8CKVvLQbKa1BKqC1KvsaXVwT6wM3hrBWaqkb7hT7GtkUE9sKUy9Pym0cnkaJ/PwB/ALcwfUeJlPqTV6ZAL/etYVlRaajGb3Vii2vJ1k354qvowlX+bbl9vZ23M8q55VGfFlKebhqag5UOlydB60DXYwTxEFXQOpjExz50p7HYbUWnD2IjNUKP+UrVGGd7q7QDOGJd0VoNxrAS7X/FXqtQ63aPaLUq1vQG2F0coTFpYqnukPfJKP9evd0J1+lDKqNu2RTtDB4eEdp9FlguPVLDyO2xstOwNyAOqggZJi4/ca8eZ7j2teMec1afNazFNslVlmROlvyDY3Qo2hu2Y2nd6ASlX26dxbNg/3Sx+olPi7OrxeWA1bFysBJp1SxuIxJIwmfJpN2QiuVrPJmNNpliTT6BJfmXOpg//hzdqCKjSxfHPGXsd4wza49X7A+toXlihw79psSN26+Dzr2z4q/sXDk9/4PwAAAP//AwCzxPWl/AcAAA==
+  recorded_at: Fri, 10 Dec 2021 09:55:20 GMT
+recorded_with: VCR 6.0.0

@@ -30,7 +30,7 @@ module SolidusPaypalBraintree
     scope(:with_payment_profile, -> { joins(:customer) })
     scope(:credit_card, -> { where(payment_type: CREDIT_CARD) })
 
-    delegate :last_4, :card_type, :expiration_month, :expiration_year, :email,
+    delegate :bin, :last_4, :card_type, :expiration_month, :expiration_year, :email,
       :username, :source_description, to: :braintree_payment_method, allow_nil: true
 
     # Aliases to match Spree::CreditCard's interface
