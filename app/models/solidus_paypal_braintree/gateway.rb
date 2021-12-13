@@ -62,6 +62,8 @@ module SolidusPaypalBraintree
     # usually retrieved by their  ip geolocation. I.e. Venmo will show for US buyers, but not European.
     preference(:force_buyer_country, :string)
 
+    preference(:enable_venmo_funding, :boolean, default: false)
+
     def partial_name
       "paypal_braintree"
     end

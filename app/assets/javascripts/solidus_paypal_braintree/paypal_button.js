@@ -21,6 +21,11 @@ SolidusPaypalBraintree.PaypalButton = function(element, paypalOptions, options) 
   this._buyerCountry = this._paypalOptions.buyerCountry;
   delete paypalOptions['buyerCountry'];
 
+  this._enabledFunding = [];
+
+  if (paypalOptions['venmoFunding']) this._enabledFunding.push('venmo');
+  delete paypalOptions['venmoFunding'];
+
   if(!this._element) {
     throw new Error("Element for the paypal button must be present on the page");
   }
@@ -57,6 +62,9 @@ SolidusPaypalBraintree.PaypalButton.prototype.initializeCallback = function() {
 
   if (this._environment === "sandbox" && this._buyerCountry) {
     args["buyer-country"] = this._buyerCountry
+  }
+  if (this._enabledFunding.length !== 0) {
+    args["enable-funding"] = this._enabledFunding.join(',');
   }
 
   this._client.getPaypalInstance().loadPayPalSDK(args).then(() => {
