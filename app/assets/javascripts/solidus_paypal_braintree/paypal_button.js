@@ -72,6 +72,7 @@ SolidusPaypalBraintree.PaypalButton.prototype.initializeCallback = function() {
 
     var render_config = {
       style: this.style,
+      onClick: (data) => { SolidusPaypalBraintree.fundingSource = data.fundingSource },
       [create_method]: function () {
         return this._client.getPaypalInstance().createPayment(this._paypalOptions);
       }.bind(this),
@@ -142,6 +143,7 @@ SolidusPaypalBraintree.PaypalButton.prototype._transactionParams = function(payl
       "phone" : payload.details.phone,
       "nonce" : payload.nonce,
       "payment_type" : payload.type,
+      "paypal_funding_source": SolidusPaypalBraintree.fundingSource,
       "address_attributes" : this._addressParams(payload)
     }
   };

@@ -1,0 +1,4 @@
+<% if payment.source.respond_to?(:paypal_funding_source) && payment.source.paypal_funding_source.present? %>
+  <br />
+  <%= t('spree.paypal_funding', funding: payment.source.display_paypal_funding_source) %>
+<% end %>
