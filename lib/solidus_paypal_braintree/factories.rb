@@ -6,6 +6,28 @@ FactoryBot.define do
   #
   # Example adding this to your spec_helper will load these Factories for use:
   # require 'solidus_paypal_braintree/factories'
+
+  factory :solidus_paypal_braintree_payment_method, class: SolidusPaypalBraintree::Gateway do
+    name 'Solidus PayPal Braintree Gateway'
+    active true
+  end
+
+  factory :solidus_paypal_braintree_source, class: SolidusPaypalBraintree::Source do
+    association(:payment_method, factory: :solidus_paypal_braintree_payment_method)
+    user
+
+    trait :credit_card do
+      payment_type SolidusPaypalBraintree::Source::CREDIT_CARD
+    end
+
+    trait :paypal do
+      payment_type SolidusPaypalBraintree::Source::PAYPAL
+    end
+
+    trait :apple_pay do
+      payment_type SolidusPaypalBraintree::Source::APPLE_PAY
+    end
+  end
 end
 
 FactoryBot.modify do
