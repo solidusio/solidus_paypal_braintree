@@ -166,7 +166,7 @@ using the
 [Vault flow](https://developers.braintreepayments.com/guides/paypal/overview/javascript/v3),
 which allows the source to be reused. Please note that PayPal messaging is disabled with vault flow. If you want, you can use [Checkout with PayPal](https://developers.braintreepayments.com/guides/paypal/checkout-with-paypal/javascript/v3)
 instead, which doesn't allow you to reuse sources but allows your customers to pay with their PayPal
-balance and with PayPal financing options ([see setup instructions](#create-a-new-payment-method)).
+balance and with PayPal financing options ([see setup instructions](#create-a-new-payment-method)). More information about other [financing options below](#paypal-financing-options).
 
 If you are creating your own checkout view or would like to customize the
 [options that get passed to tokenize](https://braintree.github.io/braintree-web/3.6.3/PayPal.html#tokenize)
@@ -188,6 +188,26 @@ A PayPal button can also be included on the cart view to enable express checkout
 ```ruby
 render "spree/shared/paypal_cart_button"
 ```
+
+### PayPal financing options
+When using 'checkout' `paypal flow` and not 'vault'. Your customers can have different finance such as
+- paylater
+- Venmo
+
+#### Venmo
+Venmo is currently available to US merchants and buyers. There are also other [prequisites](https://developer.paypal.com/docs/business/checkout/pay-with-venmo/#eligibility).
+
+To enable Venmo be sure to have it enabled in your [Braintree account](https://developer.paypal.com/braintree/articles/guides/payment-methods/venmo#setup)
+
+By default, the extension and Braintree will try to render a Venmo button to buyers when prequisites are met and you have enabled it in your Braintree account).
+
+Set the SolidusPaypalBraintree `PaymentMethod` `enable_venmo_funding` preference to:
+- `enabled`, available as a PayPal funding option (if other prequisites are met); or
+- `disabled` (default).
+
+Note, Venmo is currently only available as a financing option on the checkout page; Venmo currently does not support shipping callbacks so it cannot be on the cart page.
+
+[_As Venmo is only available in the US, you may want to mock your location for testing_](#mocking-your-buyer-country)
 
 ### PayPal Financing Messaging
 
@@ -282,5 +302,15 @@ Simply add this require statement to your spec_helper:
 ```ruby
 require 'solidus_paypal_braintree/factories'
 ```
+
+Development
+-------
+
+### Mocking your buyer country
+PayPal looks at the buyer's IP geolocation to determine what funding sources should be available to them. Because for example, Venmo is currently only available to US buyers. Because of this, you may want to pretend that you are from US so you can check if Venmo is correctly integrated for these customers. To do this, set the payment method's preference of `force_buyer_country` to "US". See more information about preferences above.
+
+This preference has no effect on production.
+
+## License
 
 Copyright (c) 2016-2020 Stembolt and others contributors, released under the New BSD License

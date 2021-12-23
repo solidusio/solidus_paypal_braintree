@@ -8,6 +8,12 @@ module SolidusPaypalBraintree
     APPLE_PAY = "ApplePayCard"
     CREDIT_CARD = "CreditCard"
 
+    enum paypal_funding_source: {
+      applepay: 0, bancontact: 1, blik: 2, boleto: 3, card: 4, credit: 5, eps: 6, giropay: 7, ideal: 8,
+      itau: 9, maxima: 10, mercadopago: 11, mybank: 12, oxxo: 13, p24: 14, paylater: 15, paypal: 16, payu: 17,
+      sepa: 18, sofort: 19, trustly: 20, venmo: 21, verkkopankki: 22, wechatpay: 23, zimpler: 24
+    }, _suffix: :funding
+
     belongs_to :user, class_name: ::Spree::UserClassHandle.new, optional: true
     belongs_to :payment_method, class_name: 'Spree::PaymentMethod'
     has_many :payments, as: :source, class_name: "Spree::Payment", dependent: :destroy
@@ -15,6 +21,8 @@ module SolidusPaypalBraintree
     belongs_to :customer, class_name: "SolidusPaypalBraintree::Customer", optional: true
 
     validates :payment_type, inclusion: [PAYPAL, APPLE_PAY, CREDIT_CARD]
+
+    before_save :clear_paypal_funding_source, unless: :paypal?
 
     scope(:with_payment_profile, -> { joins(:customer) })
     scope(:credit_card, -> { where(payment_type: CREDIT_CARD) })
@@ -84,6 +92,12 @@ module SolidusPaypalBraintree
       end
     end
 
+    def display_paypal_funding_source
+      I18n.t(paypal_funding_source,
+        scope: 'solidus_paypal_braintree.paypal_funding_sources',
+        default: paypal_funding_source)
+    end
+
     private
 
     def braintree_payment_method
@@ -99,6 +113,10 @@ module SolidusPaypalBraintree
 
     def braintree_client
       @braintree_client ||= payment_method.try(:braintree)
+    end
+
+    def clear_paypal_funding_source
+      self.paypal_funding_source = nil
     end
   end
 end

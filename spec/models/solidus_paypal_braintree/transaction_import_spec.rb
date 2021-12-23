@@ -66,6 +66,12 @@ describe SolidusPaypalBraintree::TransactionImport do
       expect(subject.payment_method).to eq braintree_gateway
     end
 
+    it 'takes the paypal funding source from the transaction' do
+      transaction.paypal_funding_source = 'paypal'
+
+      expect(subject.paypal_funding_source).to eq('paypal')
+    end
+
     context 'when order has a user' do
       let(:user) { Spree.user_class.new }
       let(:order) { Spree::Order.new user: user }
@@ -199,6 +205,17 @@ describe SolidusPaypalBraintree::TransactionImport do
           expect(order.shipping_address.address1).to eq '350 5th Ave'
           expect(order.shipping_address.country).to eq country
           expect(order.shipping_address.state).to eq new_york
+        end
+
+        context 'when transaction has paypal funding source' do
+          it 'saves it to the payment source' do
+            transaction.paypal_funding_source = 'paypal'
+
+            subject
+
+            source = SolidusPaypalBraintree::Source.last
+            expect(source.paypal_funding_source).to eq('paypal')
+          end
         end
 
         context 'with a tax category' do

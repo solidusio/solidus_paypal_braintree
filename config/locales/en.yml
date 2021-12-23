@@ -21,6 +21,8 @@ en:
     public_key: Public key
     token_generation_enabled: Token generation enabled?
     paypal_flow: PayPal flow
+    paypal_funding: 'PayPal Funding: %{funding}'
+    paypal_funding_source: 'PayPal Funding Source'
   solidus_paypal_braintree:
     braintree: Braintree
     nonce: Nonce
@@ -60,3 +62,29 @@ en:
       gateway_rejected: Gateway rejected this transaction.
       processor_declined: Processor declined this transaction.
       settlement_declined: Settlement was declined by processor.
+    paypal_funding_sources:
+       applepay: 'Apple Pay'
+       bancontact: 'Bancontact'
+       blik: 'BLIK'
+       boleto: 'Boleto'
+       card: 'Credit or debit card'
+       credit: 'PayPal Credit'
+       eps: 'eps'
+       giropay: 'giropay'
+       ideal: 'iDEAL'
+       itau: 'Itau'
+       maxima: 'Maxima'
+       mercadopago: 'Mercado Pago'
+       mybank: 'MyBank'
+       oxxo: 'Oxxo'
+       p24: 'Przelewy24'
+       paylater: 'Pay Later'
+       paypal: 'PayPal'
+       payu: 'PayU'
+       sepa: 'SEPA-Lastschrift'
+       sofort: 'Sofort'
+       trustly: 'Trustly'
+       venmo: 'Venmo'
+       verkkopankki: 'Verkkopankki'
+       wechatpay: 'WeChat Pay'
+       zimpler: 'Zimpler'

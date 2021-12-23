@@ -31,6 +31,7 @@ module SolidusPaypalBraintree
         nonce: transaction.nonce,
         payment_type: transaction.payment_type,
         payment_method: transaction.payment_method,
+        paypal_funding_source: transaction.paypal_funding_source,
         user: user
       )
     end

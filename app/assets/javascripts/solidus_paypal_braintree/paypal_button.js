@@ -18,6 +18,14 @@ SolidusPaypalBraintree.PaypalButton = function(element, paypalOptions, options) 
   this._environment = this._paypalOptions.environment || 'sandbox';
   delete this._paypalOptions.environment;
 
+  this._buyerCountry = this._paypalOptions.buyerCountry;
+  delete paypalOptions['buyerCountry'];
+
+  this._enabledFunding = [];
+
+  if (paypalOptions['venmoFunding']) this._enabledFunding.push('venmo');
+  delete paypalOptions['venmoFunding'];
+
   if(!this._element) {
     throw new Error("Element for the paypal button must be present on the page");
   }
@@ -43,18 +51,28 @@ SolidusPaypalBraintree.PaypalButton.prototype.initialize = function() {
 SolidusPaypalBraintree.PaypalButton.prototype.initializeCallback = function() {
   this._paymentMethodId = this._client.paymentMethodId;
 
-  this._client.getPaypalInstance().loadPayPalSDK({
+  var args = {
     "client-id": this._environment === "sandbox" ? "sb" : null,
     currency: this._paypalOptions.currency,
     commit: true,
     vault: this._paypalOptions.flow == "vault",
     components: this.style['messaging'] == "true" && this._paypalOptions.flow != "vault" ? "buttons,messages" : "buttons",
     intent: this._paypalOptions.flow == "vault" ? "tokenize" : "authorize"
-  }).then(() => {
+  };
+
+  if (this._environment === "sandbox" && this._buyerCountry) {
+    args["buyer-country"] = this._buyerCountry
+  }
+  if (this._enabledFunding.length !== 0) {
+    args["enable-funding"] = this._enabledFunding.join(',');
+  }
+
+  this._client.getPaypalInstance().loadPayPalSDK(args).then(() => {
     var create_method = this._paypalOptions.flow == "vault" ? "createBillingAgreement" : "createOrder"
 
     var render_config = {
       style: this.style,
+      onClick: (data) => { SolidusPaypalBraintree.fundingSource = data.fundingSource },
       [create_method]: function () {
         return this._client.getPaypalInstance().createPayment(this._paypalOptions);
       }.bind(this),
@@ -125,6 +143,7 @@ SolidusPaypalBraintree.PaypalButton.prototype._transactionParams = function(payl
       "phone" : payload.details.phone,
       "nonce" : payload.nonce,
       "payment_type" : payload.type,
+      "paypal_funding_source": SolidusPaypalBraintree.fundingSource,
       "address_attributes" : this._addressParams(payload)
     }
   };

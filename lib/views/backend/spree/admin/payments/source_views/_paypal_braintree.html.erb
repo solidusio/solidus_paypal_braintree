@@ -28,6 +28,11 @@
           <dt><%= Spree::CreditCard.human_attribute_name(:last_digits) %>:</dt>
           <dd><%= payment.source.last_digits %></dd>
         <% end %>
+
+        <% if payment.source.paypal? %>
+          <dt><%= I18n.t('spree.paypal_funding_source') %>:</dt>
+          <dd><%= payment.source.display_paypal_funding_source %></dd>
+        <% end %>
       </dl>
     </div>
   </div>

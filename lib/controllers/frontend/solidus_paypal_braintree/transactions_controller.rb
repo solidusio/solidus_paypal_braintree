@@ -7,6 +7,7 @@ module SolidusPaypalBraintree
     PERMITTED_BRAINTREE_TRANSACTION_PARAMS = [
       :nonce,
       :payment_type,
+      :paypal_funding_source,
       :phone,
       :email,
       { address_attributes: [
