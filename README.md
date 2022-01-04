@@ -111,7 +111,7 @@ The following is a relatively bare-bones implementation to enable Apple Pay on t
 
 ```html
 <% if current_store.braintree_configuration.apple_pay? %>
-  <script src="https://js.braintreegateway.com/web/3.22.1/js/apple-pay.min.js"></script>
+  <script src="https://js.braintreegateway.com/web/3.84.0/js/apple-pay.min.js"></script>
 
   <button id="apple-pay-button" class="apple-pay-button"></button>
 
