@@ -41,5 +41,20 @@ module SolidusPaypalBraintree
     def paypal_button_preference(key, store:)
       store.braintree_configuration.preferences[key]
     end
+
+    def venmo_button_style(store)
+      configuration = store.braintree_configuration
+      color = configuration.preferred_venmo_button_color
+      width = configuration.preferred_venmo_button_width
+
+      { width: width, color: color }
+    end
+
+    def venmo_button_asset_url(style, active: false)
+      prefix = 'solidus_paypal_braintree/venmo/venmo_'
+      active_string = active ? 'active_' : ''
+      path = "#{prefix}#{active_string}#{style[:color]}_button_#{style[:width]}x48.svg"
+      asset_path(path)
+    end
   end
 end

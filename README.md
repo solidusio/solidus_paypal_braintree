@@ -88,7 +88,8 @@ Your payment method can accept payments in three ways: through Paypal, through A
     store.create_braintree_configuration(
       credit_card: true,
       paypal: true,
-      apple_pay: true
+      apple_pay: true,
+      venmo: true
     )
   end
   ```
@@ -146,6 +147,57 @@ Braintree has some [excellent documentation](https://developers.braintreepayment
 
 For additional information check out [Apple's documentation](https://developer.apple.com/reference/applepayjs/) and [Braintree's documentation](https://developers.braintreepayments.com/guides/apple-pay/client-side/javascript/v3).
 
+## Venmo
+There are two ways for users to use Venmo for payments:
+1. Braintree's native Venmo integration, which supports vaulting of payment sources. [See more.](#Braintree's-Venmo)
+2. Through the PayPal buttons when using checkout flow, therefore doesn't support vaulting. [See more.](#PayPal-financing-options)
+
+### PayPal's Venmo financing option
+To add Venmo for PayPal, [see here](#paypal-venmo)
+
+### Braintree's Venmo
+#### Note
+- Only available as a financing option on the checkout page; Venmo currently does not support shipping callbacks so it cannot be on the cart page.
+- Currently available to US merchants and buyers and there are also other prequisites.
+  - https://developer.paypal.com/docs/business/checkout/pay-with-venmo/#eligibility
+  - https://developer.paypal.com/braintree/articles/guides/payment-methods/venmo#availability
+
+#### Integration:
+1. Enable Venmo in your [Braintree account](https://developer.paypal.com/braintree/articles/guides/payment-methods/venmo#setup)
+2. Enable Venmo in your [store's Braintree configuration](#configure-payment-types).
+3. Ensure your Braintree API credentials are in the Braintree payment method.
+4. Set your Braintree payment method's preference of `preferred_venmo_new_tab_support` to `false` if your store cannot handle Venmo returning a user to a new tab after payment. This may be because your website is a single-page applicaiton (SPA). On mobile, the user may be returned to the same store tab if their browser supports it, otherwise a new tab will be created (unless you have this preference as `false`).
+
+By default your default Venmo business account will be used. If you want to use a non-default profile, override
+the `SolidusPaypalBraintree::Gateway` `#venmo_business_profile_id` method with its id.
+
+#### Testing
+Test the following scenarios:
+- Ensure the Venmo checkout button opens a modal with a QR code and is closeable.
+- Do a full transaction
+- Ensure that you can also save the payment source in the user wallet.
+- Ensure the saved Venmo wallet payment source loads in the partial correctly.
+- Ensure the saved Venmo payment source can be reused for another order.
+- Test doing transactions on the admin
+- Testing voiding and refunding Venmo transactions
+
+You'll need the Venmo app in order to fully test the integration. However, if you are outside of the US, this is not an option. You can fake the tokenization by:
+- Altering the `venmo_button.js` file to call the `handleVenmoSuccess` function instead of tokenizing; or
+- Manually doing its steps:
+  1. Update the #venmo_payment_method_nonce hidden input value to "fake-venmo-account-nonce".
+  2. Remove the disabled attributes from the venmo-fields inputs.
+  3. If you have hosted fields on the page (`credit_card` enabled in Braintree configuration), remove it's submit button listener:
+    `$('#checkout_form_payment').off('submit');`
+
+[More information](https://developer.paypal.com/braintree/articles/guides/payment-methods/venmo#availability)
+
+#### Customization:
+In your [store's Braintree configuration](#configure-payment-types), you can customize the Venmo checkout button's color and width.
+
+Note, other images such as Venmo's full logo and shortened "V" logo are included in the assets.
+
+Ensure that you follow [Venmo's guidelines](https://developer.paypal.com/braintree/docs/files/venmo-merchant-integration-guidelines.pdf) when making other style changes, otherwise failing to comply can lead to an interruption of your Venmo service.
+
 PayPal
 ------
 
@@ -190,14 +242,12 @@ render "spree/shared/paypal_cart_button"
 ```
 
 ### PayPal financing options
-When using 'checkout' `paypal flow` and not 'vault'. Your customers can have different finance such as
+When using 'checkout' `paypal flow` and not 'vault'. Your customers can have different finance options such as
 - paylater
 - Venmo
 
-#### Venmo
+#### PayPal Venmo
 Venmo is currently available to US merchants and buyers. There are also other [prequisites](https://developer.paypal.com/docs/business/checkout/pay-with-venmo/#eligibility).
-
-To enable Venmo be sure to have it enabled in your [Braintree account](https://developer.paypal.com/braintree/articles/guides/payment-methods/venmo#setup)
 
 By default, the extension and Braintree will try to render a Venmo button to buyers when prequisites are met and you have enabled it in your Braintree account).
 

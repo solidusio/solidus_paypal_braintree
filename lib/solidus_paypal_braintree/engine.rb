@@ -20,6 +20,7 @@ module SolidusPaypalBraintree
 
     initializer "register_solidus_paypal_braintree_gateway", after: "spree.register.payment_methods" do |app|
       app.config.spree.payment_methods << SolidusPaypalBraintree::Gateway
+      SolidusPaypalBraintree::Gateway.allowed_admin_form_preference_types << :preference_select
       Spree::PermittedAttributes.source_attributes.concat [:nonce, :payment_type, :paypal_funding_source]
     end
 
@@ -27,7 +28,8 @@ module SolidusPaypalBraintree
       config.assets.precompile += [
         'solidus_paypal_braintree/checkout.js',
         'solidus_paypal_braintree/frontend.js',
-        'spree/frontend/apple_pay_button.js'
+        'spree/frontend/apple_pay_button.js',
+        'solidus_paypal_braintree_manifest.js'
       ]
       paths["app/controllers"] << "lib/controllers/frontend"
       paths["app/views"] << "lib/views/frontend"

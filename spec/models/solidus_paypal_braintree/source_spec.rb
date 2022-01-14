@@ -260,6 +260,22 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     end
   end
 
+  describe "#venmo?" do
+    subject { described_class.new(payment_type: type).venmo? }
+
+    context "when the payment type is VenmoAccount" do
+      let(:type) { "VenmoAccount" }
+
+      it { is_expected.to be true }
+    end
+
+    context "when the payment type is not VenmoAccount" do
+      let(:type) { "Swish" }
+
+      it { is_expected.to be false }
+    end
+  end
+
   shared_context 'with unknown source token' do
     let(:braintree_payment_method) { double }
 
@@ -358,6 +374,16 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
 
       it { is_expected.to eq 'user@example.com' }
     end
+
+    context "when is a Venmo source" do
+      let(:type) { "VenmoAccount" }
+
+      before do
+        allow(payment_source).to receive(:username).and_return('venmojoe')
+      end
+
+      it { is_expected.to eq('venmojoe') }
+    end
   end
 
   describe "#card_type" do
@@ -420,6 +446,34 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
         result = payment_source.display_paypal_funding_source
 
         expect(result).to eq('non-existent')
+      end
+    end
+  end
+
+  describe '#display_payment_type' do
+    subject { described_class.new(payment_type: type).display_payment_type }
+
+    context 'when type is CreditCard' do
+      let(:type) { 'CreditCard' }
+
+      it 'returns "Payment Type: Credit Card' do
+        expect(subject).to eq('Payment Type: Credit Card')
+      end
+    end
+
+    context 'when type is PayPalAccount' do
+      let(:type) { 'PayPalAccount' }
+
+      it 'returns "Payment Type: PayPal' do
+        expect(subject).to eq('Payment Type: PayPal')
+      end
+    end
+
+    context 'when type is VenmoAccount' do
+      let(:type) { 'VenmoAccount' }
+
+      it 'returns "Payment Type: Venmo' do
+        expect(subject).to eq('Payment Type: Venmo')
       end
     end
   end

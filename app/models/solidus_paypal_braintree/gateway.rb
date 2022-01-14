@@ -64,6 +64,12 @@ module SolidusPaypalBraintree
 
     preference(:enable_venmo_funding, :boolean, default: false)
 
+    # When on mobile, paying with Venmo, the user may be returned to the same store tab
+    # depending on if their browser supports it, otherwise a new tab will be created
+    # However, returning to a new tab may break the payment checkout flow for some stores, for example,
+    # if they are single-page applications (SPA). Set this to false if this is the case
+    preference(:venmo_new_tab_support, :boolean, default: true)
+
     def partial_name
       "paypal_braintree"
     end
@@ -343,6 +349,10 @@ module SolidusPaypalBraintree
         params[:options][:paypal] = { payee_email: paypal_email }
       end
 
+      if source.venmo? && venmo_business_profile_id
+        params[:options][:venmo] = { profile_id: venmo_business_profile_id }
+      end
+
       if merchant_account_id = merchant_account_for(source, options)
         params[:merchant_account_id] = merchant_account_id
       end
@@ -409,6 +419,12 @@ module SolidusPaypalBraintree
       end
 
       params
+    end
+
+    # override with the Venmo business profile that you want to use for transactions,
+    # or leave it to be nil if want Braintree to use your default account
+    def venmo_business_profile_id
+      nil
     end
   end
 end
