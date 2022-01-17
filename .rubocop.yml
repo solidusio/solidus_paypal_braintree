@@ -40,6 +40,10 @@ RSpec/NamedSubject:
 RSpec/NestedGroups:
   Max: 8
 
+# We don't use the FactoryBot mixin
+RSpec/FactoryBot/SyntaxMethods:
+  Enabled: false
+
 RSpec/VerifiedDoubles:
   # Sometimes you really need an "anything" double
   IgnoreSymbolicNames: true
