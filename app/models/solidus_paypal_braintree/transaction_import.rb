@@ -46,7 +46,7 @@ module SolidusPaypalBraintree
           order.shipping_address = order.billing_address = address
           # work around a bug in most solidus versions
           # about tax zone cachine between address changes
-          order.instance_variable_set("@tax_zone", nil)
+          order.instance_variable_set(:@tax_zone, nil)
         end
 
         payment = order.payments.new(
