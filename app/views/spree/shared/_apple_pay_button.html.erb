@@ -3,7 +3,6 @@
 <button id="apple-pay-button" class="apple-pay-button"></button>
 
 <script>
-  var applePayButtonElement = document.getElementById('apple-pay-button');
   var applePayOptions = {
     paymentMethodId: <%= id %>,
     storeName: "<%= current_store.name %>",
@@ -22,6 +21,4 @@
       countryCode: '<%= address.country.iso %>'
     }
   };
-  var button = new SolidusPaypalBraintree.createApplePayButton(applePayButtonElement, applePayOptions);
-  button.initialize();
 </script>
