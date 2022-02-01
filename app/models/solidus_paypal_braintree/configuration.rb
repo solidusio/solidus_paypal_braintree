@@ -26,5 +26,16 @@ module SolidusPaypalBraintree
 
       validates attribute_name, inclusion: desc[:availables]
     end
+
+    preference :venmo_button_color, :preference_select, default: 'blue'
+    preference :venmo_button_width, :preference_select, default: '320'
+
+    def preferred_venmo_button_color_options
+      [["Blue", "blue"], ["White", "white"]]
+    end
+
+    def preferred_venmo_button_width_options
+      [["280", "280"], ["320", "320"], ["375", "375"]]
+    end
   end
 end

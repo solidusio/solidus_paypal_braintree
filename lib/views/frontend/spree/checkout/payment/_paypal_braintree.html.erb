@@ -16,4 +16,8 @@
   <%= render "spree/shared/apple_pay_button", id: id %>
 <% end %>
 
+<% if current_store.braintree_configuration.venmo? %>
+  <%= render "spree/shared/venmo_button", payment_method: payment_method %>
+<% end %>
+
 <%= render "spree/shared/braintree_errors" %>

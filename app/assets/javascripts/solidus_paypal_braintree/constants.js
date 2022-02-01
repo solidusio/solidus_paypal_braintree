@@ -32,6 +32,10 @@ SolidusPaypalBraintree = {
 
       applepayButton: function() {
         return SolidusPaypalBraintree.ApplepayButton;
+      },
+
+      venmoButton: function() {
+        return SolidusPaypalBraintree.VenmoButton;
       }
     }
   },
@@ -61,6 +65,10 @@ SolidusPaypalBraintree = {
 
   createApplePayButton: function() {
     return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.classes.applepayButton(), arguments);
+  },
+
+  createVenmoButton: function() {
+    return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.classes.venmoButton(), arguments);
   },
 
   _factory: function(klass, args) {

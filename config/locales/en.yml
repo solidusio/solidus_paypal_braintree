@@ -8,6 +8,7 @@ en:
         apple_pay: Apple Pay
         credit_card: Credit Card
         three_d_secure: 3D Secure
+        venmo: Venmo
   spree:
     admin:
       tab:
@@ -39,11 +40,16 @@ en:
       cvv_verification_failed: "CVV did not pass verification."
       threeds:
         authentication_failed: "3D Secure authentication failed. Please try again using a different payment method."
+      venmo:
+        canceled: "App is not available or you aborted the payment flow."
+        desktop_canceled: "Venmo authorization was canceled by closing the Venmo Desktop modal."
+        app_canceled: "Payment flow was canceled."
     payment_type:
       label: Payment Type
       apple_pay_card: Apple Pay
       credit_card: Credit Card
       pay_pal_account: PayPal
+      venmo_account: Venmo
     configurations:
       title: Braintree Configurations
       tab: Braintree
