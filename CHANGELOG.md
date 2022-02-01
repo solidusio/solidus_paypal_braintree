@@ -1,5 +1,30 @@
 # Changelog
 
+## [v1.1.0](https://github.com/solidusio/solidus_paypal_braintree/tree/v1.1.0) (2022-02-01)
+
+[Full Changelog](https://github.com/solidusio/solidus_paypal_braintree/compare/v1.0.0...v1.1.0)
+
+**Closed issues:**
+
+- solidus-frontend dependency still exists  [\#294](https://github.com/solidusio/solidus_paypal_braintree/issues/294)
+- Could we get a new release? [\#259](https://github.com/solidusio/solidus_paypal_braintree/issues/259)
+
+**Merged pull requests:**
+
+- Lower ActiveRecord::Migration version in add\_paypal\_funding\_source [\#314](https://github.com/solidusio/solidus_paypal_braintree/pull/314) ([mamhoff](https://github.com/mamhoff))
+- Fix rubocop warnings [\#313](https://github.com/solidusio/solidus_paypal_braintree/pull/313) ([mamhoff](https://github.com/mamhoff))
+- Add skip\_avs and skip\_cvv AVS Result Mapping [\#312](https://github.com/solidusio/solidus_paypal_braintree/pull/312) ([mamhoff](https://github.com/mamhoff))
+- Integrate Braintree Venmo [\#311](https://github.com/solidusio/solidus_paypal_braintree/pull/311) ([RyanofWoods](https://github.com/RyanofWoods))
+- Require MFA for RubyGems actions [\#306](https://github.com/solidusio/solidus_paypal_braintree/pull/306) ([RyanofWoods](https://github.com/RyanofWoods))
+- Add Venmo as a PayPal funding option for checkout [\#305](https://github.com/solidusio/solidus_paypal_braintree/pull/305) ([RyanofWoods](https://github.com/RyanofWoods))
+- Update PayPal configuration steps in README [\#300](https://github.com/solidusio/solidus_paypal_braintree/pull/300) ([RyanofWoods](https://github.com/RyanofWoods))
+- Update to Braintree 3.4.0 [\#299](https://github.com/solidusio/solidus_paypal_braintree/pull/299) ([pelargir](https://github.com/pelargir))
+- Remove remaining frontend dependencies [\#296](https://github.com/solidusio/solidus_paypal_braintree/pull/296) ([Rtwena](https://github.com/Rtwena))
+- Set sandbox mode if environment is sandbox [\#291](https://github.com/solidusio/solidus_paypal_braintree/pull/291) ([alexblackie](https://github.com/alexblackie))
+- Update to Solidus 3.0 [\#286](https://github.com/solidusio/solidus_paypal_braintree/pull/286) ([MinasMazar](https://github.com/MinasMazar))
+- Added 3ds errors in it locale [\#285](https://github.com/solidusio/solidus_paypal_braintree/pull/285) ([thomasrossetto](https://github.com/thomasrossetto))
+- Make use of data collector in JS configurable [\#238](https://github.com/solidusio/solidus_paypal_braintree/pull/238) ([mamhoff](https://github.com/mamhoff))
+
 ## [v1.0.0](https://github.com/solidusio/solidus_paypal_braintree/tree/v1.0.0) (2020-11-11)
 
 [Full Changelog](https://github.com/solidusio/solidus_paypal_braintree/compare/v0.4.0...v1.0.0)
@@ -21,7 +46,7 @@
 - On PayPal payment user shipping address gets set with uncorrect firstname and lastname values if they contain a space [\#226](https://github.com/solidusio/solidus_paypal_braintree/issues/226)
 - Default Braintree configuration on store creation overwrites custom configuration [\#224](https://github.com/solidusio/solidus_paypal_braintree/issues/224)
 - Undefined local variable or method `id' error on payment page [\#222](https://github.com/solidusio/solidus_paypal_braintree/issues/222)
-- Can't render JSON about an order as SolidusPaypalBraintree::Source doesn't have a `expiration\_month` method [\#221](https://github.com/solidusio/solidus_paypal_braintree/issues/221)
+- Can't render JSON about an order as SolidusPaypalBraintree::Source doesn't have a `expiration_month` method [\#221](https://github.com/solidusio/solidus_paypal_braintree/issues/221)
 - Paypal payment return invalid address [\#218](https://github.com/solidusio/solidus_paypal_braintree/issues/218)
 - Random Travis CI Failures [\#215](https://github.com/solidusio/solidus_paypal_braintree/issues/215)
 - Add Association for spree user to customer [\#210](https://github.com/solidusio/solidus_paypal_braintree/issues/210)
@@ -251,7 +276,35 @@
 - Default to US country code [\#32](https://github.com/solidusio/solidus_paypal_braintree/pull/32) ([adammathys](https://github.com/adammathys))
 - Allow JSON requests to transactions controller [\#31](https://github.com/solidusio/solidus_paypal_braintree/pull/31) ([luukveenis](https://github.com/luukveenis))
 - Vcr improvements [\#30](https://github.com/solidusio/solidus_paypal_braintree/pull/30) ([cbrunsdon](https://github.com/cbrunsdon))
+- Only prompt for email for not logged in users [\#29](https://github.com/solidusio/solidus_paypal_braintree/pull/29) ([luukveenis](https://github.com/luukveenis))
 - Implement API Controller to generate client tokens [\#28](https://github.com/solidusio/solidus_paypal_braintree/pull/28) ([stewart](https://github.com/stewart))
+- Conditionally load frontend code [\#27](https://github.com/solidusio/solidus_paypal_braintree/pull/27) ([adammathys](https://github.com/adammathys))
+- Show Source token in source\_view [\#26](https://github.com/solidusio/solidus_paypal_braintree/pull/26) ([stewart](https://github.com/stewart))
+- Set token on Source when creating customer profile [\#25](https://github.com/solidusio/solidus_paypal_braintree/pull/25) ([stewart](https://github.com/stewart))
+- Validate address before processing imports [\#24](https://github.com/solidusio/solidus_paypal_braintree/pull/24) ([luukveenis](https://github.com/luukveenis))
+- Add tests for gateway and source models [\#23](https://github.com/solidusio/solidus_paypal_braintree/pull/23) ([luukveenis](https://github.com/luukveenis))
+- Raise error for invalid transactions and add specs [\#22](https://github.com/solidusio/solidus_paypal_braintree/pull/22) ([luukveenis](https://github.com/luukveenis))
+- Save payment type to source [\#21](https://github.com/solidusio/solidus_paypal_braintree/pull/21) ([luukveenis](https://github.com/luukveenis))
+- Correctly parse error message for failure response [\#20](https://github.com/solidusio/solidus_paypal_braintree/pull/20) ([stewart](https://github.com/stewart))
+- Upcase country [\#19](https://github.com/solidusio/solidus_paypal_braintree/pull/19) ([cbrunsdon](https://github.com/cbrunsdon))
+- Add Source View [\#18](https://github.com/solidusio/solidus_paypal_braintree/pull/18) ([stewart](https://github.com/stewart))
+- Add actions, can\_\*? predicate methods to Source [\#17](https://github.com/solidusio/solidus_paypal_braintree/pull/17) ([stewart](https://github.com/stewart))
+- End to end transaction [\#16](https://github.com/solidusio/solidus_paypal_braintree/pull/16) ([cbrunsdon](https://github.com/cbrunsdon))
+- Correct foreign\_key creation for payment\_method reference on Source [\#15](https://github.com/solidusio/solidus_paypal_braintree/pull/15) ([stewart](https://github.com/stewart))
+- Update Gateway Configuration [\#14](https://github.com/solidusio/solidus_paypal_braintree/pull/14) ([stewart](https://github.com/stewart))
+- Use Braintree Customer ID, Payment Method ID when creating transactions [\#13](https://github.com/solidusio/solidus_paypal_braintree/pull/13) ([stewart](https://github.com/stewart))
+- Register gateway with Solidus [\#12](https://github.com/solidusio/solidus_paypal_braintree/pull/12) ([adammathys](https://github.com/adammathys))
+- Add Gateway\#cancel [\#11](https://github.com/solidusio/solidus_paypal_braintree/pull/11) ([adammathys](https://github.com/adammathys))
+- Implement Gateway\#create\_profile [\#10](https://github.com/solidusio/solidus_paypal_braintree/pull/10) ([stewart](https://github.com/stewart))
+- Add option to send extra options to Braintree [\#9](https://github.com/solidusio/solidus_paypal_braintree/pull/9) ([adammathys](https://github.com/adammathys))
+- Convert cents to dollars [\#8](https://github.com/solidusio/solidus_paypal_braintree/pull/8) ([adammathys](https://github.com/adammathys))
+- Add ability to capture authorized payments [\#7](https://github.com/solidusio/solidus_paypal_braintree/pull/7) ([adammathys](https://github.com/adammathys))
+- VCR Fixups [\#6](https://github.com/solidusio/solidus_paypal_braintree/pull/6) ([stewart](https://github.com/stewart))
+- Add support for refunding payments [\#5](https://github.com/solidusio/solidus_paypal_braintree/pull/5) ([adammathys](https://github.com/adammathys))
+- Add implementation for authorization transactions [\#4](https://github.com/solidusio/solidus_paypal_braintree/pull/4) ([stewart](https://github.com/stewart))
+- Implement voiding transactions [\#3](https://github.com/solidusio/solidus_paypal_braintree/pull/3) ([adammathys](https://github.com/adammathys))
+- Some minor clean-up [\#2](https://github.com/solidusio/solidus_paypal_braintree/pull/2) ([adammathys](https://github.com/adammathys))
+- FIx Up Test Environment [\#1](https://github.com/solidusio/solidus_paypal_braintree/pull/1) ([stewart](https://github.com/stewart))
 
 
 
