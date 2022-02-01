@@ -277,8 +277,11 @@ you'll need to configure PayPal to return the phone back when it returns the
 address used by the user:
 
 1. Log into your PayPal account
-2. Go to Profile -> My Selling Tools -> Website preferences
-3. Set Contact Telephone to `On (Required Field)` or `On (Optional Field)`
+2. Hover over the user in the Navbar to get the dropdown
+3. Click on Account Settings
+4. In the left panel under Products & Services, click Website Payments
+5. Click Update for Website Preferences
+6. Set Contact Telephone to `On (Required Field)` or `On (Optional Field)`
 
 Using the option `Off` will not make the address valid and will raise a
 validation error.
