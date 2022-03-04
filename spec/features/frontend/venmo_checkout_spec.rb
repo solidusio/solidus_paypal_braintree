@@ -80,7 +80,7 @@ describe "Checkout", type: :feature, js: true do
           next_checkout_step
           finalize_checkout
 
-          expect(Spree::Order.last.complete?).to eq(true)
+          expect(Spree::Order.last.complete?).to be(true)
         end
       end
 
@@ -95,8 +95,8 @@ describe "Checkout", type: :feature, js: true do
           next_checkout_step
           finalize_checkout
 
-          expect(Spree::Order.last.complete?).to eq(true)
-          expect(Spree::Payment.last.source.venmo?).to eq(true)
+          expect(Spree::Order.last.complete?).to be(true)
+          expect(Spree::Payment.last.source.venmo?).to be(true)
         end
       end
 
@@ -124,7 +124,7 @@ describe "Checkout", type: :feature, js: true do
         next_checkout_step
         finalize_checkout
 
-        expect(Spree::Order.all.all?(&:complete?)).to eq(true)
+        expect(Spree::Order.all.all?(&:complete?)).to be(true)
       end
     end
   end
