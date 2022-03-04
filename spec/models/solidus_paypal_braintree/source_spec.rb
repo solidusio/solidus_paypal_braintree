@@ -26,7 +26,7 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
 
         result = subject.save
 
-        expect(result).to eq(true)
+        expect(result).to be(true)
         expect(subject.paypal_funding_source).to be_nil
       end
 
@@ -35,9 +35,9 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
 
         result = subject.save
 
-        expect(result).to eq(true)
+        expect(result).to be(true)
         expect(subject.paypal_funding_source).to eq('applepay')
-        expect(subject.applepay_funding?).to eq(true)
+        expect(subject.applepay_funding?).to be(true)
       end
 
       it "doesn't become nil when the payment_type is a PAYPAL" do
@@ -46,8 +46,8 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
 
         result = subject.save
 
-        expect(result).to eq(true)
-        expect(subject.venmo_funding?).to eq(true)
+        expect(result).to be(true)
+        expect(subject.venmo_funding?).to be(true)
       end
 
       it 'becomes nil when the payment_type is a CREDIT CARD' do
@@ -56,7 +56,7 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
 
         result = subject.save
 
-        expect(result).to eq(true)
+        expect(result).to be(true)
         expect(subject.paypal_funding_source).to be_nil
       end
 
@@ -66,7 +66,7 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
 
         result = subject.save
 
-        expect(result).to eq(true)
+        expect(result).to be(true)
         expect(subject.paypal_funding_source).to be_nil
       end
     end
@@ -333,13 +333,13 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     context 'when the source token is not known at Braintree' do
       include_context 'with unknown source token'
 
-      it { is_expected.to be(nil) }
+      it { is_expected.to be_nil }
     end
 
     context 'when the source token is nil' do
       include_context 'with nil source token'
 
-      it { is_expected.to be(nil) }
+      it { is_expected.to be_nil }
     end
   end
 
