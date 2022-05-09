@@ -414,6 +414,8 @@ module SolidusPaypalBraintree
     def customer_profile_params(payment)
       params = {}
 
+      params[:email] = payment&.order&.email
+
       if store_in_vault && payment.source.try(:nonce)
         params[:payment_method_nonce] = payment.source.nonce
       end

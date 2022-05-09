@@ -1,0 +1,79 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.sandbox.braintreegateway.com/merchants/vn32pmzn67tzbcd9/customers
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <customer>
+          <email>braintree@customers.com</email>
+          <payment-method-nonce>fake-valid-nonce</payment-method-nonce>
+        </customer>
+    headers:
+      Accept-Encoding:
+      - gzip
+      Accept:
+      - application/xml
+      User-Agent:
+      - Braintree Ruby Gem 3.4.0
+      X-Apiversion:
+      - '6'
+      Content-Type:
+      - application/xml
+      Authorization:
+      - Basic cTM3ZnF0eXc0cDJzN2Zidzo2M2RhYmNjOWFmMTcyNDhlZjQyMTdjZmRlYWEwM2UwMQ==
+  response:
+    status:
+      code: 201
+      message: ''
+    headers:
+      Date:
+      - Fri, 10 Dec 2021 10:53:18 GMT
+      Content-Type:
+      - application/xml; charset=utf-8
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      X-Authentication:
+      - basic_auth
+      X-User:
+      - mp9fm99xgbv5d7nc
+      Vary:
+      - Accept-Encoding, Origin
+      Content-Encoding:
+      - gzip
+      Etag:
+      - W/"435fd70a86beeb87bca285ff652a7010"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Runtime:
+      - '0.366158'
+      X-Request-Id:
+      - e7e1e4f3-b4cb-4f66-83d8-68956318e262
+      Content-Security-Policy:
+      - frame-ancestors 'self'
+      X-Broxyid:
+      - e7e1e4f3-b4cb-4f66-83d8-68956318e262
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Paypal-Debug-Id:
+      - ed5d938d152c4
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAJ4xs2EAA6xW23KjOBB9z1e4eCeAsR07hcnW1GxStVU7+7DjzE5epgRqG8VCIpLw7etXwtx8wXEq84ZOn241rdNSBw+blPZWICThbGp5t67VAxZzTNhias2+P9pj6yG8CeJcKp6CCG96vYDgcDwc+kN35LmBo1cG1MY4QUzZer1ifj9Ld2x0p3ZRjCeB07Ya9pwIqWyGUugxQqeWEjlYTmGiqMsS8zRDbHuCQ4oIDSOBCFMC4I8qWXmrPQJnbzbELOHsNOwcbU6wNUSSqDMpCEAKsI1UT20zmFpYLxVJwQr7bt+zvb7tud89937o33t3L4HTOBT+eYY/5t847Pcvfs2eE6BY7lNaUB4hagr703/e4aeJevnvr/k/X2fe37vZ+tvrn+vAaTjlT2Ci7BgJLMs0kBBoaxnroX2PaCwilGpN2AhjAVJWeKmGu0oGJVadgH0olTbckLu1UBI6FVHtdl4XpVUaTagq8Q4SbBQwbOp8kUZ5jChRXVsJWOg26jBmXCp9Brq3IJwMPFfXrA21fyfXOt4WsI1olqB+548fM/1rmCzXZ0Did6gXCl70kQkTgeiK8rlGKaN8sl2KGE6HdLWkWThwvf54bDisxo3ubbNd+Ewk0pnV6zYj4RRrJXdVyYjSXHoE0XDGloyvmY7UYA1tX20+t4mUOWIxtPmnxtrx8wX+QJs21GuumzPkkzimlZTulnD2b8uhRis+hoiopiL7ZWOco5xWBYg4p4CYFZqTMNTC2JBzoU/Z1j2aU1OIVtBjS+UCm4yIIh875UwlodfXz8kxeIa9BSTMMRzSC/SADfg49zmiEkqvViZNIeOnx2H04znHTx7FT8nq5XHy+tMbD7H/5S3+4W6PLvvCOwFEVaJV29JWC6toJEULsHNBw0SpTN47DpISlLytn9aFLs8abc276mRomwJTv1JQCce/KF9wZ6Ub5jZjiwdgKyI4M4SpRAxHfKOfiDp+vaNWtWnNCLFlk9oBWlGLR2AQeuOxFzjlorLpVASnrUargJogIEO6IN+4tpXfjY3jPC4mk8a/wSqazCMZC5KZkzx8NZueV3wJLJyss9e3VB/9flkZc0be8urW1JF1aYh+x4V+DEYe8gfjyO9P4iGejEcjNMSAwJ/7Aw3oW63LtY79G+7JFbCU2xIvOyRZ21seQqexb9iukhBpM1BrLpZ2UQ6y69T8OWo5kThHI8kBUNzoQXm7w9mJ5vjqP5lZPnIVXp5XLk8rl2aVKyaVq+aUi1PKhRnlygnl2vnk2unk6tnk3cnk3bnktzyan+61wGnJsV6AXjZ6C2/+BwAA//8DAM4vgB+aDQAA
+  recorded_at: Fri, 10 Dec 2021 10:53:18 GMT
+recorded_with: VCR 6.0.0

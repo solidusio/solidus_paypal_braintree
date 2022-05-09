@@ -544,6 +544,56 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       end
     end
 
+    describe '#customer_profile_params' do
+      subject(:params) { gateway.send(:customer_profile_params, payment) }
+
+      let(:payment) do
+        build(:payment, {
+          payment_method: gateway,
+          source: source
+        })
+      end
+
+      context 'when payment does not belong to an order' do
+        before { allow(payment).to receive(:order).and_return(nil) }
+
+        it 'has the email param as nil' do
+          expect(subject[:email]).to be_nil
+        end
+      end
+
+      context 'when payment belongs to an order' do
+        it 'has no email param' do
+          expect(subject[:email]).to eq(payment.order.email)
+        end
+      end
+    end
+
+    describe "Braintree Customer" do
+      subject(:customer) { braintree.customer.create(params).customer }
+
+      let(:params) { gateway.send(:customer_profile_params, payment) }
+
+      let(:payment) do
+        build(:payment, {
+          payment_method: gateway,
+          source: source
+        })
+      end
+
+      cassette_options = {
+        cassette_name: 'gateway/customer',
+        match_requests_on: [:braintree_uri]
+      }
+
+      context "with customer", vcr: cassette_options do
+        it 'saves the customer email correctly' do
+          allow(payment.order).to receive(:email).and_return('braintree@customers.com')
+          expect(subject.email).to eq(payment.order.email)
+        end
+      end
+    end
+
     shared_examples "sources_by_order" do
       let(:order) { FactoryBot.create :order, user: user, state: "complete", completed_at: Time.current }
       let(:gateway) { new_gateway.tap(&:save!) }
