@@ -20,7 +20,7 @@ gem 'sassc-rails', platforms: :mri
 
 gem 'bourbon'
 
-case ENV['DB']
+case ENV.fetch('DB', nil)
 when 'mysql'
   gem 'mysql2'
 when 'postgresql'
