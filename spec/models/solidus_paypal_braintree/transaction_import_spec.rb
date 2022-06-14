@@ -44,7 +44,7 @@ describe SolidusPaypalBraintree::TransactionImport do
       it "sets useful error messages" do
         transaction_import.valid?
         expect(transaction_import.errors.full_messages).
-          to eq ["Address is invalid", "Address zip can't be blank"]
+          to eq ["Address is invalid", "Address Zip can't be blank"]
       end
     end
   end

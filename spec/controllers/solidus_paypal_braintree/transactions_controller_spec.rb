@@ -65,7 +65,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
           SolidusPaypalBraintree::TransactionsController::InvalidImportError,
           "Import invalid: " \
           "Address is invalid, " \
-          "Address city can't be blank"
+          "Address City can't be blank"
         )
       end
     end
