@@ -19,9 +19,11 @@ module SolidusPaypalBraintree
     end
 
     initializer "register_solidus_paypal_braintree_gateway", after: "spree.register.payment_methods" do |app|
-      app.config.spree.payment_methods << SolidusPaypalBraintree::Gateway
-      SolidusPaypalBraintree::Gateway.allowed_admin_form_preference_types << :preference_select
-      Spree::PermittedAttributes.source_attributes.concat [:nonce, :payment_type, :paypal_funding_source]
+      config.to_prepare do
+        app.config.spree.payment_methods << SolidusPaypalBraintree::Gateway
+        SolidusPaypalBraintree::Gateway.allowed_admin_form_preference_types.push(:preference_select).uniq!
+        ::Spree::PermittedAttributes.source_attributes.concat([:nonce, :payment_type, :paypal_funding_source]).uniq!
+      end
     end
 
     if SolidusSupport.frontend_available?

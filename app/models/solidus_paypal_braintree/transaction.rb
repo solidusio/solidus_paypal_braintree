@@ -18,8 +18,8 @@ module SolidusPaypalBraintree
         errors.add(:payment_method, 'Must be braintree')
       end
       if address && !address.valid?
-        address.errors.each do |field, error|
-          errors.add(:address, "#{field} #{error}")
+        address.errors.each do |error|
+          errors.add(:address, error.full_message)
         end
       end
     end

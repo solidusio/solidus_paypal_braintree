@@ -12,8 +12,8 @@ module SolidusPaypalBraintree
       errors.add("Address", "is invalid") if address && !address.valid?
 
       if !transaction.valid?
-        transaction.errors.each do |field, error|
-          errors.add(field, error)
+        transaction.errors.each do |error|
+          errors.add(error.attribute, error.message)
         end
       end
       errors.none?

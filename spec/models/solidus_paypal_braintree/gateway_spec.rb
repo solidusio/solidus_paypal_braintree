@@ -420,22 +420,22 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     end
 
     describe '#try_void' do
-      subject { gateway.try_void(instance_double('Spree::Payment', response_code: source.token)) }
+      subject { gateway.try_void(instance_double(Spree::Payment, response_code: source.token)) }
 
       let(:transaction_request) do
-        class_double('Braintree::Transaction',
+        class_double(Braintree::Transaction,
           find: transaction_response)
       end
 
       before do
-        client = instance_double('Braintree::Gateway')
+        client = instance_double(Braintree::Gateway)
         allow(client).to receive(:transaction) { transaction_request }
         allow(gateway).to receive(:braintree) { client }
       end
 
       context 'with voidable payment' do
         let(:transaction_response) do
-          instance_double('Braintree::Transaction',
+          instance_double(Braintree::Transaction,
             status: Braintree::Transaction::Status::Authorized)
         end
 
@@ -473,7 +473,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
 
       context 'with voidable paypal payment' do
         let(:transaction_response) do
-          instance_double('Braintree::Transaction',
+          instance_double(Braintree::Transaction,
             status: Braintree::Transaction::Status::SettlementPending)
         end
 
@@ -485,7 +485,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
 
       context 'with non-voidable payment' do
         let(:transaction_response) do
-          instance_double('Braintree::Transaction',
+          instance_double(Braintree::Transaction,
             status: Braintree::Transaction::Status::Settled)
         end
 

@@ -54,7 +54,7 @@ RSpec.describe SolidusPaypalBraintree::CheckoutsController, type: :controller do
 
       it 'creates a payment source' do
         expect { patch_update }.
-          to change { SolidusPaypalBraintree::Source.count }.
+          to change(SolidusPaypalBraintree::Source, :count).
           from(0).
           to(1)
       end
@@ -88,11 +88,11 @@ RSpec.describe SolidusPaypalBraintree::CheckoutsController, type: :controller do
       end
 
       it "does not change the number of payments in the system" do
-        expect{ patch_update }.not_to(change{ ::Spree::Payment.count })
+        expect{ patch_update }.not_to(change(::Spree::Payment, :count))
       end
 
       it "does not change the number of sources in the system" do
-        expect{ patch_update }.not_to(change{ SolidusPaypalBraintree::Source.count })
+        expect{ patch_update }.not_to(change(SolidusPaypalBraintree::Source, :count))
       end
     end
   end
