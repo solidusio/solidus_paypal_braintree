@@ -1,5 +1,21 @@
 # Changelog
 
+## [v1.1.1](https://github.com/solidusio/solidus_paypal_braintree/tree/v1.1.1) (2022-06-23)
+
+[Full Changelog](https://github.com/solidusio/solidus_paypal_braintree/compare/v1.1.0...v1.1.1)
+
+**Closed issues:**
+
+- StateMachines::InvalidTransition:  Cannot transition state via :invalidate from :checkout \(Reason\(s\): Payment method can't be blank\) [\#320](https://github.com/solidusio/solidus_paypal_braintree/issues/320)
+- Enable Venmo [\#304](https://github.com/solidusio/solidus_paypal_braintree/issues/304)
+- Make the Venmo button testable from outside US contries [\#303](https://github.com/solidusio/solidus_paypal_braintree/issues/303)
+
+**Merged pull requests:**
+
+- Make gem compatible with Rails 7 [\#321](https://github.com/solidusio/solidus_paypal_braintree/pull/321) ([gsmendoza](https://github.com/gsmendoza))
+- Rubocop -a on spec files [\#317](https://github.com/solidusio/solidus_paypal_braintree/pull/317) ([tvdeyen](https://github.com/tvdeyen))
+- Add email to Braintree customer [\#310](https://github.com/solidusio/solidus_paypal_braintree/pull/310) ([RyanofWoods](https://github.com/RyanofWoods))
+
 ## [v1.1.0](https://github.com/solidusio/solidus_paypal_braintree/tree/v1.1.0) (2022-02-01)
 
 [Full Changelog](https://github.com/solidusio/solidus_paypal_braintree/compare/v1.0.0...v1.1.0)
