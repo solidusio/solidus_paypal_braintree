@@ -70,8 +70,7 @@ describe "Checkout", type: :feature, js: true do
       end
     end
 
-    # TODO: Reenable these specs once Venmo is enabled on the Braintree sandbox.
-    xcontext 'with Venmo transactions', vcr: { cassette_name: 'checkout/valid_venmo_transaction' } do
+    context 'with Venmo transactions', vcr: { cassette_name: 'checkout/valid_venmo_transaction' } do
       before do
         fake_venmo_successful_tokenization
       end
