@@ -142,7 +142,11 @@ describe "Checkout", type: :feature, js: true do
     order.update!(user: user, number: order_number) # constant order number for VCRs
 
     allow_any_instance_of(Spree::CheckoutController).to receive_messages(current_order: order)
-    allow_any_instance_of(Spree::CheckoutController).to receive_messages(try_spree_current_user: Spree::User.first)
+
+    first_user = Spree::User.first
+    allow_any_instance_of(Spree::CheckoutController).to receive_messages(try_spree_current_user: first_user)
+    allow_any_instance_of(Spree::CheckoutController).to receive_messages(spree_current_user: first_user)
+
     allow_any_instance_of(Spree::Payment).to receive(:gateway_order_id).and_return(order_number)
 
     visit spree.checkout_state_path(order.state)
