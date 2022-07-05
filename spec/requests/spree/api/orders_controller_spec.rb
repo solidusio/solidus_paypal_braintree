@@ -29,7 +29,7 @@ describe Spree::Api::OrdersController, type: :request do
       it "can be rendered correctly" do
         get "/api/orders/#{order.number}"
 
-        expect(response.status).to eq 200
+        expect(response).to have_http_status :ok
       end
     end
   end

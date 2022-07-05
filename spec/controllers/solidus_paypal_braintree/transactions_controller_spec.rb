@@ -170,7 +170,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
 
         it "has a failed status" do
           post_create
-          expect(response.status).to eq 422
+          expect(response).to have_http_status :unprocessable_entity
         end
 
         it "returns the errors as JSON" do
