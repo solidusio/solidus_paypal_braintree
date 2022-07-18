@@ -1,0 +1,77 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.sandbox.braintreegateway.com/merchants/652zwb86tqk9v5wz/customers
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <customer>
+          <email>solidus@example.com</email>
+          <payment-method-nonce>fake-venmo-account-nonce</payment-method-nonce>
+        </customer>
+    headers:
+      Accept-Encoding:
+      - gzip
+      Accept:
+      - application/xml
+      User-Agent:
+      - Braintree Ruby Gem 3.4.0
+      X-Apiversion:
+      - '6'
+      Content-Type:
+      - application/xml
+      Authorization:
+      - Basic bnl2eGpncnlid3k1amNtODpjZWMxN2Q3NDM2ODU4MjM3M2ZlMjQyOTJiMjQyNDAwYg==
+  response:
+    status:
+      code: 422
+      message: ''
+    headers:
+      Date:
+      - Tue, 19 Jul 2022 09:51:02 GMT
+      Content-Type:
+      - application/xml; charset=utf-8
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      X-Authentication:
+      - basic_auth
+      X-User:
+      - 4b9yb8scv4785hg6
+      Vary:
+      - Accept-Encoding, Origin
+      Content-Encoding:
+      - gzip
+      Cache-Control:
+      - no-cache
+      X-Runtime:
+      - '0.582868'
+      X-Request-Id:
+      - 9d7024ea-df00-482e-910d-75ff42f6217b
+      Content-Security-Policy:
+      - frame-ancestors 'self'
+      X-Broxyid:
+      - 9d7024ea-df00-482e-910d-75ff42f6217b
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Paypal-Debug-Id:
+      - cb757227d5454
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAIZ+1mIAA6yST0sDMRDF7/0UIRdP2W3Bg4U0FaSKoCLUnmWaHdvgJrMk2dr99m63m/7BPXrLzHvz8mMSOd/bku3QB0NuxifZmDN0mgrjNjO++ngUd3yuRhIqI9B78sJjqMgFVCPGZNcKh+OpYLGpcMbBe2h43ks7dJYEaE21i8fe8EDSknqu206LhWp6OxlPZd6dL0WI0Zt1HbHPC41dU8mVI6dR5if5ashiCLBB9UB1WbibyLRHaCPeobHoInvFuKWC/Zi4Zcvnt6eXxedquWBdZibzNH6Gzq+o+zItKP+zhkuDrMCDTV5dh0gWz1FowZQqUGmKOtzjHmxVYqbJthmdlIzVkV3Yjl10rOoLvlFcXS/6xQzae95LiIMz8f3b3tp3GfhYvwAAAP//AwBqQpbClQIAAA==
+  recorded_at: Tue, 19 Jul 2022 09:51:02 GMT
+recorded_with: VCR 6.1.0
