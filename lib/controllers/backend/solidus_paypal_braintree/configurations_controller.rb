@@ -30,6 +30,7 @@ module SolidusPaypalBraintree
         permit(configuration_fields: [
           :paypal,
           :apple_pay,
+          :venmo,
           :credit_card,
           :three_d_secure,
           :preferred_paypal_button_locale,
@@ -38,7 +39,9 @@ module SolidusPaypalBraintree
           :preferred_paypal_button_label,
           :preferred_paypal_button_tagline,
           :preferred_paypal_button_layout,
-          :preferred_paypal_button_messaging
+          :preferred_paypal_button_messaging,
+          :preferred_venmo_button_color,
+          :preferred_venmo_button_width
         ])
     end
   end

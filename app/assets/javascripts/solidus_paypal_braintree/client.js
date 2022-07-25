@@ -57,11 +57,15 @@ SolidusPaypalBraintree.Client = function(config) {
   this.useDataCollector = config.useDataCollector;
   this.usePaypal = config.usePaypal;
   this.useApplepay = config.useApplepay;
+  this.useVenmo = config.useVenmo;
+  this.flow = config.flow;
+  this.venmoNewTabSupported = config.newBrowserTabSupported
   this.useThreeDSecure = config.useThreeDSecure;
 
   this._braintreeInstance = null;
   this._dataCollectorInstance = null;
   this._paypalInstance = null;
+  this._venmoInstance = null;
   this._threeDSecureInstance = null;
 };
 
@@ -83,6 +87,10 @@ SolidusPaypalBraintree.Client.prototype.initialize = function() {
 
   if (this.useApplepay) {
     initializationPromise = initializationPromise.then(this._createApplepay.bind(this));
+  }
+
+  if (this.useVenmo) {
+    initializationPromise = initializationPromise.then(this._createVenmo.bind(this));
   }
 
   if (this.useThreeDSecure) {
@@ -114,6 +122,14 @@ SolidusPaypalBraintree.Client.prototype.getPaypalInstance = function() {
 **/
 SolidusPaypalBraintree.Client.prototype.getApplepayInstance = function() {
   return this._applepayInstance;
+};
+
+/**
+ * Returns the braintree Venmo instance
+ * @returns {external:"braintree.Venmo"} The Braintree Venmo that was initialized by this class
+**/
+SolidusPaypalBraintree.Client.prototype.getVenmoInstance = function() {
+  return this._venmoInstance;
 };
 
 /**
@@ -190,6 +206,24 @@ SolidusPaypalBraintree.Client.prototype._createApplepay = function() {
   }]).then(function (applePayInstance) {
     this._applepayInstance = applePayInstance;
     return applePayInstance;
+  }.bind(this));
+};
+
+SolidusPaypalBraintree.Client.prototype._createVenmo = function() {
+  return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.venmo.create, [{
+    client: this._braintreeInstance,
+    allowDesktop: true,
+    paymentMethodUsage: this.flow === 'vault' ? 'multi_use' : 'single_use',
+    allowNewBrowserTab: this.venmoNewTabSupported
+  }]).then(function (venmoInstance) {
+    // Verify browser support before proceeding.
+    if (!venmoInstance.isBrowserSupported()) {
+      console.log('Browser does not support Venmo');
+      return;
+    }
+
+    this._venmoInstance = venmoInstance;
+    return venmoInstance;
   }.bind(this));
 };
 

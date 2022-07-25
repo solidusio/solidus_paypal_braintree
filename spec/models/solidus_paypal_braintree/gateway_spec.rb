@@ -12,7 +12,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
   let(:user) { create :user }
 
   let(:source) do
-    SolidusPaypalBraintree::Source.new(
+    SolidusPaypalBraintree::Source.create!(
       nonce: 'fake-valid-nonce',
       user: user,
       payment_type: payment_type,
@@ -420,22 +420,22 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     end
 
     describe '#try_void' do
-      subject { gateway.try_void(instance_double('Spree::Payment', response_code: source.token)) }
+      subject { gateway.try_void(instance_double(Spree::Payment, response_code: source.token)) }
 
       let(:transaction_request) do
-        class_double('Braintree::Transaction',
+        class_double(Braintree::Transaction,
           find: transaction_response)
       end
 
       before do
-        client = instance_double('Braintree::Gateway')
+        client = instance_double(Braintree::Gateway)
         allow(client).to receive(:transaction) { transaction_request }
         allow(gateway).to receive(:braintree) { client }
       end
 
       context 'with voidable payment' do
         let(:transaction_response) do
-          instance_double('Braintree::Transaction',
+          instance_double(Braintree::Transaction,
             status: Braintree::Transaction::Status::Authorized)
         end
 
@@ -473,7 +473,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
 
       context 'with voidable paypal payment' do
         let(:transaction_response) do
-          instance_double('Braintree::Transaction',
+          instance_double(Braintree::Transaction,
             status: Braintree::Transaction::Status::SettlementPending)
         end
 
@@ -485,7 +485,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
 
       context 'with non-voidable payment' do
         let(:transaction_response) do
-          instance_double('Braintree::Transaction',
+          instance_double(Braintree::Transaction,
             status: Braintree::Transaction::Status::Settled)
         end
 
@@ -540,6 +540,56 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
 
         it "does not create a new customer profile" do
           expect(profile).to be_nil
+        end
+      end
+    end
+
+    describe '#customer_profile_params' do
+      subject(:params) { gateway.send(:customer_profile_params, payment) }
+
+      let(:payment) do
+        build(:payment, {
+          payment_method: gateway,
+          source: source
+        })
+      end
+
+      context 'when payment does not belong to an order' do
+        before { allow(payment).to receive(:order).and_return(nil) }
+
+        it 'has the email param as nil' do
+          expect(subject[:email]).to be_nil
+        end
+      end
+
+      context 'when payment belongs to an order' do
+        it 'has no email param' do
+          expect(subject[:email]).to eq(payment.order.email)
+        end
+      end
+    end
+
+    describe "Braintree Customer" do
+      subject(:customer) { braintree.customer.create(params).customer }
+
+      let(:params) { gateway.send(:customer_profile_params, payment) }
+
+      let(:payment) do
+        build(:payment, {
+          payment_method: gateway,
+          source: source
+        })
+      end
+
+      cassette_options = {
+        cassette_name: 'gateway/customer',
+        match_requests_on: [:braintree_uri]
+      }
+
+      context "with customer", vcr: cassette_options do
+        it 'saves the customer email correctly' do
+          allow(payment.order).to receive(:email).and_return('braintree@customers.com')
+          expect(subject.email).to eq(payment.order.email)
         end
       end
     end

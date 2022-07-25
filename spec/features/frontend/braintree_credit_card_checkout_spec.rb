@@ -5,6 +5,7 @@ shared_context "with frontend checkout setup" do
   let(:braintree) { new_gateway(active: true) }
   let!(:gateway) { create :payment_method }
   let(:three_d_secure_enabled) { false }
+  let(:venmo_enabled) { false }
   let(:card_number) { "4111111111111111" }
   let(:card_expiration) { "01/#{Time.now.utc.year + 2}" }
 
@@ -14,7 +15,8 @@ shared_context "with frontend checkout setup" do
     create(:store, payment_methods: [gateway, braintree]).tap do |store|
       store.braintree_configuration.update!(
         credit_card: true,
-        three_d_secure: three_d_secure_enabled
+        three_d_secure: three_d_secure_enabled,
+        venmo: venmo_enabled
       )
 
       braintree.update(
@@ -36,6 +38,7 @@ shared_context "with frontend checkout setup" do
 
     allow_any_instance_of(Spree::CheckoutController).to receive_messages(current_order: order)
     allow_any_instance_of(Spree::CheckoutController).to receive_messages(try_spree_current_user: user)
+    allow_any_instance_of(Spree::CheckoutController).to receive_messages(spree_current_user: user)
     allow_any_instance_of(Spree::Payment).to receive(:number).and_return("123ABC")
     allow_any_instance_of(SolidusPaypalBraintree::Source).to receive(:nonce).and_return("fake-valid-nonce")
 
@@ -77,6 +80,8 @@ describe 'entering credit card details', type: :feature, js: true do
     match_requests_on: [:braintree_uri]
   } do
     include_context "with frontend checkout setup"
+    # To ensure Venmo inputs do not conflict with checkout
+    let(:venmo_enabled) { true }
 
     before do
       within_frame("braintree-hosted-field-number") do

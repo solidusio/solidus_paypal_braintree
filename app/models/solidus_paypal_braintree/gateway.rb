@@ -12,9 +12,9 @@ module SolidusPaypalBraintree
     # Error message from Braintree that gets returned by a non voidable transaction
     NON_VOIDABLE_STATUS_ERROR_REGEXP = /can only be voided if status is authorized/.freeze
 
-    TOKEN_GENERATION_DISABLED_MESSAGE = 'Token generation is disabled.' \
-      ' To re-enable set the `token_generation_enabled` preference on the' \
-      ' gateway to `true`.'
+    TOKEN_GENERATION_DISABLED_MESSAGE = 'Token generation is disabled. ' \
+                                        'To re-enable set the `token_generation_enabled` preference on the ' \
+                                        'gateway to `true`.'
 
     ALLOWED_BRAINTREE_OPTIONS = [
       :device_data,
@@ -55,6 +55,21 @@ module SolidusPaypalBraintree
     # A hash that gets its keys passed to the associated braintree field placeholder tag.
     # Example: { number: "Enter card number", cvv: "Enter CVV", expirationDate: "mm/yy" }
     preference(:placeholder_text, :hash, default: {})
+
+    # Wether to use the JS device data collector
+    preference(:use_data_collector, :boolean, default: true)
+
+    # Useful for testing purposes, as PayPal will show funding sources based on the buyer's country;
+    # usually retrieved by their  ip geolocation. I.e. Venmo will show for US buyers, but not European.
+    preference(:force_buyer_country, :string)
+
+    preference(:enable_venmo_funding, :boolean, default: false)
+
+    # When on mobile, paying with Venmo, the user may be returned to the same store tab
+    # depending on if their browser supports it, otherwise a new tab will be created
+    # However, returning to a new tab may break the payment checkout flow for some stores, for example,
+    # if they are single-page applications (SPA). Set this to false if this is the case
+    preference(:venmo_new_tab_support, :boolean, default: true)
 
     def partial_name
       "paypal_braintree"
@@ -335,6 +350,10 @@ module SolidusPaypalBraintree
         params[:options][:paypal] = { payee_email: paypal_email }
       end
 
+      if source.venmo? && venmo_business_profile_id
+        params[:options][:venmo] = { profile_id: venmo_business_profile_id }
+      end
+
       if merchant_account_id = merchant_account_for(source, options)
         params[:merchant_account_id] = merchant_account_id
       end
@@ -396,11 +415,19 @@ module SolidusPaypalBraintree
     def customer_profile_params(payment)
       params = {}
 
+      params[:email] = payment&.order&.email
+
       if store_in_vault && payment.source.try(:nonce)
         params[:payment_method_nonce] = payment.source.nonce
       end
 
       params
+    end
+
+    # override with the Venmo business profile that you want to use for transactions,
+    # or leave it to be nil if want Braintree to use your default account
+    def venmo_business_profile_id
+      nil
     end
   end
 end

@@ -6,7 +6,7 @@ RSpec.describe SolidusPaypalBraintree::AVSResult do
 
     context 'with avs_error_response_code' do
       let(:transaction) do
-        instance_double('Braintree::Transaction',
+        instance_double(Braintree::Transaction,
           avs_error_response_code: error_code,
           avs_street_address_response_code: nil,
           avs_postal_code_response_code: nil)
@@ -27,7 +27,7 @@ RSpec.describe SolidusPaypalBraintree::AVSResult do
 
     context 'without avs_error_response_code' do
       let(:transaction) do
-        instance_double('Braintree::Transaction',
+        instance_double(Braintree::Transaction,
           avs_error_response_code: nil,
           avs_street_address_response_code: codes.first,
           avs_postal_code_response_code: codes.last)

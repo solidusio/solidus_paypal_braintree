@@ -26,6 +26,14 @@
           </div>
 
           <div class="field">
+            <%= c.check_box :venmo %>
+            <%= c.label :venmo do %>
+              <%= tag.i class: 'fa fa-mobile' %>
+              <%= c.object.class.human_attribute_name(:venmo) %>
+            <% end %>
+          </div>
+
+          <div class="field">
             <%= c.check_box :credit_card %>
             <%= c.label :credit_card do %>
               <%= tag.i class: 'fa fa-credit-card' %>
