@@ -12,8 +12,8 @@ module SolidusPaypalBraintree
       errors.add("Address", "is invalid") if address && !address.valid?
 
       if !transaction.valid?
-        transaction.errors.each do |field, error|
-          errors.add(field, error)
+        transaction.errors.each do |error|
+          errors.add(error.attribute, error.message)
         end
       end
       errors.none?
@@ -31,6 +31,7 @@ module SolidusPaypalBraintree
         nonce: transaction.nonce,
         payment_type: transaction.payment_type,
         payment_method: transaction.payment_method,
+        paypal_funding_source: transaction.paypal_funding_source,
         user: user
       )
     end
@@ -45,7 +46,7 @@ module SolidusPaypalBraintree
           order.shipping_address = order.billing_address = address
           # work around a bug in most solidus versions
           # about tax zone cachine between address changes
-          order.instance_variable_set("@tax_zone", nil)
+          order.instance_variable_set(:@tax_zone, nil)
         end
 
         payment = order.payments.new(

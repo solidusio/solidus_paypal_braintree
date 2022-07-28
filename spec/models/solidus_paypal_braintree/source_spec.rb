@@ -11,6 +11,67 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     expect(described_class.new(payment_type: 'AndroidPay')).to be_invalid
   end
 
+  describe 'attributes' do
+    context 'with paypal_funding_source' do
+      subject { build(:solidus_paypal_braintree_source, :paypal) }
+
+      it 'can be nil' do
+        subject.paypal_funding_source = nil
+
+        expect(subject).to be_valid
+      end
+
+      it 'makes empty strings nil' do
+        subject.paypal_funding_source = ''
+
+        result = subject.save
+
+        expect(result).to be(true)
+        expect(subject.paypal_funding_source).to be_nil
+      end
+
+      it 'gets correctly mapped as an enum' do
+        subject.paypal_funding_source = 'applepay'
+
+        result = subject.save
+
+        expect(result).to be(true)
+        expect(subject.paypal_funding_source).to eq('applepay')
+        expect(subject.applepay_funding?).to be(true)
+      end
+
+      it "doesn't become nil when the payment_type is a PAYPAL" do
+        subject.payment_type = described_class::PAYPAL
+        subject.paypal_funding_source = 'venmo'
+
+        result = subject.save
+
+        expect(result).to be(true)
+        expect(subject.venmo_funding?).to be(true)
+      end
+
+      it 'becomes nil when the payment_type is a CREDIT CARD' do
+        subject.payment_type = described_class::CREDIT_CARD
+        subject.paypal_funding_source = 'venmo'
+
+        result = subject.save
+
+        expect(result).to be(true)
+        expect(subject.paypal_funding_source).to be_nil
+      end
+
+      it 'becomes nil when the payment_type is APPLE PAY' do
+        subject.payment_type = described_class::APPLE_PAY
+        subject.paypal_funding_source = 'venmo'
+
+        result = subject.save
+
+        expect(result).to be(true)
+        expect(subject.paypal_funding_source).to be_nil
+      end
+    end
+  end
+
   describe '#payment_method' do
     it 'uses spree_payment_method' do
       expect(described_class.new.build_payment_method).to be_a Spree::PaymentMethod
@@ -199,6 +260,22 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     end
   end
 
+  describe "#venmo?" do
+    subject { described_class.new(payment_type: type).venmo? }
+
+    context "when the payment type is VenmoAccount" do
+      let(:type) { "VenmoAccount" }
+
+      it { is_expected.to be true }
+    end
+
+    context "when the payment type is not VenmoAccount" do
+      let(:type) { "Swish" }
+
+      it { is_expected.to be false }
+    end
+  end
+
   shared_context 'with unknown source token' do
     let(:braintree_payment_method) { double }
 
@@ -256,13 +333,13 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     context 'when the source token is not known at Braintree' do
       include_context 'with unknown source token'
 
-      it { is_expected.to be(nil) }
+      it { is_expected.to be_nil }
     end
 
     context 'when the source token is nil' do
       include_context 'with nil source token'
 
-      it { is_expected.to be(nil) }
+      it { is_expected.to be_nil }
     end
   end
 
@@ -296,6 +373,16 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
       end
 
       it { is_expected.to eq 'user@example.com' }
+    end
+
+    context "when is a Venmo source" do
+      let(:type) { "VenmoAccount" }
+
+      before do
+        allow(payment_source).to receive(:username).and_return('venmojoe')
+      end
+
+      it { is_expected.to eq('venmojoe') }
     end
   end
 
@@ -336,6 +423,58 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
       include_context 'with nil source token'
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#display_paypal_funding_source' do
+    let(:payment_source) { described_class.new }
+
+    context 'when the EN locale exists' do
+      it 'translates the funding source' do
+        payment_source.paypal_funding_source = 'card'
+
+        result = payment_source.display_paypal_funding_source
+
+        expect(result).to eq('Credit or debit card')
+      end
+    end
+
+    context "when the locale doesn't exist" do
+      it 'returns the paypal_funding_source as the default' do
+        allow(payment_source).to receive(:paypal_funding_source).and_return('non-existent')
+
+        result = payment_source.display_paypal_funding_source
+
+        expect(result).to eq('non-existent')
+      end
+    end
+  end
+
+  describe '#display_payment_type' do
+    subject { described_class.new(payment_type: type).display_payment_type }
+
+    context 'when type is CreditCard' do
+      let(:type) { 'CreditCard' }
+
+      it 'returns "Payment Type: Credit Card' do
+        expect(subject).to eq('Payment Type: Credit Card')
+      end
+    end
+
+    context 'when type is PayPalAccount' do
+      let(:type) { 'PayPalAccount' }
+
+      it 'returns "Payment Type: PayPal' do
+        expect(subject).to eq('Payment Type: PayPal')
+      end
+    end
+
+    context 'when type is VenmoAccount' do
+      let(:type) { 'VenmoAccount' }
+
+      it 'returns "Payment Type: Venmo' do
+        expect(subject).to eq('Payment Type: Venmo')
+      end
     end
   end
 

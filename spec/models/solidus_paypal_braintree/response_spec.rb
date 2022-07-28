@@ -4,7 +4,7 @@ RSpec.describe SolidusPaypalBraintree::Response do
   let(:failed_transaction) { nil }
   let(:error) do
     instance_double(
-      'Braintree::ValidationError',
+      Braintree::ValidationError,
       code: '12345',
       message: "Cannot refund a transaction unless it is settled."
     )
@@ -12,7 +12,7 @@ RSpec.describe SolidusPaypalBraintree::Response do
 
   let(:error_result) do
     instance_double(
-      'Braintree::ErrorResult',
+      Braintree::ErrorResult,
       success?: false,
       errors: [error],
       transaction: failed_transaction,
@@ -26,7 +26,7 @@ RSpec.describe SolidusPaypalBraintree::Response do
 
   let(:successful_result) do
     transaction = instance_double(
-      'Braintree::Transaction',
+      Braintree::Transaction,
       status: 'ok',
       id: 'abcdef',
       avs_error_response_code: nil,
@@ -36,7 +36,7 @@ RSpec.describe SolidusPaypalBraintree::Response do
     )
 
     instance_double(
-      'Braintree::SuccessfulResult',
+      Braintree::SuccessfulResult,
       success?: true,
       transaction: transaction
     )
@@ -80,7 +80,7 @@ RSpec.describe SolidusPaypalBraintree::Response do
         let(:error) { nil }
         let(:failed_transaction) do
           instance_double(
-            'Braintree::Transaction',
+            Braintree::Transaction,
             id: 'abcdef',
             status: "settlement_declined",
             processor_settlement_response_code: "4001",
@@ -99,7 +99,7 @@ RSpec.describe SolidusPaypalBraintree::Response do
         let(:error) { nil }
         let(:failed_transaction) do
           instance_double(
-            'Braintree::Transaction',
+            Braintree::Transaction,
             id: 'abcdef',
             status: "gateway_rejected",
             gateway_rejection_reason: "cvv",
@@ -117,7 +117,7 @@ RSpec.describe SolidusPaypalBraintree::Response do
         let(:error) { nil }
         let(:failed_transaction) do
           instance_double(
-            'Braintree::Transaction',
+            Braintree::Transaction,
             id: 'abcdef',
             status: "processor_declined",
             processor_response_code: '2001',
@@ -136,7 +136,7 @@ RSpec.describe SolidusPaypalBraintree::Response do
         let(:error) { nil }
         let(:failed_transaction) do
           instance_double(
-            'Braintree::Transaction',
+            Braintree::Transaction,
             id: 'abcdef',
             status: "authorization_expired",
             avs_error_response_code: nil,
@@ -153,7 +153,7 @@ RSpec.describe SolidusPaypalBraintree::Response do
         let(:error) { nil }
         let(:failed_transaction) do
           instance_double(
-            'Braintree::Transaction',
+            Braintree::Transaction,
             id: 'abcdef',
             status: "something_bad_happened",
             avs_error_response_code: nil,
@@ -186,7 +186,7 @@ RSpec.describe SolidusPaypalBraintree::Response do
 
       let(:failed_transaction) do
         instance_double(
-          'Braintree::Transaction',
+          Braintree::Transaction,
           id: 'abcdef',
           avs_error_response_code: 'E',
           avs_street_address_response_code: nil,
@@ -232,7 +232,7 @@ RSpec.describe SolidusPaypalBraintree::Response do
 
       let(:failed_transaction) do
         instance_double(
-          'Braintree::Transaction',
+          Braintree::Transaction,
           id: 'abcdef',
           avs_error_response_code: nil,
           avs_street_address_response_code: nil,

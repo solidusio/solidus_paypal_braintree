@@ -29,6 +29,8 @@ it:
       duplicate_iframe: Ci sono due iframe di Braintree.
       fail_on_duplicate: Questo metodo di pagamento esiste già.
       cvv_verification_failed: Il codice CVV non è corretto.
+      threeds:
+        authentication_failed: "Autenticazione 3D Secure fallita. Riprova usando un altro metodo di pagamento."
     payment_type:
       label: Metodo di Pagamento
       apple_pay_card: Apple Pay

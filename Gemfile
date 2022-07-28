@@ -6,10 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 branch = ENV.fetch('SOLIDUS_BRANCH', 'master')
 gem 'solidus', github: 'solidusio/solidus', branch: branch
 
-# Needed to help Bundler figure out how to resolve dependencies,
-# otherwise it takes forever to resolve them.
-# See https://github.com/bundler/bundler/issues/6677
-gem 'rails', '>0.a'
+gem 'rails', ENV.fetch('RAILS_VERSION', nil)
 
 # Provides basic authentication functionality for testing parts of your engine
 gem 'solidus_auth_devise'
@@ -18,11 +15,9 @@ gem 'solidus_auth_devise'
 gem 'mini_racer'
 gem 'sassc-rails', platforms: :mri
 
-# bourbon 5 doesn't work under sassc
-# https://github.com/thoughtbot/bourbon/issues/1047
-gem 'bourbon', '<5'
+gem 'bourbon'
 
-case ENV['DB']
+case ENV.fetch('DB', nil)
 when 'mysql'
   gem 'mysql2'
 when 'postgresql'

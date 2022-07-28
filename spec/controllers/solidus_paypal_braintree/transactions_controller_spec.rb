@@ -65,7 +65,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
           SolidusPaypalBraintree::TransactionsController::InvalidImportError,
           "Import invalid: " \
           "Address is invalid, " \
-          "Address city can't be blank"
+          "Address City can't be blank"
         )
       end
     end
@@ -100,8 +100,8 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
           # Creating the order also creates 3 addresses, we want to make sure
           # the transaction import only creates 1 new one
           order
-          expect { post_create }.to change { Spree::Address.count }.by(1)
-          expect(Spree::Address.last.full_name).to eq "Wade Wilson"
+          expect { post_create }.to change(Spree::Address, :count).by(1)
+          expect(Spree::Address.last.address1).to eq "123 Fake Street"
         end
       end
 
@@ -113,7 +113,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
 
         it "creates a new address, looking up the ISO by country name" do
           order
-          expect { post_create }.to change { Spree::Address.count }.by(1)
+          expect { post_create }.to change(Spree::Address, :count).by(1)
           expect(Spree::Address.last.country.iso).to eq "US"
         end
       end
@@ -123,7 +123,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
 
         it "does not create a new address" do
           order
-          expect { post_create }.not_to(change { Spree::Address.count })
+          expect { post_create }.not_to(change(Spree::Address, :count))
         end
       end
 
@@ -170,7 +170,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
 
         it "has a failed status" do
           post_create
-          expect(response.status).to eq 422
+          expect(response).to have_http_status :unprocessable_entity
         end
 
         it "returns the errors as JSON" do

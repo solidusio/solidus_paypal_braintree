@@ -6,7 +6,7 @@ module SolidusPaypalBraintree
   class Transaction
     include ActiveModel::Model
 
-    attr_accessor :nonce, :payment_method, :payment_type, :address, :email, :phone
+    attr_accessor :nonce, :payment_method, :payment_type, :paypal_funding_source, :address, :email, :phone
 
     validates :nonce, presence: true
     validates :payment_method, presence: true
@@ -18,8 +18,8 @@ module SolidusPaypalBraintree
         errors.add(:payment_method, 'Must be braintree')
       end
       if address && !address.valid?
-        address.errors.each do |field, error|
-          errors.add(:address, "#{field} #{error}")
+        address.errors.each do |error|
+          errors.add(:address, error.full_message)
         end
       end
     end

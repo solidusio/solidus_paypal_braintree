@@ -11,9 +11,11 @@ module SolidusPaypalBraintree
       messaging: { availables: %w[true false], default: 'false' }
     }.freeze
 
-    belongs_to :store, class_name: 'Spree::Store'
+    unless respond_to?(:preference)
+      include ::Spree::Preferences::Persistable
+    end
 
-    validates :store, presence: true
+    belongs_to :store, class_name: 'Spree::Store', optional: false
 
     # Preferences for Paypal button
     PAYPAL_BUTTON_PREFERENCES.each do |name, desc|
@@ -23,6 +25,17 @@ module SolidusPaypalBraintree
       preference preference_name, :string, default: desc[:default]
 
       validates attribute_name, inclusion: desc[:availables]
+    end
+
+    preference :venmo_button_color, :preference_select, default: 'blue'
+    preference :venmo_button_width, :preference_select, default: '320'
+
+    def preferred_venmo_button_color_options
+      [["Blue", "blue"], ["White", "white"]]
+    end
+
+    def preferred_venmo_button_width_options
+      [["280", "280"], ["320", "320"], ["375", "375"]]
     end
   end
 end

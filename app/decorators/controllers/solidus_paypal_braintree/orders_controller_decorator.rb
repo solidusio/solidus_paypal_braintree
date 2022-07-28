@@ -6,6 +6,6 @@ module SolidusPaypalBraintree
       base.helper ::SolidusPaypalBraintree::BraintreeCheckoutHelper
     end
 
-    ::Spree::OrdersController.prepend(self)
+    ::Spree::OrdersController.prepend(self) if SolidusSupport.frontend_available?
   end
 end

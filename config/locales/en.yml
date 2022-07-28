@@ -8,6 +8,7 @@ en:
         apple_pay: Apple Pay
         credit_card: Credit Card
         three_d_secure: 3D Secure
+        venmo: Venmo
   spree:
     admin:
       tab:
@@ -21,6 +22,8 @@ en:
     public_key: Public key
     token_generation_enabled: Token generation enabled?
     paypal_flow: PayPal flow
+    paypal_funding: 'PayPal Funding: %{funding}'
+    paypal_funding_source: 'PayPal Funding Source'
   solidus_paypal_braintree:
     braintree: Braintree
     nonce: Nonce
@@ -37,11 +40,16 @@ en:
       cvv_verification_failed: "CVV did not pass verification."
       threeds:
         authentication_failed: "3D Secure authentication failed. Please try again using a different payment method."
+      venmo:
+        canceled: "App is not available or you aborted the payment flow."
+        desktop_canceled: "Venmo authorization was canceled by closing the Venmo Desktop modal."
+        app_canceled: "Payment flow was canceled."
     payment_type:
       label: Payment Type
       apple_pay_card: Apple Pay
       credit_card: Credit Card
       pay_pal_account: PayPal
+      venmo_account: Venmo
     configurations:
       title: Braintree Configurations
       tab: Braintree
@@ -60,3 +68,29 @@ en:
       gateway_rejected: Gateway rejected this transaction.
       processor_declined: Processor declined this transaction.
       settlement_declined: Settlement was declined by processor.
+    paypal_funding_sources:
+       applepay: 'Apple Pay'
+       bancontact: 'Bancontact'
+       blik: 'BLIK'
+       boleto: 'Boleto'
+       card: 'Credit or debit card'
+       credit: 'PayPal Credit'
+       eps: 'eps'
+       giropay: 'giropay'
+       ideal: 'iDEAL'
+       itau: 'Itau'
+       maxima: 'Maxima'
+       mercadopago: 'Mercado Pago'
+       mybank: 'MyBank'
+       oxxo: 'Oxxo'
+       p24: 'Przelewy24'
+       paylater: 'Pay Later'
+       paypal: 'PayPal'
+       payu: 'PayU'
+       sepa: 'SEPA-Lastschrift'
+       sofort: 'Sofort'
+       trustly: 'Trustly'
+       venmo: 'Venmo'
+       verkkopankki: 'Verkkopankki'
+       wechatpay: 'WeChat Pay'
+       zimpler: 'Zimpler'

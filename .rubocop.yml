@@ -3,7 +3,7 @@ require:
 
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
 
 Layout/FirstArgumentIndentation:
   EnforcedStyle: consistent
@@ -16,6 +16,9 @@ Layout/FirstHashElementIndentation:
 
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
+
+Naming/VariableNumber:
+  Enabled: false
 
 # We use this extensively, the alternatives are not viable or desirable.
 RSpec/AnyInstance:
@@ -36,6 +39,10 @@ RSpec/NamedSubject:
 # Let's set this to some really exagerate value.
 RSpec/NestedGroups:
   Max: 8
+
+# We don't use the FactoryBot mixin
+RSpec/FactoryBot/SyntaxMethods:
+  Enabled: false
 
 RSpec/VerifiedDoubles:
   # Sometimes you really need an "anything" double
@@ -66,3 +73,4 @@ RSpec/MultipleMemoizedHelpers:
     - spec/models/solidus_paypal_braintree/response_spec.rb
     - spec/models/solidus_paypal_braintree/gateway_spec.rb
     - spec/controllers/solidus_paypal_braintree/client_tokens_controller_spec.rb
+    - spec/features/frontend/braintree_credit_card_checkout_spec.rb

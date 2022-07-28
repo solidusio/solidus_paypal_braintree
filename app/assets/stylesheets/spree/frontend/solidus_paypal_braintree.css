@@ -37,3 +37,15 @@ the installer will append this file to the app vendored assets here: 'vendor/ass
 .apple-pay-button.visible {
   visibility: visible;
 }
+
+.venmo-button {
+  visibility: hidden;
+  border: none;
+  height: 48px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+}
+
+.venmo-button.visible {
+  visibility: visible;
+}

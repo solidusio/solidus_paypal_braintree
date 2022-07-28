@@ -48,6 +48,7 @@ Payment methods can accept preferences either directly entered in admin, or from
         public_key: ENV['BRAINTREE_PUBLIC_KEY'],
         private_key: ENV['BRAINTREE_PRIVATE_KEY'],
         paypal_flow: 'vault', # 'checkout' is accepted too
+        use_data_collector: true # Fingerprint the user's browser when using Paypal
       }
     )
   end
@@ -87,7 +88,8 @@ Your payment method can accept payments in three ways: through Paypal, through A
     store.create_braintree_configuration(
       credit_card: true,
       paypal: true,
-      apple_pay: true
+      apple_pay: true,
+      venmo: true
     )
   end
   ```
@@ -110,7 +112,7 @@ The following is a relatively bare-bones implementation to enable Apple Pay on t
 
 ```html
 <% if current_store.braintree_configuration.apple_pay? %>
-  <script src="https://js.braintreegateway.com/web/3.22.1/js/apple-pay.min.js"></script>
+  <script src="https://js.braintreegateway.com/web/3.84.0/js/apple-pay.min.js"></script>
 
   <button id="apple-pay-button" class="apple-pay-button"></button>
 
@@ -145,6 +147,57 @@ Braintree has some [excellent documentation](https://developers.braintreepayment
 
 For additional information check out [Apple's documentation](https://developer.apple.com/reference/applepayjs/) and [Braintree's documentation](https://developers.braintreepayments.com/guides/apple-pay/client-side/javascript/v3).
 
+## Venmo
+There are two ways for users to use Venmo for payments:
+1. Braintree's native Venmo integration, which supports vaulting of payment sources. [See more.](#Braintree's-Venmo)
+2. Through the PayPal buttons when using checkout flow, therefore doesn't support vaulting. [See more.](#PayPal-financing-options)
+
+### PayPal's Venmo financing option
+To add Venmo for PayPal, [see here](#paypal-venmo)
+
+### Braintree's Venmo
+#### Note
+- Only available as a financing option on the checkout page; Venmo currently does not support shipping callbacks so it cannot be on the cart page.
+- Currently available to US merchants and buyers and there are also other prequisites.
+  - https://developer.paypal.com/docs/business/checkout/pay-with-venmo/#eligibility
+  - https://developer.paypal.com/braintree/articles/guides/payment-methods/venmo#availability
+
+#### Integration:
+1. Enable Venmo in your [Braintree account](https://developer.paypal.com/braintree/articles/guides/payment-methods/venmo#setup)
+2. Enable Venmo in your [store's Braintree configuration](#configure-payment-types).
+3. Ensure your Braintree API credentials are in the Braintree payment method.
+4. Set your Braintree payment method's preference of `preferred_venmo_new_tab_support` to `false` if your store cannot handle Venmo returning a user to a new tab after payment. This may be because your website is a single-page applicaiton (SPA). On mobile, the user may be returned to the same store tab if their browser supports it, otherwise a new tab will be created (unless you have this preference as `false`).
+
+By default your default Venmo business account will be used. If you want to use a non-default profile, override
+the `SolidusPaypalBraintree::Gateway` `#venmo_business_profile_id` method with its id.
+
+#### Testing
+Test the following scenarios:
+- Ensure the Venmo checkout button opens a modal with a QR code and is closeable.
+- Do a full transaction
+- Ensure that you can also save the payment source in the user wallet.
+- Ensure the saved Venmo wallet payment source loads in the partial correctly.
+- Ensure the saved Venmo payment source can be reused for another order.
+- Test doing transactions on the admin
+- Testing voiding and refunding Venmo transactions
+
+You'll need the Venmo app in order to fully test the integration. However, if you are outside of the US, this is not an option. You can fake the tokenization by:
+- Altering the `venmo_button.js` file to call the `handleVenmoSuccess` function instead of tokenizing; or
+- Manually doing its steps:
+  1. Update the #venmo_payment_method_nonce hidden input value to "fake-venmo-account-nonce".
+  2. Remove the disabled attributes from the venmo-fields inputs.
+  3. If you have hosted fields on the page (`credit_card` enabled in Braintree configuration), remove it's submit button listener:
+    `$('#checkout_form_payment').off('submit');`
+
+[More information](https://developer.paypal.com/braintree/articles/guides/payment-methods/venmo#availability)
+
+#### Customization:
+In your [store's Braintree configuration](#configure-payment-types), you can customize the Venmo checkout button's color and width.
+
+Note, other images such as Venmo's full logo and shortened "V" logo are included in the assets.
+
+Ensure that you follow [Venmo's guidelines](https://developer.paypal.com/braintree/docs/files/venmo-merchant-integration-guidelines.pdf) when making other style changes, otherwise failing to comply can lead to an interruption of your Venmo service.
+
 PayPal
 ------
 
@@ -165,7 +218,7 @@ using the
 [Vault flow](https://developers.braintreepayments.com/guides/paypal/overview/javascript/v3),
 which allows the source to be reused. Please note that PayPal messaging is disabled with vault flow. If you want, you can use [Checkout with PayPal](https://developers.braintreepayments.com/guides/paypal/checkout-with-paypal/javascript/v3)
 instead, which doesn't allow you to reuse sources but allows your customers to pay with their PayPal
-balance and with PayPal financing options ([see setup instructions](#create-a-new-payment-method)).
+balance and with PayPal financing options ([see setup instructions](#create-a-new-payment-method)). More information about other [financing options below](#paypal-financing-options).
 
 If you are creating your own checkout view or would like to customize the
 [options that get passed to tokenize](https://braintree.github.io/braintree-web/3.6.3/PayPal.html#tokenize)
@@ -188,6 +241,24 @@ A PayPal button can also be included on the cart view to enable express checkout
 render "spree/shared/paypal_cart_button"
 ```
 
+### PayPal financing options
+When using 'checkout' `paypal flow` and not 'vault'. Your customers can have different finance options such as
+- paylater
+- Venmo
+
+#### PayPal Venmo
+Venmo is currently available to US merchants and buyers. There are also other [prequisites](https://developer.paypal.com/docs/business/checkout/pay-with-venmo/#eligibility).
+
+By default, the extension and Braintree will try to render a Venmo button to buyers when prequisites are met and you have enabled it in your Braintree account).
+
+Set the SolidusPaypalBraintree `PaymentMethod` `enable_venmo_funding` preference to:
+- `enabled`, available as a PayPal funding option (if other prequisites are met); or
+- `disabled` (default).
+
+Note, Venmo is currently only available as a financing option on the checkout page; Venmo currently does not support shipping callbacks so it cannot be on the cart page.
+
+[_As Venmo is only available in the US, you may want to mock your location for testing_](#mocking-your-buyer-country)
+
 ### PayPal Financing Messaging
 
 PayPal offers an [on-site messaging component](https://www.paypal.com/us/webapps/mpp/on-site-messaging) to notify the customer that there are financing options available. This component is included in both the cart and checkout partials, but is disabled by default. To enable this option, you'll need to use the `checkout` flow, and set the `paypal button messaging` option to `true` in your Braintree configuration.
@@ -206,11 +277,21 @@ you'll need to configure PayPal to return the phone back when it returns the
 address used by the user:
 
 1. Log into your PayPal account
-2. Go to Profile -> My Selling Tools -> Website preferences
-3. Set Contact Telephone to `On (Required Field)` or `On (Optional Field)`
+2. Hover over the user in the Navbar to get the dropdown
+3. Click on Account Settings
+4. In the left panel under Products & Services, click Website Payments
+5. Click Update for Website Preferences
+6. Set Contact Telephone to `On (Required Field)` or `On (Optional Field)`
 
 Using the option `Off` will not make the address valid and will raise a
 validation error.
+
+#### Disabling the data collector
+
+For fraud prevention, PayPal recommends using a data collector to collect device
+information, which we've included by default. You're able to turn off the PayPal
+data collector on the payment method preferences if you desire. If you use
+static preferences, add `use_data_collector: false` to your initializer.
 
 ## Optional configuration
 
@@ -274,5 +355,15 @@ Simply add this require statement to your spec_helper:
 ```ruby
 require 'solidus_paypal_braintree/factories'
 ```
+
+Development
+-------
+
+### Mocking your buyer country
+PayPal looks at the buyer's IP geolocation to determine what funding sources should be available to them. Because for example, Venmo is currently only available to US buyers. Because of this, you may want to pretend that you are from US so you can check if Venmo is correctly integrated for these customers. To do this, set the payment method's preference of `force_buyer_country` to "US". See more information about preferences above.
+
+This preference has no effect on production.
+
+## License
 
 Copyright (c) 2016-2020 Stembolt and others contributors, released under the New BSD License
