@@ -213,7 +213,7 @@ SolidusPaypalBraintree.Client.prototype._createVenmo = function() {
   return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.venmo.create, [{
     client: this._braintreeInstance,
     allowDesktop: true,
-    paymentMethodUsage: this.flow === 'vault' ? 'multi_use' : 'single_use',
+    paymentMethodUsage: 'multi_use',
     allowNewBrowserTab: this.venmoNewTabSupported
   }]).then(function (venmoInstance) {
     // Verify browser support before proceeding.
