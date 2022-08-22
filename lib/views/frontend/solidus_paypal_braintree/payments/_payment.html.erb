@@ -1,12 +1,12 @@
 <br />
-<%= payment.source.display_payment_type %>
+<%= payment.source.try(:display_payment_type) %>
 
-<% if payment.source.paypal? %>
+<% if payment.source.try(:paypal?) %>
   <% if payment.source.respond_to?(:paypal_funding_source) && payment.source.paypal_funding_source.present? %>
     <br />
     <%= t('spree.paypal_funding', funding: payment.source.display_paypal_funding_source) %>
   <% end %>
-<% elsif payment.source.venmo? %>
+<% elsif payment.source.try(:venmo?) %>
   <br />
   <%= payment.source.source_description %>
 <% end %>
