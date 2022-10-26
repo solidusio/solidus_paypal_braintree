@@ -2,7 +2,7 @@ require:
   - solidus_dev_support/rubocop
 
 AllCops:
-  NewCops: enable
+  NewCops: disable
   TargetRubyVersion: 2.6
 
 Layout/FirstArgumentIndentation:
