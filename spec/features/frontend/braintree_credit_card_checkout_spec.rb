@@ -7,7 +7,7 @@ shared_context "with frontend checkout setup" do
   let(:three_d_secure_enabled) { false }
   let(:venmo_enabled) { false }
   let(:card_number) { "4111111111111111" }
-  let(:card_expiration) { "01/#{Time.now.utc.year + 2}" }
+  let(:card_expiration) { "01/#{Time.now.utc.year + 3}" }
 
   before do
     braintree.save!
@@ -107,7 +107,6 @@ describe 'entering credit card details', type: :feature, js: true do
 
     context 'with 3D secure enabled' do
       let(:three_d_secure_enabled) { true }
-      let(:card_number) { "4000000000000002" }
 
       it 'checks out successfully' do
         authenticate_3ds
@@ -121,7 +120,7 @@ describe 'entering credit card details', type: :feature, js: true do
       end
 
       context 'with 3ds authentication error' do
-        let(:card_number) { "4000000000000028" }
+        let(:card_number) { "4000000000001125" }
 
         it 'shows a 3ds authentication error' do
           authenticate_3ds
@@ -183,10 +182,10 @@ describe 'entering credit card details', type: :feature, js: true do
 
   def authenticate_3ds
     within_frame("Cardinal-CCA-IFrame") do
-      within_frame("authWindow") do
-        fill_in("password", with: "1234")
-        click_button("Submit")
-      end
+      fill_in("challengeDataEntry", with: "1234")
+      continue_button = find_button("SUBMIT")
+      continue_button.scroll_to(continue_button)
+      continue_button.click
     end
   end
 end
