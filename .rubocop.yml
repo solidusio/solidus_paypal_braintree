@@ -3,7 +3,6 @@ require:
 
 AllCops:
   NewCops: disable
-  TargetRubyVersion: 2.6
 
 Layout/FirstArgumentIndentation:
   EnforcedStyle: consistent
