@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 require 'solidus_core'
-require 'solidus_paypal_braintree/version'
-require 'solidus_paypal_braintree/engine'
+require 'solidus_support'
+
 require 'solidus_paypal_braintree/country_mapper'
 require 'solidus_paypal_braintree/request_protection'
-require 'solidus_support'
+require 'solidus_paypal_braintree/extension_configuration'
+require 'solidus_paypal_braintree/version'
+require 'solidus_paypal_braintree/engine'
 
 module SolidusPaypalBraintree
   def self.table_name_prefix

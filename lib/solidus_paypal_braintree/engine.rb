@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'solidus_core'
 require 'solidus_support'
 
 module SolidusPaypalBraintree
@@ -11,11 +12,6 @@ module SolidusPaypalBraintree
 
     ActiveSupport::Inflector.inflections do |inflect|
       inflect.acronym 'AVS'
-    end
-
-    # use rspec for tests
-    config.generators do |g|
-      g.test_framework :rspec
     end
 
     initializer "register_solidus_paypal_braintree_gateway", after: "spree.register.payment_methods" do |app|
@@ -63,6 +59,11 @@ module SolidusPaypalBraintree
           )
         end
       end
+    end
+
+    # use rspec for tests
+    config.generators do |g|
+      g.test_framework :rspec
     end
   end
 end

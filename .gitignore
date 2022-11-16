@@ -7,7 +7,6 @@
 .project
 .sass-cache
 coverage
-Gemfile-local
 Gemfile.lock
 tmp
 nbproject
@@ -15,5 +14,7 @@ pkg
 *.swp
 spec/dummy
 spec/examples.txt
-.bundle/
-.env
+/sandbox
+.rvmrc
+.ruby-version
+.ruby-gemset
