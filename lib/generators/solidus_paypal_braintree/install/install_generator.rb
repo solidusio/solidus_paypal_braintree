@@ -11,8 +11,8 @@ module SolidusPaypalBraintree
       end
 
       def add_javascripts
-        append_file 'vendor/assets/javascripts/spree/frontend/all.js', "//= require spree/frontend/solidus_paypal_braintree\n"
-        append_file 'vendor/assets/javascripts/spree/backend/all.js', "//= require spree/backend/solidus_paypal_braintree\n"
+        append_file 'vendor/assets/javascripts/spree/frontend/all.js', "//= require spree/frontend/solidus_paypal_braintree\n" # rubocop:disable Layout/LineLength
+        append_file 'vendor/assets/javascripts/spree/backend/all.js', "//= require spree/backend/solidus_paypal_braintree\n" # rubocop:disable Layout/LineLength
       end
 
       def add_stylesheets

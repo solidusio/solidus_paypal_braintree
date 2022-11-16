@@ -14,4 +14,3 @@ module SolidusPaypalBraintree
     'solidus_paypal_braintree_'
   end
 end
-

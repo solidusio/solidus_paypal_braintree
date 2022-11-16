@@ -6,7 +6,7 @@ module SolidusPaypalBraintree
   module RequestProtection
     include ActiveMerchant::NetworkConnectionRetries
 
-    def protected_request
+    def protected_request(&block)
       raise ArgumentError unless block_given?
 
       options = {
@@ -15,7 +15,7 @@ module SolidusPaypalBraintree
         },
         logger: Rails.logger
       }
-      retry_exceptions(options) { yield }
+      retry_exceptions(options, &block)
     end
   end
 end
