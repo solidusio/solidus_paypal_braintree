@@ -4,10 +4,15 @@ module SolidusPaypalBraintree
   module Generators
     class InstallGenerator < Rails::Generators::Base
       class_option :auto_run_migrations, type: :boolean, default: false
+      source_root File.expand_path('templates', __dir__)
+
+      def copy_initializer
+        template 'initializer.rb', 'config/initializers/solidus_paypal_braintree.rb'
+      end
 
       def add_javascripts
-        append_file 'vendor/assets/javascripts/spree/frontend/all.js', "//= require solidus_paypal_braintree/frontend\n"
-        append_file 'vendor/assets/javascripts/spree/backend/all.js', "//= require spree/backend/solidus_paypal_braintree\n" # rubocop:disable Layout/LineLength
+        append_file 'vendor/assets/javascripts/spree/frontend/all.js', "//= require spree/frontend/solidus_paypal_braintree\n"
+        append_file 'vendor/assets/javascripts/spree/backend/all.js', "//= require spree/backend/solidus_paypal_braintree\n"
       end
 
       def add_stylesheets
@@ -16,7 +21,7 @@ module SolidusPaypalBraintree
       end
 
       def add_migrations
-        run 'bundle exec rake railties:install:migrations FROM=solidus_paypal_braintree'
+        run 'bin/rails railties:install:migrations FROM=solidus_paypal_braintree'
       end
 
       def mount_engine
@@ -28,9 +33,9 @@ module SolidusPaypalBraintree
       def run_migrations
         run_migrations = options[:auto_run_migrations] || ['', 'y', 'Y'].include?(ask('Would you like to run the migrations now? [Y/n]')) # rubocop:disable Layout/LineLength
         if run_migrations
-          run 'bundle exec rake db:migrate'
+          run 'bin/rails db:migrate'
         else
-          say_status :skipping, 'rake db:migrate, don\'t forget to run it!'
+          puts 'Skipping bin/rails db:migrate, don\'t forget to run it!' # rubocop:disable Rails/Output
         end
       end
     end

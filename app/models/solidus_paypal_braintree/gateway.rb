@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'braintree'
+require 'solidus_paypal_braintree/request_protection'
 
 module SolidusPaypalBraintree
   class Gateway < ::Spree::PaymentMethod
