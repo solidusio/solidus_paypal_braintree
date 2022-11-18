@@ -28,6 +28,7 @@ describe SolidusPaypalBraintree::Transaction do
 
     before do
       create(:country, iso: "US")
+      create(:state, state_code: "WA")
     end
 
     it { is_expected.to be true }

@@ -39,6 +39,10 @@ describe SolidusPaypalBraintree::TransactionImport do
         )
       end
 
+      before do
+        create(:state, state_code: "WA")
+      end
+
       it { is_expected.to be false }
 
       it "sets useful error messages" do
@@ -115,7 +119,6 @@ describe SolidusPaypalBraintree::TransactionImport do
     }
     let(:payment_method) { create_gateway }
 
-    let(:country) { create :country, iso: 'US', states_required: true }
     let(:transaction_address) { nil }
     let(:end_state) { 'confirm' }
 
@@ -132,7 +135,6 @@ describe SolidusPaypalBraintree::TransactionImport do
 
     before do
       # create a shipping method so we can push through to the end
-      country
       create :shipping_method, cost: 5
 
       # ensure payments have the same number so VCR matches the request body
