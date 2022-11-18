@@ -366,6 +366,21 @@ PayPal looks at the buyer's IP geolocation to determine what funding sources sho
 
 This preference has no effect on production.
 
+### Running the sandbox
+
+To run this extension in a sandboxed Solidus application, you can run `bin/sandbox`. The path for
+the sandbox app is `./sandbox` and `bin/rails` will forward any Rails commands to
+`sandbox/bin/rails`.
+
+Here's an example:
+
+```
+$ bin/rails server
+=> Booting Puma
+=> Rails 7.0.4 application starting in development
+* Listening on tcp://127.0.0.1:3000
+Use Ctrl-C to stop
+
 ## License
 
 Copyright (c) 2016-2020 Stembolt and others contributors, released under the New BSD License
