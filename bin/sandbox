@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
-if [ ! -z $DEBUG ]
+if [ -n "$DEBUG" ]
 then
   set -x
 fi
@@ -28,16 +28,14 @@ sqlite3|sqlite)
 esac
 echo "~~> Using $RAILSDB as the database engine"
 
-if [ -n $SOLIDUS_BRANCH ]
+if [ -z "$SOLIDUS_BRANCH" ]
 then
-  BRANCH=$SOLIDUS_BRANCH
-else
   echo "~~> Use 'export SOLIDUS_BRANCH=[master|v3.2|...]' to control the Solidus branch"
-  BRANCH="master"
+  SOLIDUS_BRANCH="master"
 fi
-echo "~~> Using branch $BRANCH of solidus"
+echo "~~> Using branch $SOLIDUS_BRANCH of solidus"
 
-if [ -z $SOLIDUS_FRONTEND ]
+if [ -z "$SOLIDUS_FRONTEND" ]
 then
   echo "~~> Use 'export SOLIDUS_FRONTEND=[solidus_frontend|solidus_starter_frontend]' to control the Solidus frontend"
   SOLIDUS_FRONTEND="solidus_frontend"
@@ -68,7 +66,7 @@ fi
 
 cd ./sandbox
 cat <<RUBY >> Gemfile
-gem 'solidus', github: 'solidusio/solidus', branch: '$BRANCH'
+gem 'solidus', github: 'solidusio/solidus', branch: '$SOLIDUS_BRANCH'
 gem 'rails-i18n'
 gem 'solidus_i18n'
 
