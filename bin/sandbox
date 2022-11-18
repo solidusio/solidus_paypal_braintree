@@ -70,6 +70,8 @@ gem 'solidus', github: 'solidusio/solidus', branch: '$SOLIDUS_BRANCH'
 gem 'rails-i18n'
 gem 'solidus_i18n'
 
+# This Braintree extension contains a user decorator, so the user class must be loaded first.
+gem "solidus_auth_devise", "~> 2.5"
 gem '$extension_name', path: '..'
 
 group :test, :development do
@@ -83,6 +85,7 @@ unbundled bundle install --gemfile Gemfile
 
 unbundled bundle exec rake db:drop db:create
 
+# Still request "devise". Solidus will skip installing it again but will include its seeds.
 unbundled bundle exec rails generate solidus:install \
   --auto-accept \
   --user_class=Spree::User \
