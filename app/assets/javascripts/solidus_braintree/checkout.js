@@ -5,7 +5,7 @@ $(function() {
    * submission if tokenization fails, we need to manually re-enable the
    * submit button. */
   function braintreeError (err) {
-    SolidusPaypalBraintree.config.braintreeErrorHandle(err);
+    SolidusBraintree.config.braintreeErrorHandle(err);
     enableSubmit();
   }
 
@@ -94,7 +94,7 @@ $(function() {
       var $this = $(this);
       var id = $this.data("id");
 
-      var braintreeForm = new SolidusPaypalBraintree.createHostedForm(id);
+      var braintreeForm = new SolidusBraintree.createHostedForm(id);
 
       var formInitializationSuccess = function(formObject) {
         addFormHook(formObject, field);

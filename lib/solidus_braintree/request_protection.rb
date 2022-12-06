@@ -2,7 +2,7 @@
 
 require 'active_merchant/network_connection_retries'
 
-module SolidusPaypalBraintree
+module SolidusBraintree
   module RequestProtection
     include ActiveMerchant::NetworkConnectionRetries
 

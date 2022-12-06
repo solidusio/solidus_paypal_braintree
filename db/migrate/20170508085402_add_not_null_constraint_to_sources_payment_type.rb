@@ -2,7 +2,7 @@ class AddNotNullConstraintToSourcesPaymentType < SolidusSupport::Migration[4.2]
   def change
     reversible do |dir|
       dir.up do
-        SolidusPaypalBraintree::Source.where(payment_type: nil).
+        SolidusBraintree::Source.where(payment_type: nil).
           update_all(payment_type: 'CreditCard')
       end
     end

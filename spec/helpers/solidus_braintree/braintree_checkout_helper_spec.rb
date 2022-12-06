@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe SolidusPaypalBraintree::BraintreeCheckoutHelper do
+RSpec.describe SolidusBraintree::BraintreeCheckoutHelper do
   let!(:store) { create :store }
   let(:braintree_configuration) { {} }
 

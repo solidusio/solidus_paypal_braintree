@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
-module SolidusPaypalBraintree
+module SolidusBraintree
   class ConfigurationsController < ::Spree::Admin::BaseController
     helper ::Spree::Core::Engine.routes.url_helpers
 
     def list
-      authorize! :list, SolidusPaypalBraintree::Configuration
+      authorize! :list, SolidusBraintree::Configuration
 
       @configurations = ::Spree::Store.all.map { |s| s.braintree_configuration || s.create_braintree_configuration }
     end
 
     def update
-      authorize! :update, SolidusPaypalBraintree::Configuration
+      authorize! :update, SolidusBraintree::Configuration
 
       params = configurations_params[:configuration_fields]
-      results = SolidusPaypalBraintree::Configuration.update(params.keys, params.values)
+      results = SolidusBraintree::Configuration.update(params.keys, params.values)
       if results.all?(&:valid?)
         flash[:success] = t('update_success', scope: 'solidus_paypal_braintree.configurations')
       else

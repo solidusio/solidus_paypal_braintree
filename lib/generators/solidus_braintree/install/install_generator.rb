@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module SolidusPaypalBraintree
+module SolidusBraintree
   module Generators
     class InstallGenerator < Rails::Generators::Base
       class_option :auto_run_migrations, type: :boolean, default: false
@@ -26,7 +26,7 @@ module SolidusPaypalBraintree
 
       def mount_engine
         insert_into_file File.join('config', 'routes.rb'), after: "Rails.application.routes.draw do\n" do
-          "mount SolidusPaypalBraintree::Engine, at: '/solidus_paypal_braintree'\n"
+          "mount SolidusBraintree::Engine, at: '/solidus_paypal_braintree'\n"
         end
       end
 

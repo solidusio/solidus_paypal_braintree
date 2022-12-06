@@ -2,7 +2,7 @@
 
 require 'active_merchant/billing/avs_result'
 
-module SolidusPaypalBraintree
+module SolidusBraintree
   class AVSResult < ActiveMerchant::Billing::AVSResult
     # Mapping took from ActiveMerchant::Billing::BraintreeBlueGateway
     AVS_MAPPING = {

@@ -11,9 +11,9 @@ RSpec.describe "viewing the configuration interface" do
 
   # Regression to ensure this page renders on Solidus 2.4
   it "doesn't raise any errors due to unavailable preference field partial" do
-    Rails.application.config.spree.payment_methods << SolidusPaypalBraintree::Gateway
+    Rails.application.config.spree.payment_methods << SolidusBraintree::Gateway
     Spree::PaymentMethod.create!(
-      type: 'SolidusPaypalBraintree::Gateway',
+      type: 'SolidusBraintree::Gateway',
       name: 'Braintree Payments'
     )
     visit '/admin/payment_methods'

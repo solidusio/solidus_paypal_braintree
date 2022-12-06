@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module SolidusPaypalBraintree
+module SolidusBraintree
   class Configuration < ::Spree::Base
     PAYPAL_BUTTON_PREFERENCES = {
       color: { availables: %w[gold blue silver white black], default: 'white' },

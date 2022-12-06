@@ -1,4 +1,4 @@
-SolidusPaypalBraintree = {
+SolidusBraintree = {
   APPLE_PAY_API_VERSION: 1,
 
   config: {
@@ -10,32 +10,32 @@ SolidusPaypalBraintree = {
     // Override to provide your own error messages.
     braintreeErrorHandle: function(braintreeError) {
       BraintreeError.getErrorFromSlug(braintreeError.code);
-      SolidusPaypalBraintree.showError(error);
+      SolidusBraintree.showError(error);
     },
 
     classes: {
       hostedForm: function() {
-        return SolidusPaypalBraintree.HostedForm;
+        return SolidusBraintree.HostedForm;
       },
 
       client: function() {
-        return SolidusPaypalBraintree.Client;
+        return SolidusBraintree.Client;
       },
 
       paypalButton: function() {
-        return SolidusPaypalBraintree.PaypalButton;
+        return SolidusBraintree.PaypalButton;
       },
 
       paypalMessaging: function() {
-        return SolidusPaypalBraintree.PaypalMessaging;
+        return SolidusBraintree.PaypalMessaging;
       },
 
       applepayButton: function() {
-        return SolidusPaypalBraintree.ApplepayButton;
+        return SolidusBraintree.ApplepayButton;
       },
 
       venmoButton: function() {
-        return SolidusPaypalBraintree.VenmoButton;
+        return SolidusBraintree.VenmoButton;
       }
     }
   },
@@ -48,27 +48,27 @@ SolidusPaypalBraintree = {
   },
 
   createHostedForm: function() {
-    return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.classes.hostedForm(), arguments);
+    return SolidusBraintree._factory(SolidusBraintree.config.classes.hostedForm(), arguments);
   },
 
   createClient: function() {
-    return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.classes.client(), arguments);
+    return SolidusBraintree._factory(SolidusBraintree.config.classes.client(), arguments);
   },
 
   createPaypalButton: function() {
-    return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.classes.paypalButton(), arguments);
+    return SolidusBraintree._factory(SolidusBraintree.config.classes.paypalButton(), arguments);
   },
 
   createPaypalMessaging: function() {
-    return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.classes.paypalMessaging(), arguments);
+    return SolidusBraintree._factory(SolidusBraintree.config.classes.paypalMessaging(), arguments);
   },
 
   createApplePayButton: function() {
-    return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.classes.applepayButton(), arguments);
+    return SolidusBraintree._factory(SolidusBraintree.config.classes.applepayButton(), arguments);
   },
 
   createVenmoButton: function() {
-    return SolidusPaypalBraintree._factory(SolidusPaypalBraintree.config.classes.venmoButton(), arguments);
+    return SolidusBraintree._factory(SolidusBraintree.config.classes.venmoButton(), arguments);
   },
 
   _factory: function(klass, args) {

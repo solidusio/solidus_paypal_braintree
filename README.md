@@ -1,4 +1,4 @@
-# SolidusPaypalBraintree
+# SolidusBraintree
 
 [![CircleCI](https://circleci.com/gh/solidusio/solidus_paypal_braintree.svg?style=shield)](https://circleci.com/gh/solidusio/solidus_paypal_braintree)
 [![codecov](https://codecov.io/gh/solidusio/solidus_paypal_braintree/branch/master/graph/badge.svg)](https://codecov.io/gh/solidusio/solidus_paypal_braintree)
@@ -42,7 +42,7 @@ Payment methods can accept preferences either directly entered in admin, or from
   # config/initializers/spree.rb
   Rails.application.config.to_prepare do
     Spree::Config.static_model_preferences.add(
-      SolidusPaypalBraintree::Gateway,
+      SolidusBraintree::Gateway,
       'braintree_credentials', {
         environment: Rails.env.production? ? 'production' : 'sandbox',
         merchant_id: ENV['BRAINTREE_MERCHANT_ID'],
@@ -58,7 +58,7 @@ Payment methods can accept preferences either directly entered in admin, or from
 
 2. Visit `/admin/payment_methods/new`
 
-3. Set `provider` to SolidusPaypalBraintree::Gateway
+3. Set `provider` to SolidusBraintree::Gateway
 
 4. Click "Save"
 
@@ -68,7 +68,7 @@ Payment methods can accept preferences either directly entered in admin, or from
 
 Alternatively, create a payment method from the Rails console with:
 ```ruby
-SolidusPaypalBraintree::Gateway.new(
+SolidusBraintree::Gateway.new(
   name: "Braintree",
   preference_source: "braintree_credentials"
 ).save
@@ -137,7 +137,7 @@ The following is a relatively bare-bones implementation to enable Apple Pay on t
         countryCode: '<%= address.country.iso %>'
       }
     };
-    var button = new SolidusPaypalBraintree.createApplePayButton(applePayButtonElement, applePayOptions);
+    var button = new SolidusBraintree.createApplePayButton(applePayButtonElement, applePayOptions);
     button.initialize();
   </script>
 <% end %>
@@ -170,7 +170,7 @@ To add Venmo for PayPal, [see here](#paypal-venmo)
 4. Set your Braintree payment method's preference of `preferred_venmo_new_tab_support` to `false` if your store cannot handle Venmo returning a user to a new tab after payment. This may be because your website is a single-page applicaiton (SPA). On mobile, the user may be returned to the same store tab if their browser supports it, otherwise a new tab will be created (unless you have this preference as `false`).
 
 By default your default Venmo business account will be used. If you want to use a non-default profile, override
-the `SolidusPaypalBraintree::Gateway` `#venmo_business_profile_id` method with its id.
+the `SolidusBraintree::Gateway` `#venmo_business_profile_id` method with its id.
 
 #### Testing
 Test the following scenarios:
@@ -202,7 +202,7 @@ Ensure that you follow [Venmo's guidelines](https://developer.paypal.com/braintr
 ## PayPal
 
 A default checkout view is provided that will display PayPal as a payment option.
-It will only be displayed if the `SolidusPaypalBraintree::Gateway` payment
+It will only be displayed if the `SolidusBraintree::Gateway` payment
 method is configured to display on the frontend and PayPal is enabled in the
 store's configuration.
 
@@ -233,7 +233,7 @@ var paypalOptions = {
   // your configuration options here
 }
 
-var button = new SolidusPaypalBraintree.createPaypalButton(document.querySelector("#your-button-id"), paypalOptions);
+var button = new SolidusBraintree.createPaypalButton(document.querySelector("#your-button-id"), paypalOptions);
 
 button.initialize();
 ```
@@ -255,7 +255,7 @@ Venmo is currently available to US merchants and buyers. There are also other [p
 
 By default, the extension and Braintree will try to render a Venmo button to buyers when prequisites are met and you have enabled it in your Braintree account).
 
-Set the SolidusPaypalBraintree `PaymentMethod` `enable_venmo_funding` preference to:
+Set the SolidusBraintree `PaymentMethod` `enable_venmo_funding` preference to:
 - `enabled`, available as a PayPal funding option (if other prequisites are met); or
 - `disabled` (default).
 

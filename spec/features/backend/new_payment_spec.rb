@@ -14,7 +14,7 @@ shared_context "with backend checkout setup" do
       store.braintree_configuration.update!(credit_card: true)
     end
 
-    allow_any_instance_of(SolidusPaypalBraintree::Source).to receive(:nonce).and_return("fake-valid-nonce")
+    allow_any_instance_of(SolidusBraintree::Source).to receive(:nonce).and_return("fake-valid-nonce")
 
     # Order and payment numbers must be identical between runs to re-use the VCR
     # cassette

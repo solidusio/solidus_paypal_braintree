@@ -55,7 +55,7 @@ $(function() {
     }
 
     if (hostedFieldsInstance === null) {
-      braintreeForm = new SolidusPaypalBraintree.createHostedForm(id);
+      braintreeForm = new SolidusBraintree.createHostedForm(id);
       braintreeForm.initialize().
         then(setHostedFieldsInstance).
         then(addFormHook(braintreeForm, onError)).
@@ -64,7 +64,7 @@ $(function() {
   }
 
   // exit early if we're not looking at the New Payment form, or if no
-  // SolidusPaypalBraintree payment methods have been configured.
+  // SolidusBraintree payment methods have been configured.
   if (!$paymentForm.length || !$hostedFields.length) { return; }
 
   $.when(

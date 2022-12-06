@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module SolidusPaypalBraintree
+module SolidusBraintree
   class Address
     delegate :address1,
       :address2,

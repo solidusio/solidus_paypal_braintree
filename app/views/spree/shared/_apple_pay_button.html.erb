@@ -22,6 +22,6 @@
       countryCode: '<%= address.country.iso %>'
     }
   };
-  var button = new SolidusPaypalBraintree.createApplePayButton(applePayButtonElement, applePayOptions);
+  var button = new SolidusBraintree.createApplePayButton(applePayButtonElement, applePayOptions);
   button.initialize();
 </script>
