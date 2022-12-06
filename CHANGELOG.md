@@ -94,7 +94,7 @@
 - On PayPal payment user shipping address gets set with uncorrect firstname and lastname values if they contain a space [\#226](https://github.com/solidusio/solidus_paypal_braintree/issues/226)
 - Default Braintree configuration on store creation overwrites custom configuration [\#224](https://github.com/solidusio/solidus_paypal_braintree/issues/224)
 - Undefined local variable or method `id' error on payment page [\#222](https://github.com/solidusio/solidus_paypal_braintree/issues/222)
-- Can't render JSON about an order as SolidusPaypalBraintree::Source doesn't have a `expiration_month` method [\#221](https://github.com/solidusio/solidus_paypal_braintree/issues/221)
+- Can't render JSON about an order as SolidusBraintree::Source doesn't have a `expiration_month` method [\#221](https://github.com/solidusio/solidus_paypal_braintree/issues/221)
 - Paypal payment return invalid address [\#218](https://github.com/solidusio/solidus_paypal_braintree/issues/218)
 - Random Travis CI Failures [\#215](https://github.com/solidusio/solidus_paypal_braintree/issues/215)
 - Add Association for spree user to customer [\#210](https://github.com/solidusio/solidus_paypal_braintree/issues/210)

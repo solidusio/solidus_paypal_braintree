@@ -20,7 +20,7 @@ $(document).ready(function() {
         var options = {
           restart_checkout: true
         }
-        var button = new SolidusPaypalBraintree.createPaypalButton(
+        var button = new SolidusBraintree.createPaypalButton(
           document.querySelector("#paypal-button"),
           paypalOptions,
           options

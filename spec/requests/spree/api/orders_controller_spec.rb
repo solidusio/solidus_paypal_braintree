@@ -7,10 +7,10 @@ describe Spree::Api::OrdersController, type: :request do
     let(:gateway) { create_gateway }
     let(:order) { create(:order_with_line_items) }
     let(:source) do
-      SolidusPaypalBraintree::Source.new(
+      SolidusBraintree::Source.new(
         nonce: 'fake-valid-nonce',
         user: order.user,
-        payment_type: SolidusPaypalBraintree::Source::PAYPAL,
+        payment_type: SolidusBraintree::Source::PAYPAL,
         payment_method: gateway
       )
     end

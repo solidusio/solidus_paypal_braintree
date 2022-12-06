@@ -2,7 +2,7 @@
 
 require 'solidus_paypal_braintree/request_protection'
 
-module SolidusPaypalBraintree
+module SolidusBraintree
   class Source < ::Spree::PaymentSource
     include RequestProtection
 
@@ -21,7 +21,7 @@ module SolidusPaypalBraintree
     belongs_to :payment_method, class_name: 'Spree::PaymentMethod'
     has_many :payments, as: :source, class_name: "Spree::Payment", dependent: :destroy
 
-    belongs_to :customer, class_name: "SolidusPaypalBraintree::Customer", optional: true
+    belongs_to :customer, class_name: "SolidusBraintree::Customer", optional: true
 
     validates :payment_type, inclusion: [PAYPAL, APPLE_PAY, VENMO, CREDIT_CARD]
 

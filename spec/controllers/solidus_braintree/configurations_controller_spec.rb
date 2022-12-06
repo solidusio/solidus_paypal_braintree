@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe SolidusPaypalBraintree::ConfigurationsController, type: :controller do
-  routes { SolidusPaypalBraintree::Engine.routes }
+describe SolidusBraintree::ConfigurationsController, type: :controller do
+  routes { SolidusBraintree::Engine.routes }
 
   let!(:store_1) { create :store }
   let!(:store_2) { create :store }

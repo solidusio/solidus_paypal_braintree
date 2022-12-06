@@ -4,7 +4,7 @@ require 'active_merchant/billing/response'
 require_relative 'avs_result'
 
 # Response object that all actions on the gateway should return
-module SolidusPaypalBraintree
+module SolidusBraintree
   class Response < ActiveMerchant::Billing::Response
     # def initialize(success, message, params = {}, options = {})
 
@@ -38,7 +38,7 @@ module SolidusPaypalBraintree
 
         {
           authorization: transaction.id,
-          avs_result: SolidusPaypalBraintree::AVSResult.build(transaction),
+          avs_result: SolidusBraintree::AVSResult.build(transaction),
           # As we do not provide the CVV while submitting the transaction (for PCI compliance reasons),
           # we need to ignore the only response we get back (I = not provided).
           # Otherwise Solidus thinks this payment is risky.

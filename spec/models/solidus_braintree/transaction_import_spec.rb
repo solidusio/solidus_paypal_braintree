@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe SolidusPaypalBraintree::TransactionImport do
+describe SolidusBraintree::TransactionImport do
   let(:order) { Spree::Order.new }
   let!(:country) { create :country, iso: "US" }
-  let(:braintree_gateway) { SolidusPaypalBraintree::Gateway.new }
+  let(:braintree_gateway) { SolidusBraintree::Gateway.new }
   let(:transaction_address) { nil }
   let(:transaction) do
-    SolidusPaypalBraintree::Transaction.new(
+    SolidusBraintree::Transaction.new(
       nonce: 'abcd1234',
       payment_type: "ApplePayCard",
       address: transaction_address,
@@ -23,14 +23,14 @@ describe SolidusPaypalBraintree::TransactionImport do
     it { is_expected.to be true }
 
     context "with invalid transaction" do
-      let(:transaction) { SolidusPaypalBraintree::Transaction.new }
+      let(:transaction) { SolidusBraintree::Transaction.new }
 
       it { is_expected.to be false }
     end
 
     context "with invalid address" do
       let(:transaction_address) do
-        SolidusPaypalBraintree::TransactionAddress.new(
+        SolidusBraintree::TransactionAddress.new(
           name: "Bruce Wayne",
           address_line_1: "42 Spruce Lane",
           city: "Gotham",
@@ -56,7 +56,7 @@ describe SolidusPaypalBraintree::TransactionImport do
   describe '#source' do
     subject { described_class.new(order, transaction).source }
 
-    it { is_expected.to be_a SolidusPaypalBraintree::Source }
+    it { is_expected.to be_a SolidusBraintree::Source }
 
     it 'takes the nonce from the transaction' do
       expect(subject.nonce).to eq 'abcd1234'
@@ -123,11 +123,11 @@ describe SolidusPaypalBraintree::TransactionImport do
     let(:end_state) { 'confirm' }
 
     let(:transaction) do
-      SolidusPaypalBraintree::Transaction.new(
+      SolidusBraintree::Transaction.new(
         nonce: 'fake-valid-nonce',
         payment_method: payment_method,
         address: transaction_address,
-        payment_type: SolidusPaypalBraintree::Source::PAYPAL,
+        payment_type: SolidusBraintree::Source::PAYPAL,
         phone: '123-456-7890',
         email: 'user@example.com'
       )
@@ -192,7 +192,7 @@ describe SolidusPaypalBraintree::TransactionImport do
         let!(:new_york) { create :state, country: country, abbr: 'NY' }
 
         let(:transaction_address) do
-          SolidusPaypalBraintree::TransactionAddress.new(
+          SolidusBraintree::TransactionAddress.new(
             country_code: 'US',
             name: 'Thaddeus Venture',
             city: 'New York',
@@ -215,7 +215,7 @@ describe SolidusPaypalBraintree::TransactionImport do
 
             subject
 
-            source = SolidusPaypalBraintree::Source.last
+            source = SolidusBraintree::Source.last
             expect(source.paypal_funding_source).to eq('paypal')
           end
         end
@@ -262,7 +262,7 @@ describe SolidusPaypalBraintree::TransactionImport do
 
     context "when validation fails" do
       let(:transaction_address) do
-        SolidusPaypalBraintree::TransactionAddress.new(
+        SolidusBraintree::TransactionAddress.new(
           country_code: 'US',
           name: 'Thaddeus Venture',
           city: 'New York',
@@ -273,7 +273,7 @@ describe SolidusPaypalBraintree::TransactionImport do
 
       it "raises an error with the validation messages" do
         expect { subject }.to raise_error(
-          SolidusPaypalBraintree::TransactionImport::InvalidImportError
+          SolidusBraintree::TransactionImport::InvalidImportError
         )
       end
     end

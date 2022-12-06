@@ -1,10 +1,10 @@
 class AddNullConstraintToSources < SolidusSupport::Migration[4.2]
   def up
     payments = Spree::Payment.arel_table
-    sources = SolidusPaypalBraintree::Source.arel_table
+    sources = SolidusBraintree::Source.arel_table
     join_sources = payments.join(sources).on(
       payments[:source_id].eq(sources[:id]).and(
-        payments[:source_type].eq("SolidusPaypalBraintree::Source")
+        payments[:source_type].eq("SolidusBraintree::Source")
       ).and(
         sources[:payment_method_id].eq(nil)
       )
@@ -15,7 +15,7 @@ class AddNullConstraintToSources < SolidusSupport::Migration[4.2]
 
     Spree::Payment.joins(join_sources).find_each do |payment|
       Rails.logger.info("Updating source #{payment.source_id} with payment method id #{payment.payment_method_id}")
-      SolidusPaypalBraintree::Source.where(id: payment.source_id).update_all(
+      SolidusBraintree::Source.where(id: payment.source_id).update_all(
         payment_method_id: payment.payment_method_id
       )
     end

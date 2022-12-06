@@ -1,4 +1,4 @@
-SolidusPaypalBraintree.PromiseShim = {
+SolidusBraintree.PromiseShim = {
   convertBraintreePromise: function(fn, args, context) {
     var jqPromise  = $.Deferred();
 

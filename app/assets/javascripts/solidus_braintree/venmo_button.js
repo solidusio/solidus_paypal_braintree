@@ -4,7 +4,7 @@
  * @constructor
  * @param {object} element - The DOM element of your Venmo button
  */
-SolidusPaypalBraintree.VenmoButton = function(element, venmoOptions) {
+SolidusBraintree.VenmoButton = function(element, venmoOptions) {
   this._element = element;
   this._client = null;
   this._venmoOptions = venmoOptions || {};
@@ -22,8 +22,8 @@ SolidusPaypalBraintree.VenmoButton = function(element, venmoOptions) {
  *
  * See {@link https://braintree.github.io/braintree-web/3.84.0/module-braintree-web_venmo.html#.create}
  */
-SolidusPaypalBraintree.VenmoButton.prototype.initialize = function() {
-  this._client = new SolidusPaypalBraintree.createClient({
+SolidusBraintree.VenmoButton.prototype.initialize = function() {
+  this._client = new SolidusBraintree.createClient({
     useVenmo: true,
     newBrowserTabSupported: this._venmoOptions.newBrowserTabSupported,
     flow: this._venmoOptions.flow
@@ -32,7 +32,7 @@ SolidusPaypalBraintree.VenmoButton.prototype.initialize = function() {
   return this._client.initialize().then(this.initializeCallback.bind(this));
 };
 
-SolidusPaypalBraintree.VenmoButton.prototype.initializeCallback = function() {
+SolidusBraintree.VenmoButton.prototype.initializeCallback = function() {
   this._venmoInstance = this._client.getVenmoInstance();
 
   this._element.classList.add('visible');
@@ -50,11 +50,11 @@ SolidusPaypalBraintree.VenmoButton.prototype.initializeCallback = function() {
   }.bind(this), false);
 };
 
-SolidusPaypalBraintree.VenmoButton.prototype.initializeVenmoSession = function() {
+SolidusBraintree.VenmoButton.prototype.initializeVenmoSession = function() {
   this.tokenize();
 };
 
-SolidusPaypalBraintree.VenmoButton.prototype.tokenize = function() {
+SolidusBraintree.VenmoButton.prototype.tokenize = function() {
   var venmoButton = this._element;
   this._venmoInstance.tokenize().then(handleVenmoSuccess).catch(handleVenmoError).then(function () {
     venmoButton.removeAttribute('disabled');
@@ -82,5 +82,5 @@ function handleVenmoSuccess(payload) {
 }
 
 function handleVenmoError(error) {
-  SolidusPaypalBraintree.config.braintreeErrorHandle(error);
+  SolidusBraintree.config.braintreeErrorHandle(error);
 }

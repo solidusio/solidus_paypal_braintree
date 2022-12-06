@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module SolidusPaypalBraintree
+module SolidusBraintree
   class TransactionsController < ::Spree::StoreController
     class InvalidImportError < StandardError; end
 
@@ -17,8 +17,8 @@ module SolidusPaypalBraintree
     ].freeze
 
     def create
-      transaction = SolidusPaypalBraintree::Transaction.new transaction_params
-      import = SolidusPaypalBraintree::TransactionImport.new(current_order, transaction)
+      transaction = SolidusBraintree::Transaction.new transaction_params
+      import = SolidusBraintree::TransactionImport.new(current_order, transaction)
       restart_checkout = params[:options] && params[:options][:restart_checkout] == "true"
 
       respond_to do |format|
@@ -61,7 +61,7 @@ module SolidusPaypalBraintree
     end
 
     def payment_method
-      SolidusPaypalBraintree::Gateway.find(params[:payment_method_id])
+      SolidusBraintree::Gateway.find(params[:payment_method_id])
     end
   end
 end

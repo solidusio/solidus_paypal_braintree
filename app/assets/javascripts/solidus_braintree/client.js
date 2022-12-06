@@ -51,7 +51,7 @@
  * @param {Number} config.paymentMethodId A number indicating a specific payment method to be preferrred.
  *
 **/
-SolidusPaypalBraintree.Client = function(config) {
+SolidusBraintree.Client = function(config) {
   this.paymentMethodId = config.paymentMethodId;
   this.readyCallback = config.readyCallback;
   this.useDataCollector = config.useDataCollector;
@@ -73,7 +73,7 @@ SolidusPaypalBraintree.Client = function(config) {
  * Fetches a client token from the backend and initializes the braintree client.
  * @returns {external:"jQuery.Deferred"} Promise to be invoked after initialization is complete
 **/
-SolidusPaypalBraintree.Client.prototype.initialize = function() {
+SolidusBraintree.Client.prototype.initialize = function() {
   var initializationPromise = this._fetchToken().
     then(this._createBraintreeInstance.bind(this));
 
@@ -104,7 +104,7 @@ SolidusPaypalBraintree.Client.prototype.initialize = function() {
  * Returns the braintree client instance
  * @returns {external:"braintree.Client"} The braintree client that was initialized by this class
 **/
-SolidusPaypalBraintree.Client.prototype.getBraintreeInstance = function() {
+SolidusBraintree.Client.prototype.getBraintreeInstance = function() {
   return this._braintreeInstance;
 };
 
@@ -112,7 +112,7 @@ SolidusPaypalBraintree.Client.prototype.getBraintreeInstance = function() {
  * Returns the braintree paypal instance
  * @returns {external:"braintree.PayPal"} The braintree paypal that was initialized by this class
 **/
-SolidusPaypalBraintree.Client.prototype.getPaypalInstance = function() {
+SolidusBraintree.Client.prototype.getPaypalInstance = function() {
   return this._paypalInstance;
 };
 
@@ -120,7 +120,7 @@ SolidusPaypalBraintree.Client.prototype.getPaypalInstance = function() {
  * Returns the braintree Apple Pay instance
  * @returns {external:"braintree.ApplePay"} The Braintree Apple Pay that was initialized by this class
 **/
-SolidusPaypalBraintree.Client.prototype.getApplepayInstance = function() {
+SolidusBraintree.Client.prototype.getApplepayInstance = function() {
   return this._applepayInstance;
 };
 
@@ -128,7 +128,7 @@ SolidusPaypalBraintree.Client.prototype.getApplepayInstance = function() {
  * Returns the braintree Venmo instance
  * @returns {external:"braintree.Venmo"} The Braintree Venmo that was initialized by this class
 **/
-SolidusPaypalBraintree.Client.prototype.getVenmoInstance = function() {
+SolidusBraintree.Client.prototype.getVenmoInstance = function() {
   return this._venmoInstance;
 };
 
@@ -136,16 +136,16 @@ SolidusPaypalBraintree.Client.prototype.getVenmoInstance = function() {
  * Returns the braintree dataCollector instance
  * @returns {external:"braintree.DataCollector"} The braintree dataCollector that was initialized by this class
 **/
-SolidusPaypalBraintree.Client.prototype.getDataCollectorInstance = function() {
+SolidusBraintree.Client.prototype.getDataCollectorInstance = function() {
   return this._dataCollectorInstance;
 };
 
 
-SolidusPaypalBraintree.Client.prototype._fetchToken = function() {
+SolidusBraintree.Client.prototype._fetchToken = function() {
   var payload = {
     dataType: 'json',
     type: 'POST',
-    url: SolidusPaypalBraintree.config.paths.clientTokens,
+    url: SolidusBraintree.config.paths.clientTokens,
     error: function(xhr) {
       console.error("Error fetching braintree token");
     }
@@ -160,10 +160,10 @@ SolidusPaypalBraintree.Client.prototype._fetchToken = function() {
   return Spree.ajax(payload);
 };
 
-SolidusPaypalBraintree.Client.prototype._createBraintreeInstance = function(tokenResponse) {
+SolidusBraintree.Client.prototype._createBraintreeInstance = function(tokenResponse) {
   this.paymentMethodId = tokenResponse.payment_method_id;
 
-  return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.client.create, [{
+  return SolidusBraintree.PromiseShim.convertBraintreePromise(braintree.client.create, [{
     authorization: tokenResponse.client_token
   }]).then(function (clientInstance) {
     this._braintreeInstance = clientInstance;
@@ -171,7 +171,7 @@ SolidusPaypalBraintree.Client.prototype._createBraintreeInstance = function(toke
   }.bind(this));
 };
 
-SolidusPaypalBraintree.Client.prototype._invokeReadyCallback = function() {
+SolidusBraintree.Client.prototype._invokeReadyCallback = function() {
   if(this.readyCallback) {
     this.readyCallback(this._braintreeInstance);
   }
@@ -179,8 +179,8 @@ SolidusPaypalBraintree.Client.prototype._invokeReadyCallback = function() {
   return this;
 };
 
-SolidusPaypalBraintree.Client.prototype._createDataCollector = function() {
-  return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.dataCollector.create, [{
+SolidusBraintree.Client.prototype._createDataCollector = function() {
+  return SolidusBraintree.PromiseShim.convertBraintreePromise(braintree.dataCollector.create, [{
     client: this._braintreeInstance,
     paypal: !!this.usePaypal
   }]).then(function (dataCollectorInstance) {
@@ -189,8 +189,8 @@ SolidusPaypalBraintree.Client.prototype._createDataCollector = function() {
   }.bind(this));
 };
 
-SolidusPaypalBraintree.Client.prototype._createPaypal = function() {
-  return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.paypalCheckout.create, [{
+SolidusBraintree.Client.prototype._createPaypal = function() {
+  return SolidusBraintree.PromiseShim.convertBraintreePromise(braintree.paypalCheckout.create, [{
     client: this._braintreeInstance
   }]).then(function (paypalInstance) {
     this._paypalInstance = paypalInstance;
@@ -200,8 +200,8 @@ SolidusPaypalBraintree.Client.prototype._createPaypal = function() {
   });
 };
 
-SolidusPaypalBraintree.Client.prototype._createApplepay = function() {
-  return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.applePay.create, [{
+SolidusBraintree.Client.prototype._createApplepay = function() {
+  return SolidusBraintree.PromiseShim.convertBraintreePromise(braintree.applePay.create, [{
     client: this._braintreeInstance
   }]).then(function (applePayInstance) {
     this._applepayInstance = applePayInstance;
@@ -209,8 +209,8 @@ SolidusPaypalBraintree.Client.prototype._createApplepay = function() {
   }.bind(this));
 };
 
-SolidusPaypalBraintree.Client.prototype._createVenmo = function() {
-  return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.venmo.create, [{
+SolidusBraintree.Client.prototype._createVenmo = function() {
+  return SolidusBraintree.PromiseShim.convertBraintreePromise(braintree.venmo.create, [{
     client: this._braintreeInstance,
     allowDesktop: true,
     paymentMethodUsage: this.flow === 'vault' ? 'multi_use' : 'single_use',
@@ -227,8 +227,8 @@ SolidusPaypalBraintree.Client.prototype._createVenmo = function() {
   }.bind(this));
 };
 
-SolidusPaypalBraintree.Client.prototype._createThreeDSecure = function() {
-  return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.threeDSecure.create, [{
+SolidusBraintree.Client.prototype._createThreeDSecure = function() {
+  return SolidusBraintree.PromiseShim.convertBraintreePromise(braintree.threeDSecure.create, [{
     client: this._braintreeInstance,
     version: 2
   }]).then(function (threeDSecureInstance) {

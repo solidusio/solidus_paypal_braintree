@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-module SolidusPaypalBraintree
+module SolidusBraintree
   module OrdersControllerDecorator
     def self.prepended(base)
-      base.helper ::SolidusPaypalBraintree::BraintreeCheckoutHelper
+      base.helper ::SolidusBraintree::BraintreeCheckoutHelper
     end
 
     ::Spree::OrdersController.prepend(self) if SolidusSupport.frontend_available?

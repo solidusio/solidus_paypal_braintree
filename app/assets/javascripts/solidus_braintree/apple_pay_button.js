@@ -4,7 +4,7 @@
  * @constructor
  * @param {object} element - The DOM element of your Apple Pay button
  */
-SolidusPaypalBraintree.ApplepayButton = function(element, applepayOptions) {
+SolidusBraintree.ApplepayButton = function(element, applepayOptions) {
   this._element = element;
   this._applepayOptions = applepayOptions || {};
   this._client = null;
@@ -22,9 +22,9 @@ SolidusPaypalBraintree.ApplepayButton = function(element, applepayOptions) {
  *
  * See {@link https://braintree.github.io/braintree-web/3.9.0/Apple Pay.html#tokenize}
  */
-SolidusPaypalBraintree.ApplepayButton.prototype.initialize = function() {
+SolidusBraintree.ApplepayButton.prototype.initialize = function() {
   if (window.ApplePaySession && ApplePaySession.canMakePayments()) {
-    this._client = new SolidusPaypalBraintree.createClient(
+    this._client = new SolidusBraintree.createClient(
       {
         useDataCollector: false,
         useApplepay: true,
@@ -35,7 +35,7 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initialize = function() {
   }
 };
 
-SolidusPaypalBraintree.ApplepayButton.prototype.initializeCallback = function() {
+SolidusBraintree.ApplepayButton.prototype.initializeCallback = function() {
   this._paymentMethodId = this._client.paymentMethodId;
   this._applePayInstance = this._client.getApplepayInstance();
 
@@ -50,9 +50,9 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initializeCallback = function() 
 /**
  * Initialize and begin the ApplePay session
 **/
-SolidusPaypalBraintree.ApplepayButton.prototype.initializeApplePaySession = function() {
+SolidusBraintree.ApplepayButton.prototype.initializeApplePaySession = function() {
   var paymentRequest = this._applePayInstance.createPaymentRequest(this._paymentRequestHash());
-  var session = new ApplePaySession(SolidusPaypalBraintree.APPLE_PAY_API_VERSION, paymentRequest);
+  var session = new ApplePaySession(SolidusBraintree.APPLE_PAY_API_VERSION, paymentRequest);
   var applePayButton = this;
 
   session.onvalidatemerchant = function (event) {
@@ -66,7 +66,7 @@ SolidusPaypalBraintree.ApplepayButton.prototype.initializeApplePaySession = func
   session.begin();
 };
 
-SolidusPaypalBraintree.ApplepayButton.prototype.validateMerchant = function(session, paymentRequest) {
+SolidusBraintree.ApplepayButton.prototype.validateMerchant = function(session, paymentRequest) {
   this._applePayInstance.performValidation({
     validationURL: event.validationURL,
     displayName: paymentRequest.total.label,
@@ -80,7 +80,7 @@ SolidusPaypalBraintree.ApplepayButton.prototype.validateMerchant = function(sess
   });
 };
 
-SolidusPaypalBraintree.ApplepayButton.prototype.tokenize = function (session, payment) {
+SolidusBraintree.ApplepayButton.prototype.tokenize = function (session, payment) {
   this._applePayInstance.tokenize(
     {token: payment.token},
     function (tokenizeErr, payload) {
@@ -93,12 +93,12 @@ SolidusPaypalBraintree.ApplepayButton.prototype.tokenize = function (session, pa
   );
 };
 
-SolidusPaypalBraintree.ApplepayButton.prototype._createTransaction = function (session, payment, payload) {
+SolidusBraintree.ApplepayButton.prototype._createTransaction = function (session, payment, payload) {
   Spree.ajax({
     data: this._transactionParams(payload, payment.shippingContact),
     dataType: 'json',
     type: 'POST',
-    url: SolidusPaypalBraintree.config.paths.transactions,
+    url: SolidusBraintree.config.paths.transactions,
     success: function(response) {
       session.completePayment(ApplePaySession.STATUS_SUCCESS);
       window.location.replace(response.redirectUrl);
@@ -123,7 +123,7 @@ SolidusPaypalBraintree.ApplepayButton.prototype._createTransaction = function (s
 // supportedNetworks
 // ... are added by the Braintree gateway, but can be overridden
 // See https://developer.apple.com/documentation/applepayjs/applepaypaymentrequest
-SolidusPaypalBraintree.ApplepayButton.prototype._paymentRequestHash = function() {
+SolidusBraintree.ApplepayButton.prototype._paymentRequestHash = function() {
   return {
     total: {
       label: this._applepayOptions.storeName,
@@ -140,7 +140,7 @@ SolidusPaypalBraintree.ApplepayButton.prototype._paymentRequestHash = function()
  *
  * @param {object} payload - The payload returned by Braintree after tokenization
  */
-SolidusPaypalBraintree.ApplepayButton.prototype._transactionParams = function(payload, shippingContact) {
+SolidusBraintree.ApplepayButton.prototype._transactionParams = function(payload, shippingContact) {
   return {
     payment_method_id: this._applepayOptions.paymentMethodId,
     transaction: {
@@ -159,7 +159,7 @@ SolidusPaypalBraintree.ApplepayButton.prototype._transactionParams = function(pa
  *
  * @param {object} payload - The payload returned by Braintree after tokenization
  */
-SolidusPaypalBraintree.ApplepayButton.prototype._addressParams = function(shippingContact) {
+SolidusBraintree.ApplepayButton.prototype._addressParams = function(shippingContact) {
   var addressHash = {
     country_name:   shippingContact.country,
     country_code:   shippingContact.countryCode,

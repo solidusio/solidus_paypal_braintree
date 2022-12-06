@@ -3,7 +3,7 @@
 <div data-pp-message data-pp-placement="<%= options[:placement] %>" data-pp-amount="<%= options[:total] %>"></div>
 
 <script>
-  var message = new SolidusPaypalBraintree.createPaypalMessaging(
+  var message = new SolidusBraintree.createPaypalMessaging(
     {
       currency: "<%= options[:currency] %>"
     }

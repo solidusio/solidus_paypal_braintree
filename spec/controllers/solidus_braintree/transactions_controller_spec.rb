@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller do
-  routes { SolidusPaypalBraintree::Engine.routes }
+RSpec.describe SolidusBraintree::TransactionsController, type: :controller do
+  routes { SolidusBraintree::Engine.routes }
 
   let!(:country) { create :country }
   let(:line_item) { create :line_item, price: 50 }
@@ -37,7 +37,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
       {
         transaction: {
           nonce: "fake-valid-nonce",
-          payment_type: SolidusPaypalBraintree::Source::PAYPAL,
+          payment_type: SolidusBraintree::Source::PAYPAL,
           phone: "1112223333",
           email: "batman@example.com",
           address_attributes: {
@@ -62,7 +62,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
 
       it "raises a validation error" do
         expect { post_create }.to raise_error(
-          SolidusPaypalBraintree::TransactionsController::InvalidImportError,
+          SolidusBraintree::TransactionsController::InvalidImportError,
           "Import invalid: " \
           "Address is invalid, " \
           "Address City can't be blank"
@@ -159,7 +159,7 @@ RSpec.describe SolidusPaypalBraintree::TransactionsController, type: :controller
       context "when format is HTML" do
         it "raises an error including the validation messages" do
           expect { post_create }.to raise_error(
-            SolidusPaypalBraintree::TransactionsController::InvalidImportError,
+            SolidusBraintree::TransactionsController::InvalidImportError,
             "Import invalid: Email can't be blank"
           )
         end

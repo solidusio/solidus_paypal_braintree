@@ -2,15 +2,15 @@
 <div data-pp-message data-pp-placement="payment" data-pp-amount="<%= @order.total %>"></div>
 
 <script>
-  var address = <%= sanitize SolidusPaypalBraintree::Address.new(current_order.ship_address).to_json %>
+  var address = <%= sanitize SolidusBraintree::Address.new(current_order.ship_address).to_json %>
 
   var paypalOptions = {
-    flow: '<%= SolidusPaypalBraintree::Gateway.first.preferred_paypal_flow %>',
+    flow: '<%= SolidusBraintree::Gateway.first.preferred_paypal_flow %>',
     amount: '<%= current_order.total %>',
     currency: '<%= current_order.currency %>',
     enableShippingAddress: true,
-    venmoFunding: <%= SolidusPaypalBraintree::Gateway.first.preferred_enable_venmo_funding %>,
-    buyerCountry: '<%= SolidusPaypalBraintree::Gateway.first.preferred_force_buyer_country %>',
+    venmoFunding: <%= SolidusBraintree::Gateway.first.preferred_enable_venmo_funding %>,
+    buyerCountry: '<%= SolidusBraintree::Gateway.first.preferred_force_buyer_country %>',
     shippingAddressOverride: address,
     shippingAddressEditable: false,
     environment: '<%= Rails.env.production? ? "production" : "sandbox" %>',
@@ -27,6 +27,6 @@
     }
   }
 
-  var button = new SolidusPaypalBraintree.createPaypalButton(document.querySelector("#paypal-button"), paypalOptions);
+  var button = new SolidusBraintree.createPaypalButton(document.querySelector("#paypal-button"), paypalOptions);
   button.initialize();
 </script>

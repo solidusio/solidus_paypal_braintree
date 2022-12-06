@@ -3,7 +3,7 @@
 require 'braintree'
 require 'solidus_paypal_braintree/request_protection'
 
-module SolidusPaypalBraintree
+module SolidusBraintree
   class Gateway < ::Spree::PaymentMethod
     include RequestProtection
 
@@ -210,7 +210,7 @@ module SolidusPaypalBraintree
     # @return [Response|FalseClass]
     def try_void(payment)
       transaction = braintree.transaction.find(payment.response_code)
-      if transaction.status.in? SolidusPaypalBraintree::Gateway::VOIDABLE_STATUSES
+      if transaction.status.in? SolidusBraintree::Gateway::VOIDABLE_STATUSES
         # Sometimes Braintree returns a voidable status although it is not voidable anymore.
         # When we try to void that transaction we receive an error and need to return false
         # so Solidus can create a refund instead.
@@ -228,7 +228,7 @@ module SolidusPaypalBraintree
     #
     # @api public
     # @param payment [Spree::Payment]
-    # @return [SolidusPaypalBraintree::Customer]
+    # @return [SolidusBraintree::Customer]
     def create_profile(payment)
       source = payment.source
 

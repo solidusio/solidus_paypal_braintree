@@ -3,11 +3,11 @@
 require 'active_model'
 require 'solidus_paypal_braintree/country_mapper'
 
-module SolidusPaypalBraintree
+module SolidusBraintree
   class TransactionAddress
     include ActiveModel::Model
     include ActiveModel::Validations::Callbacks
-    include SolidusPaypalBraintree::CountryMapper
+    include SolidusBraintree::CountryMapper
 
     attr_accessor :country_code, :name, :city, :zip, :state_code,
       :address_line_1, :address_line_2, :first_name, :last_name
@@ -63,7 +63,7 @@ module SolidusPaypalBraintree
       else
         ::Spree::Deprecation.warn("first_name and last_name are deprecated. Use name instead.", caller)
         if first_name.nil?
-          first, last = SolidusPaypalBraintree::Address.split_name(name)
+          first, last = SolidusBraintree::Address.split_name(name)
           address.firstname = first
           address.lastname = last || "(left blank)"
         else

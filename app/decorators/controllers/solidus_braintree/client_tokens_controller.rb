@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module SolidusPaypalBraintree
+module SolidusBraintree
   class ClientTokensController < ::Spree::Api::BaseController
     skip_before_action :authenticate_user
 
@@ -19,21 +19,21 @@ module SolidusPaypalBraintree
 
     def load_gateway
       if params[:payment_method_id]
-        @gateway = ::SolidusPaypalBraintree::Gateway.find(params[:payment_method_id])
+        @gateway = ::SolidusBraintree::Gateway.find(params[:payment_method_id])
       else
         store_payment_methods_scope =
           if current_store.payment_methods.empty?
-            ::SolidusPaypalBraintree::Gateway.all
+            ::SolidusBraintree::Gateway.all
           else
-            ::SolidusPaypalBraintree::Gateway.where(id: current_store.payment_method_ids)
+            ::SolidusBraintree::Gateway.where(id: current_store.payment_method_ids)
           end
-        @gateway = ::SolidusPaypalBraintree::Gateway.where(active: true).merge(store_payment_methods_scope).first!
+        @gateway = ::SolidusBraintree::Gateway.where(active: true).merge(store_payment_methods_scope).first!
       end
     end
 
     def generate_token
       @gateway.generate_token
-    rescue ::SolidusPaypalBraintree::Gateway::TokenGenerationDisabledError => e
+    rescue ::SolidusBraintree::Gateway::TokenGenerationDisabledError => e
       Rails.logger.error e
       nil
     end

@@ -4,7 +4,7 @@ require_relative 'lib/solidus_paypal_braintree/version'
 
 Gem::Specification.new do |spec|
   spec.name = 'solidus_paypal_braintree'
-  spec.version = SolidusPaypalBraintree::VERSION
+  spec.version = SolidusBraintree::VERSION
   spec.authors = ['Stembolt']
   spec.email = 'braintree+gemfile@stembolt.com'
 

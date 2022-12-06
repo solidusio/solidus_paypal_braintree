@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-module SolidusPaypalBraintree
+module SolidusBraintree
   module AdminPaymentsControllerDecorator
     def self.prepended(base)
-      base.helper ::SolidusPaypalBraintree::BraintreeAdminHelper
+      base.helper ::SolidusBraintree::BraintreeAdminHelper
     end
 
     ::Spree::Admin::PaymentsController.prepend(self)

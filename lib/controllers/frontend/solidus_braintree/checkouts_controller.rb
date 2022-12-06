@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module SolidusPaypalBraintree
+module SolidusBraintree
   class CheckoutsController < ::Spree::CheckoutController
     PERMITTED_PAYMENT_PARAMS = [
       :payment_method_id,

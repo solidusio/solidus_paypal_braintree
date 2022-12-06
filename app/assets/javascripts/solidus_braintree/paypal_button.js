@@ -4,7 +4,7 @@
  * @constructor
  * @param {object} element - The DOM element of your PayPal button
  */
-SolidusPaypalBraintree.PaypalButton = function(element, paypalOptions, options) {
+SolidusBraintree.PaypalButton = function(element, paypalOptions, options) {
   this._element = element;
   this._paypalOptions = paypalOptions || {};
 
@@ -39,8 +39,8 @@ SolidusPaypalBraintree.PaypalButton = function(element, paypalOptions, options) 
  *
  * See {@link https://braintree.github.io/braintree-web/3.9.0/PayPal.html#tokenize}
  */
-SolidusPaypalBraintree.PaypalButton.prototype.initialize = function() {
-  this._client = new SolidusPaypalBraintree.createClient({
+SolidusBraintree.PaypalButton.prototype.initialize = function() {
+  this._client = new SolidusBraintree.createClient({
       useDataCollector: this._paypalOptions.useDataCollector,
       usePaypal: true
   });
@@ -48,7 +48,7 @@ SolidusPaypalBraintree.PaypalButton.prototype.initialize = function() {
   return this._client.initialize().then(this.initializeCallback.bind(this));
 };
 
-SolidusPaypalBraintree.PaypalButton.prototype.initializeCallback = function() {
+SolidusBraintree.PaypalButton.prototype.initializeCallback = function() {
   this._paymentMethodId = this._client.paymentMethodId;
 
   var args = {
@@ -72,7 +72,7 @@ SolidusPaypalBraintree.PaypalButton.prototype.initializeCallback = function() {
 
     var render_config = {
       style: this.style,
-      onClick: (data) => { SolidusPaypalBraintree.fundingSource = data.fundingSource },
+      onClick: (data) => { SolidusBraintree.fundingSource = data.fundingSource },
       [create_method]: function () {
         return this._client.getPaypalInstance().createPayment(this._paypalOptions);
       }.bind(this),
@@ -91,16 +91,16 @@ SolidusPaypalBraintree.PaypalButton.prototype.initializeCallback = function() {
  * @param {object|null} tokenizeErr - The error returned by Braintree on failure
  * @param {object} payload - The payload returned by Braintree on success
  */
-SolidusPaypalBraintree.PaypalButton.prototype._tokenizeCallback = function(tokenizeErr, payload) {
+SolidusBraintree.PaypalButton.prototype._tokenizeCallback = function(tokenizeErr, payload) {
   if (tokenizeErr) {
-    SolidusPaypalBraintree.config.braintreeErrorHandle(tokenizeErr);
+    SolidusBraintree.config.braintreeErrorHandle(tokenizeErr);
     return;
   }
 
   var params = this._transactionParams(payload);
 
   return Spree.ajax({
-    url: SolidusPaypalBraintree.config.paths.transactions,
+    url: SolidusBraintree.config.paths.transactions,
     type: 'POST',
     dataType: 'json',
     data: params,
@@ -123,7 +123,7 @@ SolidusPaypalBraintree.PaypalButton.prototype._tokenizeCallback = function(token
       }
 
       console.error("Error submitting transaction: " + errorText);
-      SolidusPaypalBraintree.showError(errorText);
+      SolidusBraintree.showError(errorText);
     },
   });
 };
@@ -134,7 +134,7 @@ SolidusPaypalBraintree.PaypalButton.prototype._tokenizeCallback = function(token
  *
  * @param {object} payload - The payload returned by Braintree after tokenization
  */
-SolidusPaypalBraintree.PaypalButton.prototype._transactionParams = function(payload) {
+SolidusBraintree.PaypalButton.prototype._transactionParams = function(payload) {
   return {
     "payment_method_id" : this._paymentMethodId,
     "options": this._options,
@@ -143,7 +143,7 @@ SolidusPaypalBraintree.PaypalButton.prototype._transactionParams = function(payl
       "phone" : payload.details.phone,
       "nonce" : payload.nonce,
       "payment_type" : payload.type,
-      "paypal_funding_source": SolidusPaypalBraintree.fundingSource,
+      "paypal_funding_source": SolidusBraintree.fundingSource,
       "address_attributes" : this._addressParams(payload)
     }
   };
@@ -155,7 +155,7 @@ SolidusPaypalBraintree.PaypalButton.prototype._transactionParams = function(payl
  *
  * @param {object} payload - The payload returned by Braintree after tokenization
  */
-SolidusPaypalBraintree.PaypalButton.prototype._addressParams = function(payload) {
+SolidusBraintree.PaypalButton.prototype._addressParams = function(payload) {
   var name;
   var payload_address = payload.details.shippingAddress || payload.details.billingAddress;
   if (!payload_address) return {};

@@ -1,10 +1,10 @@
-SolidusPaypalBraintree.HostedForm = function(paymentMethodId) {
+SolidusBraintree.HostedForm = function(paymentMethodId) {
   this.paymentMethodId = paymentMethodId;
   this.client = null;
 };
 
-SolidusPaypalBraintree.HostedForm.prototype.initialize = function() {
-  this.client = SolidusPaypalBraintree.createClient({
+SolidusBraintree.HostedForm.prototype.initialize = function() {
+  this.client = SolidusBraintree.createClient({
     paymentMethodId: this.paymentMethodId,
     useThreeDSecure: (typeof(window.threeDSecureOptions) !== 'undefined'),
   });
@@ -13,7 +13,7 @@ SolidusPaypalBraintree.HostedForm.prototype.initialize = function() {
     then(this._createHostedFields.bind(this));
 };
 
-SolidusPaypalBraintree.HostedForm.prototype._createHostedFields = function () {
+SolidusBraintree.HostedForm.prototype._createHostedFields = function () {
   if (!this.client) {
     throw new Error("Client not initialized, please call initialize first!");
   }
@@ -42,5 +42,5 @@ SolidusPaypalBraintree.HostedForm.prototype._createHostedFields = function () {
     styles: credit_card_fields_style
   };
 
-  return SolidusPaypalBraintree.PromiseShim.convertBraintreePromise(braintree.hostedFields.create, [opts]);
+  return SolidusBraintree.PromiseShim.convertBraintreePromise(braintree.hostedFields.create, [opts]);
 };

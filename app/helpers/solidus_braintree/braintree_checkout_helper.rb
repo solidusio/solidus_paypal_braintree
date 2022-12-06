@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-module SolidusPaypalBraintree
+module SolidusBraintree
   module BraintreeCheckoutHelper
     def braintree_3ds_options_for(order)
-      ship_address = SolidusPaypalBraintree::Address.new(order.ship_address)
-      bill_address = SolidusPaypalBraintree::Address.new(order.bill_address)
+      ship_address = SolidusBraintree::Address.new(order.ship_address)
+      bill_address = SolidusBraintree::Address.new(order.bill_address)
       {
         nonce: nil, # populated after tokenization
         bin: nil, # populated after tokenization
