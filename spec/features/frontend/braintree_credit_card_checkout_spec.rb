@@ -141,7 +141,7 @@ describe 'entering credit card details', type: :feature, js: true do
     end
 
     it "displays an alert with a meaningful error message" do
-      expect(page).to have_text I18n.t("solidus_paypal_braintree.errors.empty_fields")
+      expect(page).to have_text I18n.t("solidus_braintree.errors.empty_fields")
       expect(page).to have_selector("input[type='submit']:enabled")
     end
 
@@ -151,7 +151,7 @@ describe 'entering credit card details', type: :feature, js: true do
         expect(page).to have_selector("input[type='submit']:enabled")
 
         click_button "Save and Continue"
-        expect(page).to have_text I18n.t("solidus_paypal_braintree.errors.empty_fields")
+        expect(page).to have_text I18n.t("solidus_braintree.errors.empty_fields")
       end
     end
 

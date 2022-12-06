@@ -5,15 +5,15 @@ FactoryBot.define do
   # and other extensions to use and override them.
   #
   # Example adding this to your spec_helper will load these Factories for use:
-  # require 'solidus_paypal_braintree/factories'
+  # require 'solidus_braintree/factories'
 
-  factory :solidus_paypal_braintree_payment_method, class: SolidusBraintree::Gateway do
+  factory :solidus_braintree_payment_method, class: SolidusBraintree::Gateway do
     name { 'Solidus PayPal Braintree Gateway' }
     active { true }
   end
 
-  factory :solidus_paypal_braintree_source, class: SolidusBraintree::Source do
-    association(:payment_method, factory: :solidus_paypal_braintree_payment_method)
+  factory :solidus_braintree_source, class: SolidusBraintree::Source do
+    association(:payment_method, factory: :solidus_braintree_payment_method)
     user
 
     trait :credit_card do

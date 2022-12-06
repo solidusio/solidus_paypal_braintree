@@ -42,7 +42,7 @@ then
 fi
 echo "~~> Using branch $SOLIDUS_FRONTEND as the solidus frontend"
 
-extension_name="solidus_paypal_braintree"
+extension_name="solidus_braintree"
 
 # Stay away from the bundler env of the containing extension.
 function unbundled {

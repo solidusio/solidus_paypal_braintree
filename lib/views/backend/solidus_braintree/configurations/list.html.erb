@@ -1,8 +1,8 @@
 <% content_for :page_title do %>
-  <%= t(:title, scope: 'solidus_paypal_braintree.configurations') %>
+  <%= t(:title, scope: 'solidus_braintree.configurations') %>
 <% end %>
 
-<%= form_for :configurations, url: solidus_paypal_braintree.configurations_path do |f| %>
+<%= form_for :configurations, url: solidus_braintree.configurations_path do |f| %>
   <% @configurations.each do |config| %>
     <div class="row">
       <fieldset>

@@ -1,7 +1,7 @@
-//= require solidus_paypal_braintree/constants
-//= require solidus_paypal_braintree/client
-//= require solidus_paypal_braintree/promise
-//= require solidus_paypal_braintree/hosted_form
+//= require solidus_braintree/constants
+//= require solidus_braintree/client
+//= require solidus_braintree/promise
+//= require solidus_braintree/hosted_form
 
 $(function() {
   var $paymentForm = $("#new_payment"),

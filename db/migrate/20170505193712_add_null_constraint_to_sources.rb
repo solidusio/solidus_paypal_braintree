@@ -23,10 +23,10 @@ class AddNullConstraintToSources < SolidusSupport::Migration[4.2]
     # We use a foreign key constraint on the model,
     # but it doesnt make sense to have this model exist without a payment method
     # as two of its methods delegate to the payment method.
-    change_column_null(:solidus_paypal_braintree_sources, :payment_method_id, false)
+    change_column_null(:solidus_braintree_sources, :payment_method_id, false)
   end
 
   def down
-    change_column_null(:solidus_paypal_braintree_sources, :payment_method_id, true)
+    change_column_null(:solidus_braintree_sources, :payment_method_id, true)
   end
 end

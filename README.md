@@ -1,25 +1,25 @@
 # SolidusBraintree
 
-[![CircleCI](https://circleci.com/gh/solidusio/solidus_paypal_braintree.svg?style=shield)](https://circleci.com/gh/solidusio/solidus_paypal_braintree)
-[![codecov](https://codecov.io/gh/solidusio/solidus_paypal_braintree/branch/master/graph/badge.svg)](https://codecov.io/gh/solidusio/solidus_paypal_braintree)
+[![CircleCI](https://circleci.com/gh/solidusio/solidus_braintree.svg?style=shield)](https://circleci.com/gh/solidusio/solidus_braintree)
+[![codecov](https://codecov.io/gh/solidusio/solidus_braintree/branch/master/graph/badge.svg)](https://codecov.io/gh/solidusio/solidus_braintree)
 
-`solidus_paypal_braintree` is an extension that adds support for using [Braintree](https://www.braintreepayments.com) as a payment source in your [Solidus](https://solidus.io/) store. It supports Apple Pay, PayPal, and credit card transactions.
+`solidus_braintree` is an extension that adds support for using [Braintree](https://www.braintreepayments.com) as a payment source in your [Solidus](https://solidus.io/) store. It supports Apple Pay, PayPal, and credit card transactions.
 
 🚧 This extension is currently only compatible with the legacy `solidus_frontend` 🚧
 
 ## Installation
 
-Add solidus_paypal_braintree to your Gemfile:
+Add solidus_braintree to your Gemfile:
 
 ```ruby
-gem 'solidus_paypal_braintree', github: 'solidusio/solidus_paypal_braintree', branch: :master
+gem 'solidus_braintree', github: 'solidusio/solidus_braintree', branch: :master
 ```
 
 Bundle your dependencies and run the installation generator:
 
 ```shell
 bundle
-bundle exec rails g solidus_paypal_braintree:install
+bundle exec rails g solidus_braintree:install
 ```
 
 ## Basic Setup
@@ -77,7 +77,7 @@ SolidusBraintree::Gateway.new(
 ### Configure payment types
 Your payment method can accept payments in three ways: through Paypal, through ApplePay, or with credit card details entered directly by the customer. By default all are disabled for all your site's stores. Before proceeding to checkout, ensure you've created a Braintree configuration for your store:
 
-1. Visit /solidus_paypal_braintree/configurations/list
+1. Visit /solidus_braintree/configurations/list
 
 2. Check the payment types you'd like to accept. If your site has multiple stores, there'll be a set of checkboxes for each.
 
@@ -97,7 +97,7 @@ Your payment method can accept payments in three ways: through Paypal, through A
 
 4. If your site uses an unmodified `solidus_frontend`, it should now be ready to take payments. See below for more information on configuring Paypal and ApplePay.
 
-5. Typical Solidus sites will have customized frontend code, and may require some additional work. Use `lib/views/frontend/spree/checkout/payment/_paypal_braintree.html.erb` and `app/assets/javascripts/solidus_paypal_braintree/checkout.js` as models.
+5. Typical Solidus sites will have customized frontend code, and may require some additional work. Use `lib/views/frontend/spree/checkout/payment/_braintree.html.erb` and `app/assets/javascripts/solidus_braintree/checkout.js` as models.
 
 ## Apple Pay
 ### Developing with Apple Pay
@@ -207,7 +207,7 @@ method is configured to display on the frontend and PayPal is enabled in the
 store's configuration.
 
 You can find button configuration options in
-`/solidus_paypal_braintree/configurations/list` if you want to change the color,
+`/solidus_braintree/configurations/list` if you want to change the color,
 shape, layout, and a few other options. For more information check out
 [PayPal's documentation](https://developer.paypal.com/docs/platforms/checkout/reference/style-guide/#layout).
 
@@ -217,7 +217,7 @@ Keep in mind that:
   Other available financing options after the limit will not be rendered in the PayPal's iframe DOM.
 
 The checkout view
-[initializes the PayPal button](/lib/views/frontend/spree/checkout/payment/_paypal_braintree.html.erb)
+[initializes the PayPal button](/lib/views/frontend/spree/checkout/payment/_braintree.html.erb)
 using the
 [Vault flow](https://developers.braintreepayments.com/guides/paypal/overview/javascript/v3),
 which allows the source to be reused. Please note that PayPal messaging is disabled with vault flow. If you want, you can use [Checkout with PayPal](https://developers.braintreepayments.com/guides/paypal/checkout-with-paypal/javascript/v3)
@@ -305,12 +305,12 @@ This preference allows users to provide different Merchant Account Ids for
 different currencies. If you only plan to accept payment in one currency, the
 defaut Merchant Account Id will be used and you can omit this option.
 An example of setting this preference can be found
-[here](https://github.com/solidusio/solidus_paypal_braintree/blob/bf5fe0e154d38f7c498f1c54450bb4de7608ff04/spec/support/gateway_helpers.rb#L11-L13).
+[here](https://github.com/solidusio/solidus_braintree/blob/bf5fe0e154d38f7c498f1c54450bb4de7608ff04/spec/support/gateway_helpers.rb#L11-L13).
 
 In addition to this, you can also specify different PayPal accounts for each
 currency by using the `paypal_payee_email_map` preference. If you only want
 to use one PayPal account for all currencies, then you can ignore this option.
-You can find an example of setting this preference [here](https://github.com/solidusio/solidus_paypal_braintree/blob/bf5fe0e154d38f7c498f1c54450bb4de7608ff04/spec/support/gateway_helpers.rb#L14-L16).
+You can find an example of setting this preference [here](https://github.com/solidusio/solidus_braintree/blob/bf5fe0e154d38f7c498f1c54450bb4de7608ff04/spec/support/gateway_helpers.rb#L14-L16).
 
 ### Default store configuration
 The migrations for this gem will add a default configuration to all stores that
@@ -356,7 +356,7 @@ When testing your applications integration with this extension you may use it's 
 Simply add this require statement to your spec_helper:
 
 ```ruby
-require 'solidus_paypal_braintree/factories'
+require 'solidus_braintree/factories'
 ```
 
 ## Development

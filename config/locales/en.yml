@@ -1,9 +1,9 @@
 en:
   activerecord:
     models:
-      solidus_paypal_braintree/gateway: Braintree
+      solidus_braintree/gateway: Braintree
     attributes:
-      solidus_paypal_braintree/configuration:
+      solidus_braintree/configuration:
         paypal: PayPal
         apple_pay: Apple Pay
         credit_card: Credit Card
@@ -24,7 +24,7 @@ en:
     paypal_flow: PayPal flow
     paypal_funding: 'PayPal Funding: %{funding}'
     paypal_funding_source: 'PayPal Funding Source'
-  solidus_paypal_braintree:
+  solidus_braintree:
     braintree: Braintree
     nonce: Nonce
     token: Token

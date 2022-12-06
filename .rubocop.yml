@@ -55,7 +55,7 @@ Style/FrozenStringLiteralComment:
 
 Style/ExplicitBlockArgument:
   Exclude:
-    - lib/solidus_paypal_braintree/request_protection.rb
+    - lib/solidus_braintree/request_protection.rb
 
 Rails/SkipsModelValidations:
   Exclude:
@@ -63,13 +63,13 @@ Rails/SkipsModelValidations:
 
 Rails/ReflectionClassName:
   Exclude:
-    - app/models/solidus_paypal_braintree/customer.rb
-    - app/models/solidus_paypal_braintree/source.rb
+    - app/models/solidus_braintree/customer.rb
+    - app/models/solidus_braintree/source.rb
 
 RSpec/MultipleMemoizedHelpers:
   Exclude:
-    - spec/models/solidus_paypal_braintree/transaction_import_spec.rb
-    - spec/models/solidus_paypal_braintree/response_spec.rb
-    - spec/models/solidus_paypal_braintree/gateway_spec.rb
-    - spec/controllers/solidus_paypal_braintree/client_tokens_controller_spec.rb
+    - spec/models/solidus_braintree/transaction_import_spec.rb
+    - spec/models/solidus_braintree/response_spec.rb
+    - spec/models/solidus_braintree/gateway_spec.rb
+    - spec/controllers/solidus_braintree/client_tokens_controller_spec.rb
     - spec/features/frontend/braintree_credit_card_checkout_spec.rb

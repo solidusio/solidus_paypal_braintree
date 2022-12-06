@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'braintree'
-require 'solidus_paypal_braintree/request_protection'
+require 'solidus_braintree/request_protection'
 
 module SolidusBraintree
   class Gateway < ::Spree::PaymentMethod
@@ -72,7 +72,7 @@ module SolidusBraintree
     preference(:venmo_new_tab_support, :boolean, default: true)
 
     def partial_name
-      "paypal_braintree"
+      "braintree"
     end
     alias_method :method_type, :partial_name
 

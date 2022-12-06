@@ -1,1 +1,1 @@
-//= require solidus_paypal_braintree/frontend
+//= require solidus_braintree/frontend

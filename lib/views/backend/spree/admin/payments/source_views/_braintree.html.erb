@@ -11,14 +11,14 @@
         <dd><%= braintree_transaction_link(payment) %></dd>
 
         <% if payment.source.token.present? %>
-          <dt><%= t('solidus_paypal_braintree.token') %>:</dt>
+          <dt><%= t('solidus_braintree.token') %>:</dt>
           <dd><%= payment.source.token %></dd>
         <% else %>
-          <dt><%= t('solidus_paypal_braintree.nonce') %>:</dt>
+          <dt><%= t('solidus_braintree.nonce') %>:</dt>
           <dd><%= payment.source.nonce %></dd>
         <% end %>
 
-        <dt><%= t('solidus_paypal_braintree.payment_type.label') %>:</dt>
+        <dt><%= t('solidus_braintree.payment_type.label') %>:</dt>
         <dd><%= payment.source.friendly_payment_type %></dd>
 
         <% if payment.source.credit_card? %>

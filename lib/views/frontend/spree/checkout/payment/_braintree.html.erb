@@ -1,6 +1,6 @@
 <% id = payment_method.id %>
 
-<%= render "spree/shared/paypal_braintree_head_scripts" %>
+<%= render "spree/shared/braintree_head_scripts" %>
 
 <% if current_store.braintree_configuration.paypal? %>
   <%= render "spree/shared/paypal_checkout_button" %>

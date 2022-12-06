@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'solidus_paypal_braintree/request_protection'
+require 'solidus_braintree/request_protection'
 
 module SolidusBraintree
   class Source < ::Spree::PaymentSource
@@ -68,7 +68,7 @@ module SolidusBraintree
     end
 
     def friendly_payment_type
-      I18n.t(payment_type.underscore, scope: "solidus_paypal_braintree.payment_type")
+      I18n.t(payment_type.underscore, scope: "solidus_braintree.payment_type")
     end
 
     def apple_pay?
@@ -103,12 +103,12 @@ module SolidusBraintree
 
     def display_paypal_funding_source
       I18n.t(paypal_funding_source,
-        scope: 'solidus_paypal_braintree.paypal_funding_sources',
+        scope: 'solidus_braintree.paypal_funding_sources',
         default: paypal_funding_source)
     end
 
     def display_payment_type
-      "#{I18n.t('solidus_paypal_braintree.payment_type.label')}: #{friendly_payment_type}"
+      "#{I18n.t('solidus_braintree.payment_type.label')}: #{friendly_payment_type}"
     end
 
     private

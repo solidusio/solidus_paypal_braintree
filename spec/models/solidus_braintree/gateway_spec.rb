@@ -159,7 +159,7 @@ RSpec.describe SolidusBraintree::Gateway do
     describe "#method_type" do
       subject { gateway.method_type }
 
-      it { is_expected.to eq "paypal_braintree" }
+      it { is_expected.to eq "braintree" }
     end
 
     describe '#gateway_options' do

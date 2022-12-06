@@ -1,4 +1,4 @@
-//= require solidus_paypal_braintree/frontend
+//= require solidus_braintree/frontend
 
 $(function() {
   /* This provides a default error handler for Braintree. Since we prevent
