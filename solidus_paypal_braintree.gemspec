@@ -1,33 +1,33 @@
 # frozen_string_literal: true
 
-$:.push File.expand_path('lib', __dir__)
-require 'solidus_paypal_braintree/version'
+require_relative 'lib/solidus_paypal_braintree/version'
 
 Gem::Specification.new do |spec|
-  spec.name        = 'solidus_paypal_braintree'
-  spec.version     = SolidusPaypalBraintree::VERSION
-  spec.summary     = 'Officially supported Paypal/Braintree extension'
+  spec.name = 'solidus_paypal_braintree'
+  spec.version = SolidusPaypalBraintree::VERSION
+  spec.authors = ['Stembolt']
+  spec.email = 'braintree+gemfile@stembolt.com'
+
+  spec.summary = 'Officially supported Paypal/Braintree extension'
   spec.description = 'Uses the javascript API for seamless braintree payments'
-  spec.license     = 'BSD-3-Clause'
+  spec.homepage = 'https://github.com/solidusio/solidus_paypal_braintree'
+  spec.license = 'BSD-3-Clause'
 
-  spec.author    = 'Stembolt'
-  spec.email     = 'braintree+gemfile@stembolt.com'
-  spec.homepage  = 'https://github.com/solidusio/solidus_paypal_braintree'
+  spec.metadata['homepage_uri'] = spec.homepage
+  spec.metadata['source_code_uri'] = 'https://github.com/solidusio/solidus_paypal_braintree'
+  spec.metadata['changelog_uri'] = 'https://github.com/solidusio/solidus_paypal_braintree/blob/master/CHANGELOG.md'
 
-  spec.required_ruby_version = '>= 2.5'
+  spec.required_ruby_version = Gem::Requirement.new('>= 2.5', '< 4')
 
-  spec.files = Dir.chdir(File.expand_path(__dir__)) do
-    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
-  end
+  # Specify which files should be added to the gem when it is released.
+  # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
+  files = Dir.chdir(__dir__) { `git ls-files -z`.split("\x0") }
+
+  spec.files = files.grep_v(%r{^(test|spec|features)/})
+  spec.test_files = files.grep(%r{^(test|spec|features)/})
   spec.bindir = "exe"
-  spec.executables = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.executables = files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
-
-  if spec.respond_to?(:metadata)
-    spec.metadata["homepage_uri"] = spec.homepage if spec.homepage
-    spec.metadata["source_code_uri"] = spec.homepage if spec.homepage
-    spec.metadata["rubygems_mfa_required"] = 'true'
-  end
 
   spec.add_dependency 'activemerchant', '~> 1.48'
   spec.add_dependency 'braintree', '~> 3.4'
