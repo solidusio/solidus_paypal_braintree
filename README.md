@@ -383,6 +383,17 @@ Use Ctrl-C to stop
 ```
 
 
+### Updating the changelog
+
+Before and after releases the changelog should be updated to reflect the up-to-date status of
+the project:
+
+```shell
+bin/rake changelog
+git add CHANGELOG.md
+git commit -m "Update the changelog"
+```
+
 ### Releasing new versions
 
 Please refer to the dedicated [page](https://github.com/solidusio/solidus/wiki/How-to-release-extensions) on Solidus wiki.
