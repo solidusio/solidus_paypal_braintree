@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_model'
-require 'solidus_paypal_braintree/country_mapper'
+require 'solidus_braintree/country_mapper'
 
 module SolidusBraintree
   class TransactionAddress

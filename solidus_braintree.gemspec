@@ -1,21 +1,21 @@
 # frozen_string_literal: true
 
-require_relative 'lib/solidus_paypal_braintree/version'
+require_relative 'lib/solidus_braintree/version'
 
 Gem::Specification.new do |spec|
-  spec.name = 'solidus_paypal_braintree'
+  spec.name = 'solidus_braintree'
   spec.version = SolidusBraintree::VERSION
   spec.authors = ['Stembolt']
   spec.email = 'braintree+gemfile@stembolt.com'
 
   spec.summary = 'Officially supported Paypal/Braintree extension'
   spec.description = 'Uses the javascript API for seamless braintree payments'
-  spec.homepage = 'https://github.com/solidusio/solidus_paypal_braintree'
+  spec.homepage = 'https://github.com/solidusio/solidus_braintree'
   spec.license = 'BSD-3-Clause'
 
   spec.metadata['homepage_uri'] = spec.homepage
-  spec.metadata['source_code_uri'] = 'https://github.com/solidusio/solidus_paypal_braintree'
-  spec.metadata['changelog_uri'] = 'https://github.com/solidusio/solidus_paypal_braintree/blob/master/CHANGELOG.md'
+  spec.metadata['source_code_uri'] = 'https://github.com/solidusio/solidus_braintree'
+  spec.metadata['changelog_uri'] = 'https://github.com/solidusio/solidus_braintree/blob/master/CHANGELOG.md'
 
   spec.required_ruby_version = Gem::Requirement.new('>= 2.5', '< 4')
 

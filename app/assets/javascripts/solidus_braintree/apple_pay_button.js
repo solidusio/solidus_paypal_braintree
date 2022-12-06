@@ -1,4 +1,4 @@
-//= require solidus_paypal_braintree/constants
+//= require solidus_braintree/constants
 /**
  * Constructor for Apple Pay button object
  * @constructor

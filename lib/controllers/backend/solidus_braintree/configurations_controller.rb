@@ -16,9 +16,9 @@ module SolidusBraintree
       params = configurations_params[:configuration_fields]
       results = SolidusBraintree::Configuration.update(params.keys, params.values)
       if results.all?(&:valid?)
-        flash[:success] = t('update_success', scope: 'solidus_paypal_braintree.configurations')
+        flash[:success] = t('update_success', scope: 'solidus_braintree.configurations')
       else
-        flash[:error] = t('update_error', scope: 'solidus_paypal_braintree.configurations')
+        flash[:error] = t('update_error', scope: 'solidus_braintree.configurations')
       end
       redirect_to action: :list
     end

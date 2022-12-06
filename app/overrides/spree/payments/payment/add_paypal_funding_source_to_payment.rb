@@ -5,5 +5,5 @@ Deface::Override.new(
   virtual_path: "spree/payments/_payment",
   original: "0b5b5ae53626059cb3a202ef95d10827dd399925",
   insert_after: "erb[loud]:contains('content_tag(:span, payment.payment_method.name)')",
-  partial: "solidus_paypal_braintree/payments/payment"
+  partial: "solidus_braintree/payments/payment"
 )

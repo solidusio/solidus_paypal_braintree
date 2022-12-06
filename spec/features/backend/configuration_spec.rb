@@ -5,7 +5,7 @@ RSpec.describe "viewing the configuration interface" do
 
   # Regression to ensure this page still renders on old versions of solidus
   it "doesn't raise any errors due to unavailable route helpers" do
-    visit "/solidus_paypal_braintree/configurations/list"
+    visit "/solidus_braintree/configurations/list"
     expect(page).to have_content("Braintree Configurations")
   end
 

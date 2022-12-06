@@ -7,26 +7,26 @@ module SolidusBraintree
       source_root File.expand_path('templates', __dir__)
 
       def copy_initializer
-        template 'initializer.rb', 'config/initializers/solidus_paypal_braintree.rb'
+        template 'initializer.rb', 'config/initializers/solidus_braintree.rb'
       end
 
       def add_javascripts
-        append_file 'vendor/assets/javascripts/spree/frontend/all.js', "//= require spree/frontend/solidus_paypal_braintree\n" # rubocop:disable Layout/LineLength
-        append_file 'vendor/assets/javascripts/spree/backend/all.js', "//= require spree/backend/solidus_paypal_braintree\n" # rubocop:disable Layout/LineLength
+        append_file 'vendor/assets/javascripts/spree/frontend/all.js', "//= require spree/frontend/solidus_braintree\n" # rubocop:disable Layout/LineLength
+        append_file 'vendor/assets/javascripts/spree/backend/all.js', "//= require spree/backend/solidus_braintree\n" # rubocop:disable Layout/LineLength
       end
 
       def add_stylesheets
-        inject_into_file 'vendor/assets/stylesheets/spree/frontend/all.css', " *= require spree/frontend/solidus_paypal_braintree\n", before: %r{\*/}, verbose: true # rubocop:disable Layout/LineLength
-        inject_into_file 'vendor/assets/stylesheets/spree/backend/all.css', " *= require spree/backend/solidus_paypal_braintree\n", before: %r{\*/}, verbose: true # rubocop:disable Layout/LineLength
+        inject_into_file 'vendor/assets/stylesheets/spree/frontend/all.css', " *= require spree/frontend/solidus_braintree\n", before: %r{\*/}, verbose: true # rubocop:disable Layout/LineLength
+        inject_into_file 'vendor/assets/stylesheets/spree/backend/all.css', " *= require spree/backend/solidus_braintree\n", before: %r{\*/}, verbose: true # rubocop:disable Layout/LineLength
       end
 
       def add_migrations
-        run 'bin/rails railties:install:migrations FROM=solidus_paypal_braintree'
+        run 'bin/rails railties:install:migrations FROM=solidus_braintree'
       end
 
       def mount_engine
         insert_into_file File.join('config', 'routes.rb'), after: "Rails.application.routes.draw do\n" do
-          "mount SolidusBraintree::Engine, at: '/solidus_paypal_braintree'\n"
+          "mount SolidusBraintree::Engine, at: '/solidus_braintree'\n"
         end
       end
 

@@ -8,13 +8,13 @@ module SolidusBraintree
     include SolidusSupport::EngineExtensions
 
     isolate_namespace SolidusBraintree
-    engine_name 'solidus_paypal_braintree'
+    engine_name 'solidus_braintree'
 
     ActiveSupport::Inflector.inflections do |inflect|
       inflect.acronym 'AVS'
     end
 
-    initializer "register_solidus_paypal_braintree_gateway", after: "spree.register.payment_methods" do |app|
+    initializer "register_solidus_braintree_gateway", after: "spree.register.payment_methods" do |app|
       config.to_prepare do
         app.config.spree.payment_methods << SolidusBraintree::Gateway
         SolidusBraintree::Gateway.allowed_admin_form_preference_types.push(:preference_select).uniq!
@@ -24,17 +24,17 @@ module SolidusBraintree
 
     if SolidusSupport.frontend_available?
       config.assets.precompile += [
-        'solidus_paypal_braintree/checkout.js',
-        'solidus_paypal_braintree/frontend.js',
+        'solidus_braintree/checkout.js',
+        'solidus_braintree/frontend.js',
         'spree/frontend/apple_pay_button.js',
-        'solidus_paypal_braintree_manifest.js'
+        'solidus_braintree_manifest.js'
       ]
       paths["app/controllers"] << "lib/controllers/frontend"
       paths["app/views"] << "lib/views/frontend"
     end
 
     if SolidusSupport.backend_available?
-      config.assets.precompile += ["spree/backend/solidus_paypal_braintree.js"]
+      config.assets.precompile += ["spree/backend/solidus_braintree.js"]
       paths["app/controllers"] << "lib/controllers/backend"
 
       # We support Solidus v1.2, which requires some different markup in the
@@ -49,12 +49,12 @@ module SolidusBraintree
 
       paths["app/views"] << "lib/views/backend"
 
-      initializer "solidus_paypal_braintree_admin_menu_item", after: "register_solidus_paypal_braintree_gateway" do
+      initializer "solidus_braintree_admin_menu_item", after: "register_solidus_braintree_gateway" do
         Spree::Backend::Config.configure do |config|
           config.menu_items << config.class::MenuItem.new(
             [:braintree],
             'cc-paypal',
-            url: '/solidus_paypal_braintree/configurations/list',
+            url: '/solidus_braintree/configurations/list',
             condition: -> { can?(:list, SolidusBraintree::Configuration) }
           )
         end

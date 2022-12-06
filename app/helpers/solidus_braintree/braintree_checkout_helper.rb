@@ -51,7 +51,7 @@ module SolidusBraintree
     end
 
     def venmo_button_asset_url(style, active: false)
-      prefix = 'solidus_paypal_braintree/venmo/venmo_'
+      prefix = 'solidus_braintree/venmo/venmo_'
       active_string = active ? 'active_' : ''
       path = "#{prefix}#{active_string}#{style[:color]}_button_#{style[:width]}x48.svg"
       asset_path(path)

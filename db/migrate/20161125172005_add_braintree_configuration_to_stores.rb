@@ -3,5 +3,5 @@ class AddBraintreeConfigurationToStores < SolidusSupport::Migration[4.2]
   # configuration doesn't already have paypal_button_preferences fields, so
   # their validations will break this migration.
   #
-  # Ref here for more info https://github.com/solidusio/solidus_paypal_braintree/pull/249
+  # Ref here for more info https://github.com/solidusio/solidus_braintree/pull/249
 end
