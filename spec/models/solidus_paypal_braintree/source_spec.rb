@@ -450,6 +450,46 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
     end
   end
 
+  describe "#bin" do
+    subject { payment_source.bin }
+
+    let(:method) { new_gateway.tap(&:save!) }
+    let(:payment_source) { described_class.create!(payment_type: "CreditCard", payment_method: method) }
+    let(:braintree_client) { method.braintree }
+
+    context "when the token is known at braintree", vcr: {
+      cassette_name: "source/bin",
+      match_requests_on: [:braintree_uri]
+    } do
+      before do
+        customer = braintree_client.customer.create
+
+        method = braintree_client.payment_method.create({
+          payment_method_nonce: "fake-valid-country-of-issuance-usa-nonce", customer_id: customer.customer.id
+        })
+
+        payment_source.update!(token: method.payment_method.token)
+      end
+
+      it "delegates to the braintree payment method" do
+        method = braintree_client.payment_method.find(payment_source.token)
+        expect(subject).to eql(method.bin)
+      end
+    end
+
+    context 'when the source token is not known at Braintree' do
+      include_context 'with unknown source token'
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the source token is nil' do
+      include_context 'with nil source token'
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#display_payment_type' do
     subject { described_class.new(payment_type: type).display_payment_type }
 
