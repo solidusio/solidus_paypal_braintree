@@ -8,7 +8,7 @@ FactoryBot.define do
   # require 'solidus_braintree/factories'
 
   factory :solidus_braintree_payment_method, class: SolidusBraintree::Gateway do
-    name { 'Solidus PayPal Braintree Gateway' }
+    name { 'Solidus Braintree Gateway' }
     active { true }
   end
 

@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors = ['Stembolt']
   spec.email = 'braintree+gemfile@stembolt.com'
 
-  spec.summary = 'Officially supported Paypal/Braintree extension'
+  spec.summary = 'Officially supported Braintree extension'
   spec.description = 'Uses the javascript API for seamless braintree payments'
   spec.homepage = 'https://github.com/solidusio/solidus_braintree'
   spec.license = 'BSD-3-Clause'
