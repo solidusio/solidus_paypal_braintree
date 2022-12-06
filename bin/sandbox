@@ -90,7 +90,7 @@ unbundled bundle exec rails generate solidus:install \
   --auto-accept \
   --user_class=Spree::User \
   --enforce_available_locales=true \
-  --with-authentication=true \
+  --authentication="devise" \
   --payment-method=none \
   --frontend=${SOLIDUS_FRONTEND} \
   $@
