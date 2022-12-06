@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module SolidusPaypalBraintree
+  # Deviating from the usual `Configuration` name proposed by
+  # `solidus_dev_support` because it's already taken by a model.
   class ExtensionConfiguration
     # Define here the settings for this extension, e.g.:
     #
