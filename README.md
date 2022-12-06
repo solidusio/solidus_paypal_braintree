@@ -210,9 +210,13 @@ store's configuration.
 
 You can find button configuration options in 
 `/solidus_paypal_braintree/configurations/list` if you want to change the color,
-shape, layout, and a few other options. Keep in mind that the `paypal_button_tagline`
-does not work when the `paypal_button_layout` is set to `vertical`, and will be
-ignored in that case.
+shape, layout, and a few other options. For more information check out
+[PayPal's documentation](https://developer.paypal.com/docs/platforms/checkout/reference/style-guide/#layout).
+
+Keep in mind that:
+- `paypal_button_tagline` does not work when the `paypal_button_layout` is set to `vertical`, and will be ignored; and
+- `paypal_button_layout` of `horizontal` limits financing options/buttons to 2, where as `vertical` is 4.
+  Other available financing options after the limit will not be rendered in the PayPal's iframe DOM.
 
 The checkout view
 [initializes the PayPal button](/lib/views/frontend/spree/checkout/payment/_paypal_braintree.html.erb)
