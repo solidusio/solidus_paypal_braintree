@@ -11,8 +11,8 @@ module SolidusBraintree
       end
 
       def add_javascripts
-        append_file 'vendor/assets/javascripts/spree/frontend/all.js', "//= require spree/frontend/solidus_braintree\n" # rubocop:disable Layout/LineLength
-        append_file 'vendor/assets/javascripts/spree/backend/all.js', "//= require spree/backend/solidus_braintree\n" # rubocop:disable Layout/LineLength
+        append_file 'vendor/assets/javascripts/spree/frontend/all.js', "//= require spree/frontend/solidus_braintree\n"
+        append_file 'vendor/assets/javascripts/spree/backend/all.js', "//= require spree/backend/solidus_braintree\n"
       end
 
       def add_stylesheets
