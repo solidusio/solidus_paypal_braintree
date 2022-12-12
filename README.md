@@ -1,14 +1,13 @@
-SolidusPaypalBraintree
-======================
+# SolidusPaypalBraintree
 
-[![CircleCI](https://circleci.com/gh/solidusio/solidus_paypal_braintree.svg?style=svg)](https://circleci.com/gh/solidusio/solidus_paypal_braintree)
+[![CircleCI](https://circleci.com/gh/solidusio/solidus_paypal_braintree.svg?style=shield)](https://circleci.com/gh/solidusio/solidus_paypal_braintree)
+[![codecov](https://codecov.io/gh/solidusio/solidus_paypal_braintree/branch/master/graph/badge.svg)](https://codecov.io/gh/solidusio/solidus_paypal_braintree)
 
 `solidus_paypal_braintree` is an extension that adds support for using [Braintree](https://www.braintreepayments.com) as a payment source in your [Solidus](https://solidus.io/) store. It supports Apple Pay, PayPal, and credit card transactions.
 
-🚧 This extension is currently only compatible with the legacy `solidus_frontend`.
+🚧 This extension is currently only compatible with the legacy `solidus_frontend` 🚧
 
-Installation
-------------
+## Installation
 
 Add solidus_paypal_braintree to your Gemfile:
 
@@ -200,15 +199,14 @@ Note, other images such as Venmo's full logo and shortened "V" logo are included
 
 Ensure that you follow [Venmo's guidelines](https://developer.paypal.com/braintree/docs/files/venmo-merchant-integration-guidelines.pdf) when making other style changes, otherwise failing to comply can lead to an interruption of your Venmo service.
 
-PayPal
-------
+## PayPal
 
 A default checkout view is provided that will display PayPal as a payment option.
 It will only be displayed if the `SolidusPaypalBraintree::Gateway` payment
 method is configured to display on the frontend and PayPal is enabled in the
 store's configuration.
 
-You can find button configuration options in 
+You can find button configuration options in
 `/solidus_paypal_braintree/configurations/list` if you want to change the color,
 shape, layout, and a few other options. For more information check out
 [PayPal's documentation](https://developer.paypal.com/docs/platforms/checkout/reference/style-guide/#layout).
@@ -342,8 +340,7 @@ Once enabled, you can use the following card numbers to test 3DS 2 on your
 client side in sandbox:
 https://developers.braintreepayments.com/guides/3d-secure/migration/javascript/v3#client-side-sandbox-testing.
 
-Testing
--------
+## Testing
 
 To run the specs it is required to set the Braintree test account data in these environment variables:
 `BRAINTREE_PUBLIC_KEY`, `BRAINTREE_PRIVATE_KEY`, `BRAINTREE_MERCHANT_ID` and `BRAINTREE_PAYPAL_PAYEE_EMAIL`
@@ -362,8 +359,7 @@ Simply add this require statement to your spec_helper:
 require 'solidus_paypal_braintree/factories'
 ```
 
-Development
--------
+## Development
 
 ### Mocking your buyer country
 PayPal looks at the buyer's IP geolocation to determine what funding sources should be available to them. Because for example, Venmo is currently only available to US buyers. Because of this, you may want to pretend that you are from US so you can check if Venmo is correctly integrated for these customers. To do this, set the payment method's preference of `force_buyer_country` to "US". See more information about preferences above.
@@ -384,6 +380,13 @@ $ bin/rails server
 => Rails 7.0.4 application starting in development
 * Listening on tcp://127.0.0.1:3000
 Use Ctrl-C to stop
+```
+
+
+### Releasing new versions
+
+Please refer to the dedicated [page](https://github.com/solidusio/solidus/wiki/How-to-release-extensions) on Solidus wiki.
+
 
 ## License
 
