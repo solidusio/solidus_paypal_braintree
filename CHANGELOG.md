@@ -1,5 +1,37 @@
 # Changelog
 
+## [v1.2.0](https://github.com/solidusio/solidus_paypal_braintree/tree/v1.2.0) (2022-12-12)
+
+[Full Changelog](https://github.com/solidusio/solidus_paypal_braintree/compare/v1.1.2...v1.2.0)
+
+**Fixed bugs:**
+
+- Sandbox script is not able to install bundle due to empty $BRANCH value [\#337](https://github.com/solidusio/solidus_paypal_braintree/issues/337)
+- Do not safeguard including of Spree::Preferences::Persistable [\#316](https://github.com/solidusio/solidus_paypal_braintree/pull/316) ([tvdeyen](https://github.com/tvdeyen))
+
+**Merged pull requests:**
+
+- Update to the latest dev-support defaults [\#339](https://github.com/solidusio/solidus_paypal_braintree/pull/339) ([elia](https://github.com/elia))
+- Fix setup intructions on Rails 7 [\#332](https://github.com/solidusio/solidus_paypal_braintree/pull/332) ([waiting-for-dev](https://github.com/waiting-for-dev))
+- Fix sandbox generator [\#329](https://github.com/solidusio/solidus_paypal_braintree/pull/329) ([RyanofWoods](https://github.com/RyanofWoods))
+- Fix broken specs [\#328](https://github.com/solidusio/solidus_paypal_braintree/pull/328) ([RyanofWoods](https://github.com/RyanofWoods))
+- Drop compatibility with Solidus \< 2.4 [\#326](https://github.com/solidusio/solidus_paypal_braintree/pull/326) ([mamhoff](https://github.com/mamhoff))
+- Add BIN \(bank identification number\) to SolidusPaypalBraintree::Source [\#308](https://github.com/solidusio/solidus_paypal_braintree/pull/308) ([RyanofWoods](https://github.com/RyanofWoods))
+- Improve README PayPal styling information [\#307](https://github.com/solidusio/solidus_paypal_braintree/pull/307) ([RyanofWoods](https://github.com/RyanofWoods))
+- Make extension compliant to solidus\_dev\_support [\#289](https://github.com/solidusio/solidus_paypal_braintree/pull/289) ([MinasMazar](https://github.com/MinasMazar))
+
+## [v1.1.2](https://github.com/solidusio/solidus_paypal_braintree/tree/v1.1.2) (2022-10-14)
+
+[Full Changelog](https://github.com/solidusio/solidus_paypal_braintree/compare/v1.1.1...v1.1.2)
+
+**Merged pull requests:**
+
+- Fix broken factory [\#325](https://github.com/solidusio/solidus_paypal_braintree/pull/325) ([johnpitchko](https://github.com/johnpitchko))
+- Update to use forked solidus\_frontend when needed [\#324](https://github.com/solidusio/solidus_paypal_braintree/pull/324) ([waiting-for-dev](https://github.com/waiting-for-dev))
+- Fix specs to stub spree\_current\_user [\#323](https://github.com/solidusio/solidus_paypal_braintree/pull/323) ([gsmendoza](https://github.com/gsmendoza))
+- Bump Rubocop TargetRubyVersion from 2.5 to 2.6 [\#319](https://github.com/solidusio/solidus_paypal_braintree/pull/319) ([RyanofWoods](https://github.com/RyanofWoods))
+- Fix exception when other payment methods active [\#318](https://github.com/solidusio/solidus_paypal_braintree/pull/318) ([embold-tyler](https://github.com/embold-tyler))
+
 ## [v1.1.1](https://github.com/solidusio/solidus_paypal_braintree/tree/v1.1.1) (2022-06-30)
 
 [Full Changelog](https://github.com/solidusio/solidus_paypal_braintree/compare/v1.1.0...v1.1.1)
