@@ -11,6 +11,6 @@ require 'solidus_braintree/engine'
 
 module SolidusBraintree
   def self.table_name_prefix
-    'solidus_braintree_'
+    configuration.table_name_prefix
   end
 end
