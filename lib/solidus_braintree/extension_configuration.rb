@@ -7,6 +7,12 @@ module SolidusBraintree
     # Define here the settings for this extension, e.g.:
     #
     # attr_accessor :my_setting
+
+    attr_writer :table_name_prefix
+
+    def table_name_prefix
+      @table_name_prefix || 'solidus_braintree_'
+    end
   end
 
   class << self
