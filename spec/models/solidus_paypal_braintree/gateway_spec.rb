@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'webmock'
 require 'support/order_ready_for_payment'
 
-RSpec.describe SolidusPaypalBraintree::Gateway do
+RSpec.describe SolidusBraintree::Gateway do
   let(:gateway) do
     new_gateway.tap(&:save)
   end
@@ -12,7 +12,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
   let(:user) { create :user }
 
   let(:source) do
-    SolidusPaypalBraintree::Source.create!(
+    SolidusBraintree::Source.create!(
       nonce: 'fake-valid-nonce',
       user: user,
       payment_type: payment_type,
@@ -20,7 +20,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     )
   end
 
-  let(:payment_type) { SolidusPaypalBraintree::Source::PAYPAL }
+  let(:payment_type) { SolidusBraintree::Source::PAYPAL }
 
   describe "saving preference hashes as strings" do
     subject { gateway.update(update_params) }
@@ -159,7 +159,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
     describe "#method_type" do
       subject { gateway.method_type }
 
-      it { is_expected.to eq "paypal_braintree" }
+      it { is_expected.to eq "braintree" }
     end
 
     describe '#gateway_options' do
@@ -281,7 +281,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
         cassette_name: 'gateway/authorize/credit_card/address',
         match_requests_on: [:braintree_uri]
       } do
-        let(:payment_type) { SolidusPaypalBraintree::Source::CREDIT_CARD }
+        let(:payment_type) { SolidusBraintree::Source::CREDIT_CARD }
 
         it 'includes the billing address in the request' do
           expect_any_instance_of(Braintree::TransactionGateway).to receive(:sale).
@@ -509,7 +509,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       }
       context "with no existing customer profile", vcr: cassette_options do
         it 'creates and returns a new customer profile', aggregate_failures: true do
-          expect(profile).to be_a SolidusPaypalBraintree::Customer
+          expect(profile).to be_a SolidusBraintree::Customer
           expect(profile.sources).to eq [source]
           expect(profile.braintree_customer_id).to be_present
         end
@@ -601,7 +601,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       let(:other_payment_method) { FactoryBot.create(:payment_method) }
 
       let(:source_without_profile) do
-        SolidusPaypalBraintree::Source.create!(
+        SolidusBraintree::Source.create!(
           payment_method_id: gateway.id,
           payment_type: payment_type,
           user_id: user.id
@@ -609,7 +609,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
       end
 
       let(:source_with_profile) do
-        SolidusPaypalBraintree::Source.create!(
+        SolidusBraintree::Source.create!(
           payment_method_id: gateway.id,
           payment_type: payment_type,
           user_id: user.id
@@ -677,7 +677,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
           let(:user) { FactoryBot.create(:user) }
 
           let!(:source_without_profile) do
-            SolidusPaypalBraintree::Source.create!(
+            SolidusBraintree::Source.create!(
               payment_method_id: gateway.id,
               payment_type: payment_type,
               user_id: user.id
@@ -685,7 +685,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
           end
 
           let!(:source_with_profile) do
-            SolidusPaypalBraintree::Source.create!(
+            SolidusBraintree::Source.create!(
               payment_method_id: gateway.id,
               payment_type: payment_type,
               user_id: user.id
@@ -736,7 +736,7 @@ RSpec.describe SolidusPaypalBraintree::Gateway do
         gateway
       end
 
-      it { expect { subject }.to raise_error SolidusPaypalBraintree::Gateway::TokenGenerationDisabledError }
+      it { expect { subject }.to raise_error SolidusBraintree::Gateway::TokenGenerationDisabledError }
     end
   end
 end

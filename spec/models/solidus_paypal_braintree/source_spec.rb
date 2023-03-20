@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe SolidusPaypalBraintree::Source, type: :model do
+RSpec.describe SolidusBraintree::Source, type: :model do
   include_context 'when order is ready for payment'
 
   it 'is invalid without a payment_type set' do
@@ -13,7 +13,7 @@ RSpec.describe SolidusPaypalBraintree::Source, type: :model do
 
   describe 'attributes' do
     context 'with paypal_funding_source' do
-      subject { build(:solidus_paypal_braintree_source, :paypal) }
+      subject { build(:solidus_braintree_source, :paypal) }
 
       it 'can be nil' do
         subject.paypal_funding_source = nil

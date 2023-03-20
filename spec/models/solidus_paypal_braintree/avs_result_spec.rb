@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe SolidusPaypalBraintree::AVSResult do
+RSpec.describe SolidusBraintree::AVSResult do
   describe 'AVS response message' do
     subject { described_class.build(transaction).to_hash['message'] }
 

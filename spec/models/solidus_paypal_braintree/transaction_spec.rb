@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe SolidusPaypalBraintree::Transaction do
+describe SolidusBraintree::Transaction do
   describe "#valid?" do
     subject { transaction.valid? }
 
     let(:valid_attributes) do
       {
         nonce: 'abcde-fghjkl-lmnop',
-        payment_method: SolidusPaypalBraintree::Gateway.new,
+        payment_method: SolidusBraintree::Gateway.new,
         payment_type: 'ApplePayCard',
         email: "test@example.com"
       }

@@ -1,8 +1,8 @@
 require 'spec_helper'
 require 'support/order_ready_for_payment'
 
-RSpec.describe SolidusPaypalBraintree::CheckoutsController, type: :controller do
-  routes { SolidusPaypalBraintree::Engine.routes }
+RSpec.describe SolidusBraintree::CheckoutsController, type: :controller do
+  routes { SolidusBraintree::Engine.routes }
 
   include_context 'when order is ready for payment'
 
@@ -18,7 +18,7 @@ RSpec.describe SolidusPaypalBraintree::CheckoutsController, type: :controller do
               "payment_method_id" => payment_method.id,
               "source_attributes" => {
                 "nonce" => "fake-paypal-billing-agreement-nonce",
-                "payment_type" => SolidusPaypalBraintree::Source::PAYPAL
+                "payment_type" => SolidusBraintree::Source::PAYPAL
               }
             }
           ],
@@ -54,7 +54,7 @@ RSpec.describe SolidusPaypalBraintree::CheckoutsController, type: :controller do
 
       it 'creates a payment source' do
         expect { patch_update }.
-          to change(SolidusPaypalBraintree::Source, :count).
+          to change(SolidusBraintree::Source, :count).
           from(0).
           to(1)
       end
@@ -92,7 +92,7 @@ RSpec.describe SolidusPaypalBraintree::CheckoutsController, type: :controller do
       end
 
       it "does not change the number of sources in the system" do
-        expect{ patch_update }.not_to(change(SolidusPaypalBraintree::Source, :count))
+        expect{ patch_update }.not_to(change(SolidusBraintree::Source, :count))
       end
     end
   end

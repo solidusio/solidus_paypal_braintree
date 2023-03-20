@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe SolidusPaypalBraintree::Response do
+RSpec.describe SolidusBraintree::Response do
   let(:failed_transaction) { nil }
   let(:error) do
     instance_double(

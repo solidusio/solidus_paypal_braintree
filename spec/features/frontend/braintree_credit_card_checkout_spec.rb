@@ -40,7 +40,7 @@ shared_context "with frontend checkout setup" do
     allow_any_instance_of(Spree::CheckoutController).to receive_messages(try_spree_current_user: user)
     allow_any_instance_of(Spree::CheckoutController).to receive_messages(spree_current_user: user)
     allow_any_instance_of(Spree::Payment).to receive(:number).and_return("123ABC")
-    allow_any_instance_of(SolidusPaypalBraintree::Source).to receive(:nonce).and_return("fake-valid-nonce")
+    allow_any_instance_of(SolidusBraintree::Source).to receive(:nonce).and_return("fake-valid-nonce")
 
     visit spree.checkout_state_path(:delivery)
     click_button "Save and Continue"
@@ -141,7 +141,7 @@ describe 'entering credit card details', type: :feature, js: true do
     end
 
     it "displays an alert with a meaningful error message" do
-      expect(page).to have_text I18n.t("solidus_paypal_braintree.errors.empty_fields")
+      expect(page).to have_text I18n.t("solidus_braintree.errors.empty_fields")
       expect(page).to have_selector("input[type='submit']:enabled")
     end
 
@@ -151,7 +151,7 @@ describe 'entering credit card details', type: :feature, js: true do
         expect(page).to have_selector("input[type='submit']:enabled")
 
         click_button "Save and Continue"
-        expect(page).to have_text I18n.t("solidus_paypal_braintree.errors.empty_fields")
+        expect(page).to have_text I18n.t("solidus_braintree.errors.empty_fields")
       end
     end
 

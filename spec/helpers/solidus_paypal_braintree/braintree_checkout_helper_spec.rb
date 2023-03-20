@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe SolidusPaypalBraintree::BraintreeCheckoutHelper do
+RSpec.describe SolidusBraintree::BraintreeCheckoutHelper do
   let!(:store) { create :store }
   let(:braintree_configuration) { {} }
 
@@ -36,7 +36,7 @@ RSpec.describe SolidusPaypalBraintree::BraintreeCheckoutHelper do
       let(:active) { false }
 
       it 'returns the correct url' do
-        expect(subject).to match(%r[\A/assets/solidus_paypal_braintree/venmo/venmo_white_button_280x48-.+\.svg])
+        expect(subject).to match(%r[\A/assets/solidus_braintree/venmo/venmo_white_button_280x48-.+\.svg])
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.describe SolidusPaypalBraintree::BraintreeCheckoutHelper do
       let(:active) { true }
 
       it 'returns the correct url' do
-        expect(subject).to match(%r[\A/assets/solidus_paypal_braintree/venmo/venmo_active_white_button_280x48-.+\.svg])
+        expect(subject).to match(%r[\A/assets/solidus_braintree/venmo/venmo_active_white_button_280x48-.+\.svg])
       end
     end
 
@@ -54,7 +54,7 @@ RSpec.describe SolidusPaypalBraintree::BraintreeCheckoutHelper do
       let(:active) { false }
 
       it 'returns the correct url' do
-        expect(subject).to match(%r[\A/assets/solidus_paypal_braintree/venmo/venmo_blue_button_320x48-.+\.svg])
+        expect(subject).to match(%r[\A/assets/solidus_braintree/venmo/venmo_blue_button_320x48-.+\.svg])
       end
     end
 
@@ -63,7 +63,7 @@ RSpec.describe SolidusPaypalBraintree::BraintreeCheckoutHelper do
       let(:active) { true }
 
       it 'returns the correct url' do
-        expect(subject).to match(%r[\A/assets/solidus_paypal_braintree/venmo/venmo_active_blue_button_320x48-.+\.svg])
+        expect(subject).to match(%r[\A/assets/solidus_braintree/venmo/venmo_active_blue_button_320x48-.+\.svg])
       end
     end
   end
