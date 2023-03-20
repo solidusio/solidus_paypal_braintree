@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.0.0](https://github.com/solidusio/solidus_paypal_braintree/tree/v1.2.0) (2023-03-20)
+
+This extension is deprecated. This last version contains only a dependency to the new
+recommended extension.
+
+To upgrade, follow the instructions here:
+
+https://github.com/solidusio/solidus_braintree/wiki/Upgrading-from-SolidusPaypalBraintree-To-SolidusBraintree
+
 ## [v1.2.0](https://github.com/solidusio/solidus_paypal_braintree/tree/v1.2.0) (2022-12-12)
 
 [Full Changelog](https://github.com/solidusio/solidus_paypal_braintree/compare/v1.1.2...v1.2.0)
