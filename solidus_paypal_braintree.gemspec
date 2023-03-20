@@ -29,11 +29,7 @@ Gem::Specification.new do |spec|
   spec.executables = files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency 'activemerchant', '~> 1.48'
-  spec.add_dependency 'braintree', '~> 3.4'
-  spec.add_dependency 'solidus_api', ['>= 2.4.0', '< 4']
-  spec.add_dependency 'solidus_core', ['>= 2.4.0', '< 4']
-  spec.add_dependency 'solidus_support', ['>= 0.8.1', '< 1']
+  spec.add_dependency 'solidus_braintree', '~> 2.0'
 
   spec.add_development_dependency 'rails-controller-testing'
   spec.add_development_dependency 'solidus_dev_support', '~> 2.5'
