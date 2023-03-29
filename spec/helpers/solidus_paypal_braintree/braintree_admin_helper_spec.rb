@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe SolidusPaypalBraintree::BraintreeAdminHelper do
+RSpec.describe SolidusBraintree::BraintreeAdminHelper do
   describe '#braintree_transaction_link' do
     subject { helper.braintree_transaction_link(payment) }
 

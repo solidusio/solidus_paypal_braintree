@@ -29,11 +29,13 @@ Gem::Specification.new do |spec|
   spec.executables = files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency 'activemerchant', '~> 1.48'
-  spec.add_dependency 'braintree', '~> 3.4'
-  spec.add_dependency 'solidus_api', ['>= 2.4.0', '< 4']
-  spec.add_dependency 'solidus_core', ['>= 2.4.0', '< 4']
-  spec.add_dependency 'solidus_support', ['>= 0.8.1', '< 1']
+  spec.add_dependency 'solidus_braintree', '~> 2.0'
+  spec.post_install_message = %q{
+ACTION REQUIRED: This extension has been renamed to solidus_braintree.
+
+To upgrade to the new name, follow the instructions here:
+https://github.com/solidusio/solidus_braintree/wiki/Upgrading-from-SolidusPaypalBraintree-To-SolidusBraintree
+  }
 
   spec.add_development_dependency 'rails-controller-testing'
   spec.add_development_dependency 'solidus_dev_support', '~> 2.5'

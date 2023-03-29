@@ -21,27 +21,9 @@ jobs:
     steps:
       - browser-tools/install-browser-tools
       - solidusio_extensions/run-tests
-  lint-code:
-    executor: solidusio_extensions/sqlite-memory
-    steps:
-      - browser-tools/install-browser-tools
-      - solidusio_extensions/lint-code
 
 workflows:
   "Run specs on supported Solidus versions":
-    jobs:
-      - run-specs-with-postgres
-      - run-specs-with-mysql
-      - lint-code
-
-  "Weekly run specs against master":
-    triggers:
-      - schedule:
-          cron: "0 0 * * 4" # every Thursday
-          filters:
-            branches:
-              only:
-                - master
     jobs:
       - run-specs-with-postgres
       - run-specs-with-mysql

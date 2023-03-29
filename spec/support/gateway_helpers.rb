@@ -1,7 +1,7 @@
-module SolidusPaypalBraintree
+module SolidusBraintree
   module GatewayHelpers
     def new_gateway(opts = {})
-      SolidusPaypalBraintree::Gateway.new({
+      SolidusBraintree::Gateway.new({
         name: "Braintree",
         preferences: {
           environment: 'sandbox',
@@ -25,5 +25,5 @@ module SolidusPaypalBraintree
 end
 
 RSpec.configure do |config|
-  config.include SolidusPaypalBraintree::GatewayHelpers
+  config.include SolidusBraintree::GatewayHelpers
 end

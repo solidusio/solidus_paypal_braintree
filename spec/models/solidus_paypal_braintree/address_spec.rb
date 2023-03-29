@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe SolidusPaypalBraintree::Address do
+RSpec.describe SolidusBraintree::Address do
   describe "::split_name" do
     subject { described_class.split_name(name) }
 

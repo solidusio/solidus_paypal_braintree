@@ -1,5 +1,14 @@
 # SolidusPaypalBraintree
 
+⛔️ This extension is archived. ⛔️
+
+It has been renamed and moved to [solidus_braintree](https://github.com/solidusio/solidus_braintree).
+
+If you were using this project, you can follow the [instructions to upgrade to the new extension](https://github.com/solidusio/solidus_braintree/wiki/Upgrading-from-SolidusPaypalBraintree-To-SolidusBraintree).
+
+<hr>
+<br>
+
 [![CircleCI](https://circleci.com/gh/solidusio/solidus_paypal_braintree.svg?style=shield)](https://circleci.com/gh/solidusio/solidus_paypal_braintree)
 [![codecov](https://codecov.io/gh/solidusio/solidus_paypal_braintree/branch/master/graph/badge.svg)](https://codecov.io/gh/solidusio/solidus_paypal_braintree)
 

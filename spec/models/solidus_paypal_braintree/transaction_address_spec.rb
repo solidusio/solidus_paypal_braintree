@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SolidusPaypalBraintree::TransactionAddress do
+describe SolidusBraintree::TransactionAddress do
   describe "#valid?" do
     subject { address.valid? }
 
