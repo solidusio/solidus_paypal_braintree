@@ -365,7 +365,7 @@ When testing your applications integration with this extension you may use it's 
 Simply add this require statement to your spec_helper:
 
 ```ruby
-require 'solidus_paypal_braintree/factories'
+require 'solidus_paypal_braintree/testing_support/factories'
 ```
 
 ## Development
